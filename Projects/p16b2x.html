@@ -18,39 +18,52 @@
 		<br>
 		<br>
 
+		<hr> <h2 id=toc> Table Of Contents </h2>
+		<ol>
+			<li> <a href="#overview"      >Overview      </a></li>
+			<li> <a href="#isa"           >ISA           </a></li>
+			<li> <a href="#unified_memory">Unified Memory</a></li>
+			<li> <a href="#vhdl"          >VHDL          </a></li>
+			<li> <a href="#the_good"      >The Good      </a></li>
+			<li> <a href="#the_bad"       >The Bad       </a></li>
+			<li> <a href="#the_ugly"      >The Ugly      </a></li>
+		</ol>
+		<br>
 
 		<hr> <h2 id=overview> OVERVIEW </h2>
-		<img width="50%" src="./Images/p16b2x_i0-cpu-v0.png" alt="schematic of v0"><br>
-		<a href="./Images/p16b2x_i0-cpu-v0.png">full image</a><br>
-		<br>
-		<br>
+
+		<p>
+			<img width="50%" src="./Images/p16b2x_i0-cpu-v0.png" alt="schematic of v0"><br>
+			<a href="./Images/p16b2x_i0-cpu-v0.png">full image</a><br>
+			<br>
 		
-		as with <a href=./p16b1x.html>previous design</a>, this CPU was initially done in logisim <br>
-		this time there were no major flaws in the ISA, general layout was somewhat inspired by <a href="../Knowledge/resources.html#computer_architecture>books>dce">SAP from Digital Computer Electronics</a> (same thing that Ben Eater used for <a href=https://www.youtube.com/playlist?list=PLowKtXNTBypGqImE405J2565dvjafglHU>8 bit computer</a>)<br>
-		pretty much everything that had to be fixed from previous design, was fixed <br>
-		as note near ROM/RAM (and as some features of <a href=#isa>ISA, described below</a>) suggests, project was not fully complete then (or ever) <br> 
+			As with <a href=./p16b1x.html>previous design</a>, this CPU was initially done in logisim. <br>
+			This time there were no major flaws in the ISA, general layout was somewhat inspired by <a href="../Knowledge/resources.html#computer_architecture>books>dce">SAP from Digital Computer Electronics</a> (same thing that Ben Eater used for <a href=https://www.youtube.com/playlist?list=PLowKtXNTBypGqImE405J2565dvjafglHU>8 bit computer</a>). 
+			Pretty much everything that had to be fixed from previous design, was fixed <br>
+			As the note near ROM/RAM (and as some features of <a href=#isa>ISA, described below</a>) suggests, project was not fully complete then <span class=comment>/*or ever*/</span>.  <br>
+			<br>
+		</p>
 
-		<br>
-		<br>
-		<img width="50%" src="./Images/p16b2x_i1-cpu-v1.png" alt="schematic of v1"><br>
-		<a href="./Images/p16b2x_i1-cpu-v1.png">full image</a><br>
-		<br>
+		<p>
+			<img width="50%" src="./Images/p16b2x_i1-cpu-v1.png" alt="schematic of v1"><br>
+			<a href="./Images/p16b2x_i1-cpu-v1.png">full image</a><br>
+			<br>
+
+			New circuitry allowed instructions to execute for 2 cycles which is essential for unified data and instruction memory. 
+			Most instructions execute in 1 cycle as in previous iteration, but loads and stores take 2 cycles. 
+			During 1st they access data, during 2nd they access next instruction <br> 
+			<br>
+		</p>
+
+		<p>
+			<img width="50%" src="./Images/p16b2x_i2-cpu-v2_c.png" alt="waveform of v2"><br>
+			<a href="./Images/p16b2x_i2-cpu-v2.png">full image</a><br>
+			<br>
+			First major-ish project in VHDL so code is not as good as it should be, entire project is in single file, including tests. <br>
+			The implementation does not have multicycle instructions for simplicity, same as first iteration of the entire project. <br>
 		<br>
 
-		added circuitry allowed for instructions to execute for 2 cycles which is essential for unified data and instruction memory <br>
-		most instructions execute in 1 cycle as in previous iteration, loads and stores take 2 cycles <br>
-		during 1st they access data, during 2nd they access next instruction <br> 
-
-		<br>
-		<br>
-		<img width="50%" src="./Images/p16b2x_i2-cpu-v2_c.png" alt="waveform of v2"><br>
-		<a href="./Images/p16b2x_i2-cpu-v2.png">full size image</a><br>
-		<br>
-		<br>
-		first major-ish project in VHDL so code is not as good as it should be, entire project is in single file, including tests <br>
-		implementation does not have multicycle instructions for simplicity, same as first iteration of entire project <br>
-
-		<br>
+		</p>
 
 		<hr> <h2 id=isa> ISA </h2>
 
@@ -88,7 +101,7 @@
 	X4   - imm4
 	X8   - imm8
 
-	Xn means last n bits of X
+	Xn means rightmost n bits of X
 		</pre>
 
 		<h3> Example Program: </h3>
@@ -117,48 +130,62 @@ end:
 		</pre>
 
 		<hr> <h2 id=unified_memory> UNIFIED MEMORY </h2>
-		the main goal of this project was to unify memory <br>
-		unfortunately I dont remember attemps too well but the entire approach was very convoluted and ultimately could not work <br>
-		idea (as much as I remember) was to check whether data is already out and if so switch address <br>
-		this cannot work because there is nothing that stores 1st result so a register has to be added <br>
-		but a register cannot just store data whenever and has to wait for clock so the only solution is to have multicycle operation <br>
-		note 1: there is another slight problem with checking availability of data - logisim RAM outputs data almost immediattely and does not signal whether it is ready <br>
-		note 2: even with latch (which does not update on edge) something like clock has to be used to decide when to update that latch <br>
-		note 3: updating on half cycle works too but that behaves identically (from digital logic POV) as twice as fast clock <br>
-		<br>
-		after taking long break and accepting multicycle operation, unified memory worked pretty much instantly <br>
-		CPU was not designed with more than 1 cpi and it was kind of hacked in <br>
-		each instruction has "last cycle" in control signals and if it is set then instruction is fetched to <b>I</b>nstruction <b>R</b>egister, this is usually the case <br>
-		if it is NOT set then IR is not updated and '1' is written to additional 1b register which allows current instruction cycle to be updated to 1 <br>
-		the middle-man register is completely not needed, next design fixed this problem <br>
-		solution is to NOT use ASYNC reset of register that holds current cycle of instruction, as was done, for some reason <br>
-		<br>
-		<img width="50%" src="./Images/p16b2x_i3-cpu-ir.png" alt="IR"><br>
-		<a href="./Images/p16b2x_i3-cpu-ir.png">full image</a><br>
-		<img width="50%" src="./Images/p16b2x_i4-cpu-control.png" alt="control of cpu"><br>
-		<a href="./Images/p16b2x_i4-cpu-control.png">full image</a><br>
-		<br>
+		<p>
+			The main goal of this project was to unify memory <br>
+			Unfortunately I do not remember attemps too well but the entire approach was very convoluted and ultimately could not work.
+			Idea <span class=comment>/*as much as I remember*/</span> was to check whether data is already out and if so switch address (during the same cycle).
+			This cannot work because there is nothing that stores the first result so a register has to be added. 
+			But a register cannot just store data whenever and has to wait for clock so the only solution is to have multicycle operation. <br>
+			Note 1: There is another slight problem with checking availability of data - logisim RAM outputs data almost immediattely and does not signal whether it is ready. <br>
+			Note 2: Even with latch (which does not update on edge) something like clock has to be used to decide when to update that latch. <br>
+			Note 3: Updating on half cycle works too but that behaves identically (from digital logic POV) as twice as fast clock. <br>
+		</p>
+		<p>
+			After taking long break and accepting multicycle operation, unified memory worked pretty much instantly. <br>
+			CPU was not designed with more than 1 CPI in mind and it was kind of hacked in. 
+			Each instruction has <span class=code>last cycle</span> in control signals and if it is set then instruction is fetched to <b>I</b>nstruction <b>R</b>egister, this is usually the case. 
+			If it is NOT set then IR is not updated and '1' is written to additional 1b register acting as current-cycle register.
+			This external register is rather annoying to work with, next designs fixed this problem by properly incorporating notion of execution cycle. <br>
+			Use of Async reset here was some wild thinking done my part. <br>
+			<br>
+			<img width="50%" src="./Images/p16b2x_i3-cpu-ir.png" alt="IR"><br>
+			<a href="./Images/p16b2x_i3-cpu-ir.png">full image</a><br>
+			<img width="50%" src="./Images/p16b2x_i4-cpu-control.png" alt="control of cpu"><br>
+			<a href="./Images/p16b2x_i4-cpu-control.png">full image</a><br>
+			<br>
+		</p>
 
 		<hr> <h2 id=vhdl> VHDL </h2>
-		VHDL here was mostly like processor design of the 16b1x, giant pile of mess, not knowing what I am doing and trying to make things work <br>
-		921 lines of entities with their testbenches and CPU <br> 
-		most of which is VHDL boilerplate (that part did not change in later projects) and actual logic is simple, CPU body (connections between components and logic) has only 60 LOC<br>
-		most of which are whitespace or VHDL keywords <br>
-		other than that, it is almost 1:1 translation of first iteration <br> 
-
+		<p>
+			VHDL here was mostly like processor design of the 16b1x - giant pile of mess, not knowing what I am doing and trying to make things work. <br>
+			921 lines of entities with their testbenches and CPU.  
+			Most of which is VHDL boilerplate <span class=comment>/*that part did not change in 16b3x*/</span> and actual logic is simple, CPU body (connections between components and logic) has only 60 LOC, most of which are whitespace or VHDL keywords. <br>
+			Other than that, it is almost 1:1 translation of first iteration. <br> 
+		</p>
+	
 		<hr> <h2 id=the_good> THE GOOD </h2>
-		No disasters and fixed previous mistakes! <br>
-		instructions were allocated properly and format is pleasant to write assembler for (this time it was written almost immediattely, as it should) <br>
-		overall layout is also much nicer to look at however individual components are mostly identical as in 16b1x <br>
+		<p>
+			No disasters and fixed previous mistakes! <br>
+		</p>
+		<p>
+			Instructions were allocated properly and format is pleasant to write assembler for. <span class=comment>/*this time it was written almost immediattely, as it should*/</span> <br>
+		</p>
+		<p>
+			Overall layout is also much nicer to look at however individual components are mostly identical as in 16b1x. <br>
+		</p>
 
 		<hr> <h2 id=the_bad> THE BAD </h2>
-		no stupidly bad decisions and mistakes like last time, all are minor enough to land in THE UGLY <br>
+		<p>
+			No stupidly bad decisions and mistakes like last time, all are minor enough to land in THE UGLY. <br>
+		</p>
 
 		<hr> <h2 id=the_ugly> THE UGLY </h2>
-		Did not use ports even though there are somewhat specified in the ISA <br>
-		ISA could still be copy-pasted here and site would still be readable <br>
-		this is because CPU is so simple there is nothing to document, later ones radically improve on complexity (and being interesting) side <br>
-		<a href="https://en.wikipedia.org/wiki/NOP_slide">NOP slide</a> is still present and there is no <span class=code>halt</span> instruction so CPU always executes <br>
+		<p>
+			Did not use ports even though they are somewhat specified in the ISA <br>
+		</p>
+		<p>
+			<a href="https://en.wikipedia.org/wiki/NOP_slide">NOP slide</a> is still present and there is no <span class=code>halt</span> instruction so CPU always executes <br>
+		</p>
 
 		<br>
 

@@ -17,6 +17,15 @@
 		<br>
 		<br>
 		<br>
+		<hr> <h2 id=toc> Table Of Contents </h2>
+		<ol>
+			<li> <a href="#overview">Overview</a></li>
+			<li> <a href="#isa"     >ISA     </a></li>
+			<li> <a href="#the_good">The Good</a></li>
+			<li> <a href="#the_bad" >The Bad </a></li>
+			<li> <a href="#the_ugly">The Ugly</a></li>
+		</ol>
+		<br>
 
 		<hr> <h2 id=overview> OVERVIEW </h2>
 		<img width=50% src="./Images/p16b1x_i0-cpu.png" alt="schematic"> <br>
@@ -24,13 +33,12 @@
 		<br>
 		<br>
 
-		as the name suggests, its 16bit cpu <br>
-		the ISA is very simple and does not even utilize all space for instructions <br>
-		design is pretty much copycat (not intentional!) of what was shown in course because that was all I knew at that time <br>
-		it was complicated enough to get everything working without thinking about design too much, later projects radically improved on that side <br>
-		instruction and data memory are split so every instruction takes exactly 1 cycle <br>
+		As the name suggests, it is 16bit CPU. <br>
+		The ISA is very simple and does not even utilize all space for instructions. <br>
+		Design is pretty much copycat of what was shown in course because that was all I knew at that time.  It was simple enough to get everything working without thinking about design too much, this was never again possible in the future.  <br>
+		Instruction and data memory are separated so every instruction takes exactly 1 cycle. <br>
 		<br>
-		CPU was implemented in logisim and I was assembler for longer than I would like to admit before writing proper one in c++ <br>
+		CPU was implemented in logisim and I was assembler for longer than I would like to admit before writing proper one in c++. <br>
 
 		<hr> <h2 id=isa> ISA </h2>
 		
@@ -108,49 +116,46 @@ LABEL loop
 
 		<hr> <h2 id=the_good> THE GOOD </h2>
 		<p>
-			the very best thing is that it works <br>
+			The very best thing is that it works. <br>
 		</p>
 
 		<p>
-			its hard to find any other thing that is noteworthy good <br>
-			at the time I was proud of using mux to select correct control signals instead of combinational logic <br>
-			later I realized that not only this is quite common, I shouldve used ROM component directly <br>
+			It is hard to find any other thing that is noteworthy good.  At the time I was proud of using mux to select correct control signals instead of combinational logic. Later I realized that not only this is quite common, I should've used ROM component directly. <br>
 		</p>
 
 		<hr> <h2 id=the_bad> THE BAD </h2>
 
 		<p>
-			the worst thing in this design is that somehow a bit was skipped <br>
-			instruction format shown previously has bits 11:8 assigned for Rd, its 4 not 3, Rs has bits 7:6, its 2 not 3 <br>
-			correct thing would be Rd - 11:9, Rs - 8:6 <br>
-			for r-format its not so bad as total bit count states the same but immediate has wasted bit that is not used for anything for no reason <br>
-			since r-format and i-format have unused bits then this additional bit could be used to select between reg/immediate as second operand and it would be way more convientient to code <br>
-			later designs fixed this issue in exactly this way<br>
-			I became aware of this while wiring control, I was tired already so I decided that I dont care <br>
+			The worst thing in this design is that somehow a bit was skipped. <br>
+			Instruction format shown previously has bits 11:8 assigned for Rd, it is 4 not 3, Rs has bits 7:6, it is 2, not 3.  
+			Correct thing would be Rd - 11:9, Rs - 7:5.  
+			For r-format it's not so bad as total bit count stays the same, but immediate has wasted bit for no reason. 
+			Since r-format and i-format have unused bits then this additional bit could be used to select between reg/immediate as second operand and it would be way more convientient to code. 
+			Later designs fixed this issue in exactly this way. <br>
+			I became aware of this while wiring control, I was tired already so I decided that I do not care. <br>
 		</p>
 
 		<p>
-			zero register is completely useless and terribly inefficient idea for cpu with 8 registers in total <br>
-			it was kind of needed because of lack of immediate operand for every instruction (see paragraph above) <br>
-			nonetheless, if it was needed then simple <span class="code">mvi Rd, 0</span> would suffice and would not waste register regardless of input <br>
+			Zero register is completely useless and terribly inefficient idea for cpu with 8 registers in total. <br>
+			It was kind of needed because of lack of immediate operand for every instruction (see paragraph above).  Nonetheless, if it was needed then simple <span class="code">mvi Rd, 0</span> would suffice and would not waste a register.
 		</p>
 
 		<hr> <h2 id=the_ugly> THE UGLY </h2>
 
 		<p>
-			ISA mentions SP but it was not used as no instructions that utilize it were implemented <br>
-			similarly local isa.txt mentions memory regions but again, it was not implemented <br>
+			ISA mentions SP but it was not used. <br>
+			Similarly local isa.txt mentions memory regions but it was never implemented. <br>
 		</p>
 
 		<p>
-			seperated data/instruction memory was ok at the time but was suboptimal and later designs changed it <br>
-			in fact, main purpose of 2nd iteration was to unify memory and fix terrible mistakes here <br>
+			Seperated data and instruction memory was ok at that time but was suboptimal and later designs changed it. <br>
+			<span class="comment">//In fact, main goal of the 2nd iteration was to unify memory and fix terrible mistakes here. </span><br>
 		</p>
 
 		<p>
-			0x0000 should not be <span class="code">mvr Z, Z</span> becaues of <a href="https://en.wikipedia.org/wiki/NOP_slide">NOP slide</a> <br>
-			unfortunatelly I became aware of this fairly recently and so 2 next designs also feature this problem <br>
-			this is not that bad for architecture that was not design for serious use which is why its in this section and not THE BAD<br>
+			0x0000 should not have been <span class="code">mvr Z, Z</span> becaues of <a href="https://en.wikipedia.org/wiki/NOP_slide">NOP slide</a>. <br>
+			Unfortunatelly I became aware of this fairly recently <span class=comment>/*as of writing this post*/</span> and so next 2 designs also feature this problem. 
+			This is not that bad for architecture that was not designed for serious use which is why it's in this section and not THE BAD.<br>
 		</p>
 
 		<a href="../index.html">main</a>

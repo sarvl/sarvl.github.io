@@ -18,65 +18,110 @@
 		<br>
 		<br>
 		<br>
+		<hr> <h2 id=toc> Table Of Contents </h2>
+		<ol>	
+			<li> <a href="#overview"                 > OVERVIEW                  </a></li>
+			<li> <a href="#isa"                      > ISA                       </a></li>
+			<li> <a href="#simple_implementation"    > SIMPLE IMPLEMENTATION     </a></li>
+			<li> <a href="#pipeline"                 > PIPELINE                  </a></li>
+			<li> <a href="#cache_v0"                 > CACHE V0                  </a></li>
+			<li> <a href="#assembler"                > ASSEMBLER                 </a></li>
+			<li> <a href="#simulator"                > SIMULATOR                 </a></li>
+			<li> <a href="#tests"                    > TESTS                     </a></li>
+			<li> <a href="#rework"                   > REWORK                    </a></li>
+			<li> <a href="#out_of_order_execution_v0"> OUT OF ORDER EXECUTION V0 </a></li>		
+			<li> <a href="#tooling_improvement"      > TOOLING IMPROVEMENT       </a></li>
+			<li> <a href="#out_of_order_execution_v1"> OUT OF ORDER EXECUTION V1 </a></li>
+			<li> <a href="#chip_design"              > CHIP DESIGN               </a></li>
+			<li> <a href="#cache_v1"                 > CACHE V1                  </a></li>
+			<li> <a href="#out_of_order_execution_v2"> OUT OF ORDER EXECUTION V2 </a></li>
+			<li> <a href="#branch_prediction"        > BRANCH PREDICTION         </a></li>
+			<li> <a href="#performance_evaluation"   > PERFORMANCE EVALUATION    </a></li> 
+			<li> <a href="#the_good"                 > THE GOOD                  </a></li> 
+			<li> <a href="#the_bad"                  > THE BAD                   </a></li> 
+			<li> <a href="#the_ugly"                 > THE UGLY                  </a></li> 
+		</ol>
+		<br>
 
 		<hr> <h2 id=overview> OVERVIEW </h2>
-			to read about current implementation and skip historical info, read following sections: <br>
-			<a href=#overview                 >OVERVIEW</a>                 <br>
-			<a href=#isa                      >ISA</a>                      <br>
-			<a href=#assembler                >ASSEMBLER</a>                <br>
-			<a href=#simulator                >SIMULATOR</a>                <br>
-			<a href=#tests                    >TESTS</a>                    <br>
-			<a href=#chip_design              >CHIP DESIGN</a>              <br>
-			<a href=#cache_v1                 >CACHE V1</a>                 <br>
-			<a href=#out_of_order_execution_v2>OUT OF ORDER EXECUTION V2</a><br>
-			<a href=#branch_prediction        >BRANCH PREDICTION</a>        <br>
-			<a href=#performance_evaluation   >PERFORMANCE EVALUATION</a>   <br>
-			<a href=#the_good                 >THE GOOD</a>                 <br>
-			<a href=#the_bad                  >THE BAD</a>                  <br>
-			<a href=#the_ugly                 >THE UGLY</a>                 <br>
+			<p>
+				To read about current implementation and skip historical info, the read following sections: <br>
+				<a href=#overview                 >OVERVIEW</a>                 <br>
+				<a href=#isa                      >ISA</a>                      <br>
+				<a href=#assembler                >ASSEMBLER</a>                <br>
+				<a href=#simulator                >SIMULATOR</a>                <br>
+				<a href=#tests                    >TESTS</a>                    <br>
+				<a href=#chip_design              >CHIP DESIGN</a>              <br>
+				<a href=#cache_v1                 >CACHE V1</a>                 <br>
+				<a href=#out_of_order_execution_v2>OUT OF ORDER EXECUTION V2</a><br>
+				<a href=#branch_prediction        >BRANCH PREDICTION</a>        <br>
+				<a href=#performance_evaluation   >PERFORMANCE EVALUATION</a>   <br>
+				<a href=#the_good                 >THE GOOD</a>                 <br>
+				<a href=#the_bad                  >THE BAD</a>                  <br>
+				<a href=#the_ugly                 >THE UGLY</a>                 <br>
+			</p>
+
+			<p>
+				There are a lot more features in this one than in <a href=./p16b2x.html>previous designs</a> as indicated by length of this page.
+				There are around 11000 words.
+				<br>
+			</p>
+
+			<p>
+				This is RTL simulation only project in VHDL implementing CPU with memory and cache that supports custom ISA and some interesting computer architecture features. <br> 
+			</p>
+
+			<p>
+				Current CPU is very aggressive in extracting performance from every program by implementing: <br>
+				<ul>
+					<li>Out Of Order Execution    </li>
+					<li>Superscalar Execution     </li>
+					<li>Branch Prediction         </li>
+					<li>Instruction Elimination   </li>
+					<li>Register Renaming         </li>
+					<li>Physical Register Sharing </li>
+					<li>Load Store Queue          </li>
+					<li>Internal Caches           </li>
+				</ul>
+				Speedup of around 1.4 is easily achievable for most programs without particular optimizations. 
+				With optimizations 1.85 speedup has been achieved, making me think that with extreme care, 2x might be possible or is just slightly out of reach. <br>
+			</p>
+
+			<p>
+				Entire project implements also: <br> 
+				<ul>
+					<li> Assembler with support for macros that greatly simplify any bigger project </li>
+					<li> Simulator in c++ that checks logic of programs and generates some useful performance info </li>
+					<li> Test framework to make sure everything really works </li>
+				</ul>
+			</p>
+
+			<p>
+				Unfortunately the project does not concern itself with memory too much and the main CPU does not interface out of the box with any of the caches. <br>
+			</p>
+
+			<p>
+				The entire project went through many iterations and followed me on my path of learning how modern high performance processors work. It pwent much further than I though, it was supposed to be 1 month experimentation with caches and pipeline. <br> 
+			</p>
+
+			<p>
+				While there still are interesting things that could be done it is much more interesting to work on something that can be executed on real HW. 
+				So this is the last project that focuses exclusively on simulation and there will be nothing new added. 
+				The website still may change if bug in the description or explanation is found, if so there will be note on the main site <br>
+			</p>	
+
+			<p>
+				Some sections have only high level overview without much interesting details, that is because there was nothing interesting or I do not remember enough <br>
+			</p>
+
+			<p>
+				Since this text is so long it is inevitable that some mistakes crawled in. 
+				If there is anything that does not make sense or weirdly phrased, let me know. <br>
+			</p>
 			<br>
-			there are a lot more features in this one than in <a href=./p16b2x.html>previous designs</a> as indicated by length of this page <br>
-			there are around 11000 words <br>
-			<br>
-			this is RTL simulation only project in VHDL <br>
-			implementing CPU with memory and cache that supports custom ISA and some interesting computer architecture features <br> 
-			<br>
-			current CPU is very aggressive in extracting performance from every program by implementing: <br>
-			<ul>
-				<li>Out Of Order Execution    </li>
-				<li>Superscalar Execution     </li>
-				<li>Branch Prediction         </li>
-				<li>Instruction Elimination   </li>
-				<li>Register Renaming         </li>
-				<li>Physical Register Sharing </li>
-				<li>Load Store Queue          </li>
-				<li>Internal Caches           </li>
-			</ul>
-			speedup of around 1.4 is easily achievable for most programs without particular optimizations <br>  
-			with optimizations 1.85 speedup has been achieved, making me think that with extreme care, 2x might be possible or is just slightly out of reach <br>
-			<br>
-			entire project implements also: <br> 
-			assembler with support for macros that greatly simplify any bigger project <br>
-			simulator in c++ that checks logic of programs and generates some useful performance info <br>
-			test framework to make sure everything really works <br>
-			<br>
-			unfortunately the project does not concern itself with memory too much and the main CPU does not interface out of the box with any of the caches <br>
-			<br>
-			the entire project went through many iterations and followed me on my path of learning how modern high performance processors work<br>
-			the project went much further than I though, it was supposed to be 1 month experimentation with caches and pipeline <br> 
-			<br>
-			<br>
-			while there still are interesting things that could be done it is much more interesting to work on something that can be executed on real HW <br>
-			except maybe for learning different HDL<br>
-			so this is the last project that focuses exclusively on simulation and there will be nothing new added<br>
-			the website still may change if bug in the description or explanation is found, if so there will be note on the main site <br>
-			<br>
-			some sections have only high level overview without much interesting details, that is because I simply do not remember enough <br>
-			<br>
-			since this text is so long it is inevitable that some mistakes crawled in<br>
-			if there is anything that does not make sense or weirdly phrased, let me know <br>
+
 		<hr> <h2 id=isa> ISA </h2>
-			this time it does not make sense to write entire ISA here, this is just overview, see <a href=https://github.com/sarvl/16bit_cpu/blob/main/instruction_set.txt>full document</a> <br>
+			This time it does not make sense to write entire ISA here, this is just an overview, see <a href=https://github.com/sarvl/16bit_cpu/blob/main/instruction_set.txt>full document</a> <br>
 
 
 		<h3> Instructions </h3>
@@ -119,15 +164,19 @@
 		<span class=code>Ex</span><span class=wsp>  </span> means value of <b>E</b>xternal <b>R</b>egister x <br>
 		<span class=comment>//<i> external </i> is not the best name for special purpose registers</span> <br>
 		<i> IP LR SP FL </i> are particular ERs <br>
-		instructions here take 16bit immediate even though only 8bits of immediate can be specified in instruction, this is thanks to <i> UI </i> ER <br> 
+		Instructions here take 16bit immediate even though only 8bits of immediate can be specified in instruction, this is thanks to <i> UI </i> ER. <br> 
 
 		<h3> Instruction Format </h3>
-		in previous designs, opcode is always in the same place, this is convienient but wastes space for reg-reg instructions <br>
-		since r-r instructions require less bits then for them first 5 bits are <span class=code>00000</span> and opcode is located at the end <br>
-		if the first 5 bits are not <span class=code>00000</span> then instruction is r-immediate <br>
-		this way 63 different instructions are possible, here opcode place determines only whether second operand is immediate or register <br>
-		registers and immediate are still always in the same spot which makes decoding fairly straightforward <br>
-		<pre>
+		<p>
+			In previous designs, opcode was always in the same place, this is convienient but wastes space for reg-reg instructions. <br> 
+			Since r-r instructions require less bits then for them first 5 bits are <span class=code>00000</span> and opcode is located at the end.
+			If the first 5 bits are not <span class=code>00000</span> then instruction is r-immediate. 
+			This way 63 different instructions are possible, here opcode place determines only whether second operand is immediate or register.
+			Registers and immediate are still always in the same spot which makes decoding fairly straightforward. <br>
+		</p>
+
+		<p>
+			<pre>
 	R-format:
 		00000BBB CCCDDDDD
 		
@@ -145,9 +194,15 @@
 		     5 bits denote opcode
 		then 3 bits denote Rd/ccc/Ed
 		then 8 bits denote imm8
-		</pre>
-		for example, <span class=code>mov R1, R2</span> is encoded as <span class=code>00000 001 010 00101</span><br>
-		<span class=code>mov R1, 0xAB</span> is encoded as <span class=code wsp>00101 001 1010 1011</span><br>
+			</pre>
+		</p>
+
+		<p>
+			For example:<br>
+			- <span class=code>mov R1, R2</span> is encoded as <span class=code>00000 001 010 00101</span><br>
+			- <span class=code>mov R1, 0xAB</span> is encoded as <span class=code wsp>00101 001 1010 1011</span><br>
+
+		</p>
 
 		<h3> Registers </h3>
 		<h4> General Purpose </h4>
@@ -173,8 +228,10 @@
 			<li class=wsp> CF ; CPU Feature Flags   ; each bit denotes whether particular extension is present or not    </li>
 		</ul>
 
-		<h3> Example Program </h3>
-		<pre class=code>
+		<h3> Example Programs </h3>
+
+		<p>
+			<pre class=code>
 
 #progam computing fibonacci number
 
@@ -196,124 +253,162 @@ loop:
 
 end:
 	hlt 	   
-		</pre>
-		<pre class=code>
+			</pre>
+			<pre class=code>
 
 #UI usage
 #R0 = xFF00
 	wrx 	UI, 0xFF
 	mov 	R0, 0x00
-		</pre>
+			</pre>
+		</p>
 		
 
 		<hr> <h2 id=simple_implementation> SIMPLE IMPLEMENTATION </h2>
-		compared to <a href=./p16b2x.html>previous design</a>, this time VHDL code was organized and entire thing was split into subcomponents and files <br>
-		<span class=comment>//unfortunately more complex implementations still have too much in main file, im working on improving design skills to fix it</span><br> 
-		testbenches were in separate file so it is was no longer necessary to reanalyze them every single time any change was made <br>
-		<br>
-		as for the design, for reasons unknown to me in the present, component was created <i>for every</i> possible logic gate usage <br>
-		for example, AND of 2 3bit vectors was needed so component <span class=code>gate_and2_3bit</span> was created<br>
-		clearly this approach does not scale, it is also completely unneccessary as <span class=code>a &amp; b</span> where <span class=code>a</span> and <span class=code>b</span> are bit vectors is completely valid vhdl <br>
-		similarly decode <span class=comment>/*badly named as <i>control</i>*/</span> component outputs long list of signals and instead of defining custom type, every signal was created separately within processor again <br>
-		<br>
-		each cycle instruction is decoded and everything works almost exactly as it is specified in the ISA, small glue code is needed to make it work <br>
-		overall this is quite straightforward implementation with not many interesting features <br>
-		there is 1 significant improvement compared to previous VHDL CPU, unified memory was implemented by use of additional <span class=code>cycle_advance</span> control signal<br>
-		its important to note that this project STILL does not concern itself with reality too much <br>
-		even though it is more detailed than HLL behavioral implementation, there is no concern with real gate delay, synthesis and putting it to anything physical<br>
-		though I tried to use something that at least could synthesise, I have absolutely no expierience in it and so cannot make good judgments <br> 
+
+		<p>
+			Compared to <a href=./p16b2x.html>previous design</a>, this time VHDL code was organized and entire thing was split into subcomponents and files. <br>
+		<span class=comment>//Unfortunately more complex implementations still have too much in the main file, im working on improving design skills to fix it</span><br> 
+		Testbenches were in separate file so it is was no longer necessary to reanalyze them every single time any change was made <br>
+		</p>
+
+		<p>
+			As for the design, for reasons unknown to me in the present, component was created <i>for every</i> possible logic gate usage. <br>
+			For example, AND of 2 3bit vectors was needed so component <span class=code>gate_and2_3bit</span> was created. 
+			Clearly this approach does not scale, it is also completely unneccessary as <span class=code>a &amp; b</span> where <span class=code>a</span> and <span class=code>b</span> are bit vectors is completely valid VHDL.
+			Similarly decode <span class=comment>/*badly named as <i>control</i>*/</span> component outputs long list of signals and instead of defining custom type, every signal was separately named within processor again. <br>
+		</p>
+
+		<p>
+			Each cycle instruction is decoded and everything works almost exactly as it is specified in the ISA, small glue code is needed to make it work. <br>
+			Overall this is quite straightforward implementation with not many interesting features but there is 1 significant improvement compared to previous VHDL CPU, unified memory was implemented by use of additional <span class=code>cycle_advance</span> control signal. <br>
+		</p>
+
+		<p>
+			It is important to note that this project STILL does not concern itself with reality too much. <br>
+			Even though it is more detailed than HLL behavioral implementation, there is no concern with real gate delay, synthesis and putting it to anything physical. Even Though I tried to use something that at least could synthesise, I had absolutely no expierience in it and so could not make good judgments. <br> 
+		</p>
 		<br>
 
 		<hr> <h2 id=pipeline> PIPELINE </h2>
-		ommiting description of atrocities mentioned <a href=#simple_implementation>above</a> on a larger scale <br>
-		<br>
-		the pipeline is very shallow, has only 3 stages <br>
-		fetch/decode - execute/memory - writeback <br>
-		compared to classical RISC pipeline:<br>
-		<ul>
-		<li> fetch/decode are merged as this was simpler to implement </li>
-		<li> execute/memory are merged as there was no reason to split them, only PSH and POP use mem and ALU but this can be done in parallel </li>
-		</ul>
-		thanks to this simplicity, data hazards are significantly reduced and each can be solved by forwarding from deeper stage <br> 
-		<br>
-		control hazards dealt with by simply not acknowledging their existence <br>
-		as mentioned before, this project does not concern itself with reality so if branch is detected in execute stage then address to fetch is updated <br> 
-		fetch/decode stage then starts fetching from next address and still has time to decode in 1 cycle <br>
-		<span class=comment>//there is some additional code to deal with cal/ret cases but its nothing noteworthy</span> <br>
-		<span class=comment>//assuming very slow clock and very fast memory, it could work though </span> <br>
-		<br>
-		the same mechanism used to share memory in simple design is used to protect from structural hazard <br> 
-		whenever memory instruction is detected, pipeline is stalled and currently executing instruction accesses memory <br>
-		this is slightly suboptimal as instructions could proceed anyway, it is enough to insert pipeline bubble <br>
-		but since this is the only possible source of stall, no performance is ever lost because of it <br>
-		<br>
-		external registers, despite being a nice idea, are somewhat annoying to implement correctly in all cases<br>
-		for example, current instruction might be writing to IP so next instruction is invalid, this requires detecting that instruction is WRX and writes to IP <br>
-		fortunately for simple pipeline and lack of exceptions/interrupts, they are quite easy to do right <br>
-		each instruction reading from/writing to external register does so in execute stage <span class=comment>/*which kind of makes this stage also writeback*/</span><br>
-		this guarantees that even if next instruction needs that register, it can be forwarded from execute to fetch stage <br>
-		<br>
-		there is 1 more problem, self modifying code does not work <br>
-		only the most recent OOE implementation deals with this so all non-simple designs from now on have this problem <br>
-		<br>
-		<hr> <h2 id=cache_v0> CACHE V0 </h2>
-		the cache is 2 way set associative, write through, write allocate <br> 
-		it is completely invisible to the CPU and is implemented as subcomponent of memory <br>
-		assuming memory access is 10x as expensive as cache access, entire program 4x as fast as without cache <br>
-		<br>
-		delay can be modeled simply as: <br>
-		check whether data is in cache <br>
-		if not =&gt; long delay <br>
-		if yes =&gt; short delay <br>
-		<br>	
-		implementation does not concern itself with implementing write through, again through wishful thinking it just works <br>
-		<span class=comment>//<a href=#cache_v1>Cache V1</a> has much more interesting description </span> <br>
+		<p>
+			Ommiting description of atrocities mentioned <a href=#simple_implementation>above</a> on a larger scale. <br>
+		</p>
 
+		<p>
+			The pipeline is very shallow, it has only 3 stages: fetch/decode - execute/memory - writeback. <br>
+			Compared to classical RISC pipeline: <br>
+			<ul>
+			<li> fetch/decode are merged as this was simpler to implement </li>
+			<li> execute/memory are merged as there was no reason to split them, only PSH and POP use mem and ALU but this can be done in parallel </li>
+			</ul>
+			Thanks to this simplicity, data hazards are significantly reduced and each can be solved by forwarding from deeper stage. <br>
+		</p>
+
+		<p>
+			Control hazards are dealt with by simply not acknowledging their existence. <br>
+			As mentioned before, this project does not concern itself with reality so if branch is detected in execute stage then address to fetch is updated, fetch/decode stage then starts fetching from next address and still has time to decode in 1 cycle. <br>
+			<span class=comment>//there is some additional code to deal with cal/ret cases but its nothing noteworthy</span> <br>
+			<span class=comment>//assuming very slow clock and very fast memory, it could work though </span> <br>
+		</p>
+
+		<p>
+			The same mechanism used to share memory in simple design is used here to protect from structural hazard. <br>
+			Whenever memory instruction is detected, pipeline is stalled and currently executing instruction accesses memory. 
+			This is slightly suboptimal as instructions could proceed anyway, it is enough to insert pipeline bubble, but since this is the only possible source of stall, no performance is ever lost because of it. <br>
+		</p>
+
+		<p>
+			External registers, despite being a nice idea, are somewhat annoying to implement correctly in all cases. <br>
+			For example, current instruction might be writing to IP so next instruction is invalid, this requires detecting that instruction is WRX and writes to IP. 
+			Each instruction reading from/writing to external register does so in execute stage <span class=comment>/*which kind of makes this stage also writeback*/</span>.
+			This guarantees that even if next instruction needs that register, it can be forwarded from execute to fetch stage.  <br>
+		</p>
+
+		<p>
+			There is 1 more problem, self modifying code does not work.
+			Only the most recent OOE implementation deals with this so all non-simple designs from now on have this problem <span class=comment>/*I forgot about it*/</span>. <br>
+		</p>
 		<br>
-		<img src="./Images/p16b3x_i0-cv0-wf_c.png" alt="waveform of cahe"><br>
-		<a href="./Images/p16b3x_i0-cv0-wf.png">Full Image</a><br>
-		<br>
-		each cycle is denoted by vertical edge (since clock waits in high state) <br>
-		it is very easy to see loops, when instructions are cached it takes less time to access them <br>
-		delays within loops are caused by some other memory access <br>
+
+		<hr> <h2 id=cache_v0> CACHE V0 </h2>
+		<p>
+			The cache is 2 way set associative, write through, and write allocate. <br> 
+			It is completely invisible to the CPU and is implemented as subcomponent of memory.
+			Assuming memory access is 10x as expensive as cache access, entire program 4x as fast as without cache. <br>
+			Memory delay can be modeled by checking whether data is in cache, if yes then there is short delay, otherwise there is long delay. <br>
+			<span class=comment>//<a href=#cache_v1>Cache V1</a> has much more interesting description. </span> <br>
+		</p>
+
+		<p>
+			<img src="./Images/p16b3x_i0-cv0-wf_c.png" alt="waveform of cahe"><br>
+			<a href="./Images/p16b3x_i0-cv0-wf.png">Full Image</a><br>
+			<br>
+			Each cycle is denoted by vertical edge (since clock waits for memory in high state). 
+			It is very easy to see loops, when instructions are cached it takes less time to access them as theree is much larger concentration of clock switches.
+			Delays within loops are caused by some other memory accesses. <br>
+		</p>
 
 		<hr> <h2 id=assembler> ASSEMBLER </h2>
-		this description is not about old implementation but rather current state since it is only a tool used for main project part <br>
-		clearly I do not have a lot of expierience in compiler development and so some design choices are at least suboptimal but it does its job <br>
-		as a way to simplify coding it was necessary to implement macros, it is nowhere near macro system of modern assemblers but it did help write more complicated programs <br>
+		<p>
+			This description is not about old implementation but rather current state since it is only a tool used for main project part. <br>
+			Clearly I do not have a lot of expierience in compiler development and so some design choices are at least suboptimal but it does its job.
+			As a way to simplify coding, it was necessary to implement macros, it is nowhere near macro system of modern assemblers but it did help write more complicated programs. <br>
+		</p>
+
 		<h3> General Operation </h3>
-		first tokenization is performed for each line <br>
-		tokenizer detects special characters, start and end of various structures, labels, etc <br> 
-		then each token is added to a vector of tokens which is then to be verified and processed <br>
-		<br>
-		initial processing evaluates and expands macros (<a href="#assembler>macros">see Macros</a>), processes attributes (<a href="#assembler>attributes">see Attributes</a>), finds labels and counts instructions <br>
-		this step also ouputs labels to <span class=code>symbols.txt</span> to allow for easier debugging with simulator <br>
-		<br>
-		then each label is identified and replaced with correct offset <br>
-		labels MUST be referencable before they are created to allow any useful structures so this part has to be AFTER label identification <br>
-		<br>
-		then expressions are processed in order (<a href="#assembler>expressions">see Expressions</a>)<br>
-		each expression is inside <span class=code>{}</span> so it is very easy to find them <br>
-		this step also has to be last because expressions can use labels to calculate offset <br>
-		for example <span class=code>{array 2 +}</span> to access 2nd entry of array <br>
-		<br>
-		finally, output is created and verified <br>
-		this step is really boring and contains no interesting features <br>
+
+		<p>
+			First, tokenization is performed for each line.
+			Tokenizer detects special characters, start and end of various structures, labels, etc. 
+			Then, each token is added to a vector of tokens which is then to be verified and processed. <br>
+		</p>
+
+		<p>
+			Initial processing evaluates and expands macros (<a href="#assembler>macros">see Macros</a>), processes attributes (<a href="#assembler>attributes">see Attributes</a>), finds labels, and counts instructions. 
+			Then each label is identified and replaced with correct offset. 
+			Labels MUST be referencable before they are created to allow for any useful structures so this part has to be AFTER label identification. <br>
+
+			This step also ouputs labels to <span class=code>symbols.txt</span> to allow for easier debugging with simulator.<br>
+		</p>
+
+		<p>
+			Then expressions are processed in order (<a href="#assembler>expressions">see Expressions</a>). 
+			Each expression is inside <span class=code>{}</span> so it is very easy to find them.
+			This step also has to be last because expressions can use labels to calculate offset.
+			For example <span class=code>{array 2 +}</span> to access 2nd entry of array. <br>
+		</p>
+
+		<p>
+			Finally, output is created and verified.
+			This step is really boring and contains no interesting features. <br>
+		</p>
+
 		<h3 id="assembler>expressions"> Expressions </h3>
-		I did not want to bother with implementation of calculator but it was important to have expression evaluation <br>
-		therefore the assembler uses postfix which can be evaluated by walking left to right and popping/pushing data onto/from stack <br>
-		for example instead of writing <span class=code>3 * (4 + 5)</span>, one writes <span class=code>{4 5 + 3 *}</span> <br>
-		all binary operations are implemented (except shift for which divide can be used) <br>
+		<p>
+			I did not want to bother with implementation of calculator but it was important to have expression evaluation. <br>
+			Therefore the assembler uses postfix which can be evaluated by walking left to right and popping/pushing data onto/from stack. 
+			For example instead of writing <span class=code>3 * (4 + 5)</span>, one writes <span class=code>4 5 + 3 *</span>. 
+			All binary operations are implemented (except shift for which divide or multiply can be used).
+		</p>
+
 		<h3 id="assembler>attributes"> Attributes </h3>
-		this feature is still a stub, currently supports only <span class=code>ALIGN</span> which inserts <span class=code>NOP</span>s to align code <br>
+		<p>
+			This feature is a stub, currently supports only <span class=code>ALIGN</span> which inserts <span class=code>NOP</span>s to align code. <br>
+		</p>
+
 		<h3 id="assembler>macros"> Macros </h3>
 		<h4> Overview </h4>
-		macros can be created with
-		<ul>
-			<li> <span class=wsp><span class="code">@def</span>             </span> constants (expressions) that are used (and implemented) like labels                  </li> 
-			<li> <span class="code wsp">@macro [...] @end</span> multiline (can also be used for single line) that have their entire body copy-pasted </li> 
-		</ul>
-		example syntax:
+		<p>
+			Macros can be created with
+			<ul>
+				<li> <span class=wsp><span class="code">@def</span>             </span> constants (expressions) that are used (and implemented) like labels                  </li> 
+				<li> <span class="code wsp">@macro [...] @end</span> multiline (can also be used for single line) that have their entire body copy-pasted </li> 
+			</ul>
+		</p>
+
+		<p>
+			Example syntax:
 		<pre class=code>
 
 @macro bne(x, y, z)
@@ -344,248 +439,300 @@ loop:
 	@halt
 
 		</pre>
-		main limitation is lack of support for nested macro use, due to how they are implemented <br>
+			Main limitation is lack of support for nested macro use, due to how they are implemented. <br>
+		</p>
 
 		<h4> Implementation </h4>
-		only single pass is used to implement inital processing so multiline macros have to be defined before they are used <br>
-		there is no error for using undefined macros <span class=comment>/*<i>yet</i>*/</span> <br>
-		<span class=code>@def</span> macros are very simple to implement by hijacking label system <br>
-		this also means they dont have to be defined before they are used because labels have additional pass <br>
-		<br>
-		whenever <span class=code>@macro</span> is encountered, it is simultaneously parsed, verified and added to special vector with macros <br>
-		after parameters are parsed, entire body is copied and saved (with small modifications to detect parameters) <br>
-		then whenever macro is referenced it is checked for argument count <br> 
-		(only one macro can have a given name, even though they could be differentiated by different argument count) <br>
-		if they match, macro's body is pasted and arguments are inserted, code is later evaluated as if it was written normally <br>
-		one inconvienience is that line number is lost, this is to be fixed <br>
+		<p>
+			Only single pass is used to implement inital processing so multiline macros have to be defined before they are used.
+			There is no error for using undefined macros <span class=comment>/*yea that is bad*/</span>. <br>
+
+			<span class=code>@def</span> macros are very simple to implement by hijacking label system, which also means they do not have to be defined before they are used because labels have additional pass. <br>
+			<span class=comment>//consistency!</span><br>
+		</p>
+
+		<p>
+			Whenever <span class=code>@macro</span> is encountered, it is simultaneously parsed, verified, and added to special vector with macros. 
+			After parameters are parsed, entire body is copied and saved (with small modifications to detect parameters). 
+			Then whenever macro is referenced it is checked for argument count.
+			Only one macro can have a given name, even though they could be differentiated by different argument count.
+			If the argument counts match, macro's body is pasted and arguments are inserted, code is later evaluated as if it was written without macros.
+			One major debugging problem is that line number is lost. <br>
 		<br>
 		
 		<hr> <h2 id=simulator> SIMULATOR </h2>
 		<h3> Overview </h3>
-		the most important feature of simulator is to test whether particular program is written correctly <br>
-		this is possible because simulator is the simplest implementation of ISA and so is trivial to get correct <br>
-		each instruction is simulated according to ISA and the simulator does not concern itself with details of any particular implementation <br>
-		except of gathering enough data to precisely output cycles taken by simple and pipelined implementation <br>
-		<span class=comment>//the most modern ones, described in sections below</span> <br>
-		<br>
-		additionally with certain options simulator can be used for debugging and detailed performance evaluation <br>
-		all options descriptions can be obtained with <span class=code>sim -h</span><br>
+		<p>
+			The most important feature of simulator is to test whether particular program is written correctly. <br>
+			This is possible because simulator is the simplest implementation of ISA and so is trivial to get correct. 
+			Each instruction is simulated according to the ISA and the simulator does not concern itself with details of any particular implementation. 
+			Except for gathering enough data to precisely output cycles taken by simple and pipelined implementation. <br>
+		</p>
+
+		<p>
+			With certain options simulator can be used for debugging and detailed performance evaluation. 
+			All options descriptions can be obtained with <span class=code>sim -h</span>. <br>
+		</p>
 
 		<h3> Verification </h3>
-		there are 3 options dedicated for verification <br>
-		<ul>
-			<li> <span class=code>-r</span> outputs register dump      </li>
-			<li> <span class=code>-m</span> outputs memory dump        </li>
-			<li> <span class=code>-w</span> outputs potential warnings </li>
-		</ul>
-		<span class=code>-r</span> is mostly used for manual verification <br>
-		tests heavily rely on <span class=code>-m</span> output to check whether correct output is the same as implementation's output<br>  
-		(<a href=#tests>see Tests</a>)<br>
-		<br>
-		warnings verify few features, currently check whether each address is aligned and whether SP is back to 0 at the end <br>
-		<h3> Debugging </h3>
-		there are 3 options dedicated to debugging <br>
-		<ul>
-			<li> <span class=code>-d</span> interactively step through instructions </li>
-			<li> <span class=code>-v</span> verbose output of what happens       </li>
-			<li> <span class=code>-s</span> replace magic numbers with labels    </li>
-		</ul>
+		<p>
+			There are 3 options dedicated for verification:
+			<ul>
+				<li> <span class=code>-r</span> outputs register dump      </li>
+				<li> <span class=code>-m</span> outputs memory dump        </li>
+				<li> <span class=code>-w</span> outputs potential warnings </li>
+			</ul>
+			<span class=code>-r</span> is mostly used for manual verification. <br>
 
-		it rarely makes sense to use <span class=code>-v</span> or <span class=code>-s</span> without <span class=code>-d</span><br>
-		while debugging, certain commands can be used, unfortunately they are stubs of what should be available and this is still to be improved <br>
-		for this reason they are also not documented <br>
-		fortunately most of the time it is enough to simply see currently executing instruction <br>
-		<br>
-		verbose output allows to see instructions in more detail <br>
-		eg each arithmetic instruction prints its operands' values and result of operation <br> 
-		<br>
-		symbols option uses output from assembler (<span class=code>symbols.txt</span>) which assigns labels to their addresses <br>
-		main use of this feature is to simplify following of JMP and CAL where destination IP gets replaced with name used in program <br>
+			Tests heavily rely on <span class=code>-m</span> output to check whether correct output is the same as implementation's output (<a href=#tests>see Tests</a>). <br>
+		</p>
+
+		<p>
+			Warnings verify few features, currently check whether each address is aligned and whether SP is back to 0 at the end. <br>
+		</p>
+
+		<h3> Debugging </h3>
+		<p>
+			There are 3 options dedicated to debugging: 
+			<ul>
+				<li> <span class=code>-d</span> interactively step through instructions </li>
+				<li> <span class=code>-v</span> verbose output of what happens       </li>
+				<li> <span class=code>-s</span> replace magic numbers with labels    </li>
+			</ul>
+			It rarely makes sense to use <span class=code>-v</span> or <span class=code>-s</span> without <span class=code>-d</span>. <br>
+		</p>
+
+		<p>
+			While debugging, commands can be used, unfortunately they are stubs of what should be available. 
+			I had loose plans for extending them and thus did not not document them. 
+			Fortunately most of the time what is implemented is enough simply see currently executing instruction and debug programms. <br>
+		</p>
+
+		<p>
+			Verbose output allows to see instructions in more detail, eg each arithmetic instruction prints its operands' values and result of operation. <br>
+		</p>
+
+		<p>
+			Symbols option uses output from assembler (<span class=code>symbols.txt</span>) which assigns labels to their addresses.
+			Main use of this feature is to simplify following of JMP and CAL where destination IP gets replaced with name used in program. <br>
+		</p>
+
 		<h3> Performance Evaluation </h3>
-		there are 4 options dedicated to performance testing <br>
-		<ul>
-			<li> <span class=code>-i</span> outputs how many times each instruction was executed </li>
-			<li> <span class=code>-b</span> outputs branch prediction info                       </li>
-			<li> <span class=code>-p</span> outputs useful info for perf testing                 </li>
-			<li> <span class=code>-P</span> outputs more precise useful info for perf testing    </li>
-		</ul>
-		<span class=code>-i</span> is very straightforward and mainly useful to check <i>what</i> should be improved <br>
-		for example, if most instructions are MOV then it makes sense to see whether that can be improved <br>
-		<br>
-		<span class=code>-b</span> outputs info of how different branch predictions would perform<br>
-		<br>
-		<span class=code>-p</span> outputs generally more useful info <br>
-		<ul>
-			<li> how many instructions execute in total                                          </li>
-			<li> memory reference count                                                          </li>
-			<li> branch count                                                                    </li>
-			<li> branch taken count                                                              </li>
-			<li> cycle time particular program would take on simple and pipelined implementation </li>
-		</ul>
-		<span class=code>-P</span> more pecise version of <span class=code>-p</span> <br>
-		<ul>
-			<li> how many instructions execute in total                                          </li>
-			<li> memory reference count                                                          </li>
-			<li> memory reference count with address in register                                 </li>
-			<li> memory reference count with address as immediate                                </li>
-			<li> mov register register                                                           </li>
-			<li> stack operation count                                                            </li>
-			<li> branch count                                                                    </li>
-			<li> branch count taken                                                              </li>
-			<li> branch count conditional                                                        </li>
-			<li> branch count unconditional                                                      </li>
-			<li> arithtmetic operations count                                                    </li>
-			<li> cycle time particular program would take on simple and pipelined implementation </li>
-		</ul>
-		the code to check branch predictor is a mess because it updates a lot of data and decreases readability of code <br>
-		I am still looking for some solution <br>
-		<br>
-		<img src="./Images/p16b3x_i1-s-p_c.png" alt="simulator peformance output"><br>
-		<a href="./Images/p16b3x_i1-s-p.png">Full Image</a><br>
+		<p>
+			There are 4 options dedicated to performance testing:
+			<ul>
+				<li> <span class=code>-i</span> outputs how many times each instruction was executed </li>
+				<li> <span class=code>-b</span> outputs branch prediction info                       </li>
+				<li> <span class=code>-p</span> outputs useful info for perf testing                 </li>
+				<li> <span class=code>-P</span> outputs more precise useful info for perf testing    </li>
+			</ul>
+			<span class=code>-i</span> is very straightforward and mainly useful to check <i>what</i> should be improved. 
+			For example, if most instructions are MOV then it makes sense to see whether that can be improved. <br>
+			<br>
+			<span class=code>-b</span> outputs info of how different branch predictors would perform. <br>
+			<br>
+			<span class=code>-p</span> outputs generally more useful info: 
+			<ul>
+				<li> how many instructions executed in total                                         </li>
+				<li> memory reference count                                                          </li>
+				<li> branch count                                                                    </li>
+				<li> branch taken count                                                              </li>
+				<li> cycle time particular program would take on simple and pipelined implementation </li>
+			</ul>
+			<span class=code>-P</span> more pecise version of <span class=code>-p</span> 
+			<ul>
+				<li> how many instructions executed in total                                         </li>
+				<li> memory reference count                                                          </li>
+				<li> memory reference count with address in register                                 </li>
+				<li> memory reference count with address as immediate                                </li>
+				<li> mov register register                                                           </li>
+				<li> stack operation count                                                           </li>
+				<li> branch count                                                                    </li>
+				<li> branch count taken                                                              </li>
+				<li> branch count conditional                                                        </li>
+				<li> branch count unconditional                                                      </li>
+				<li> arithtmetic operations count                                                    </li>
+				<li> cycle time particular program would take on simple and pipelined implementation </li>
+			</ul>
+			The code to check branch predictor is a mess because it updates a lot of data and decreases readability of code.
+			I am still looking for some solution. <br>
+			<br>
+			<img src="./Images/p16b3x_i1-s-p_c.png" alt="simulator peformance output"><br>
+			<a href="./Images/p16b3x_i1-s-p.png">Full Image</a><br>
+		</p>
 
 		<hr> <h2 id=tests> TESTS </h2>
 		<h3> Overview </h3>
-		for any project this size proper testing is a must to make sure implementation is at least somewhat correct <br>
-		tests are grouped based on what they test <br> 
-		<ul>
-			<li> ALU - arithmetic operations                                   </li>
-			<li> JMP - jumps, calls, returns                                   </li>
-			<li> MEM - memory operations                                       </li>
-			<li> STK - stack operations                                        </li>
-			<li> EXR - external registers                                      </li>
-			<li> OTH - other, mainly big programs with no particular test goal </li>
-			<li> PRF - performance, currently only branch predictor            </li>
-		</ul>
-		some of these tests came from hours full of blood, swears, tears, swears and swears <br>
-		<br>
-		main purpose of tests is to check tricky scenarios like self modifying code or dependency chain <br>
-		as well as big programs which often expose problems not found elsewhere due to their complexity <br>
+		<p>
+			For any project this size proper testing is a must to make sure implementation is at least somewhat correct. <br>
+			Tests are grouped based on what they test:
+			<ul>
+				<li> ALU - arithmetic operations                                   </li>
+				<li> JMP - jumps, calls, returns                                   </li>
+				<li> MEM - memory operations                                       </li>
+				<li> STK - stack operations                                        </li>
+				<li> EXR - external registers                                      </li>
+				<li> OTH - other, mainly big programs with no particular test goal </li>
+				<li> PRF - performance, currently only branch predictor            </li>
+			</ul>
+			Some of these tests came from hours full of blood, swears, tears, swears, and swears. <br>
+		</p>
+
+		<p>
+			Main purpose of tests is to check tricky scenarios like self modifying code or dependency chain.
+			As well as big programs which often expose problems not found elsewhere due to their complexity. <br>
+		</p>
 
 		<h3> Implementation </h3>
-		each test has 3 components
-		<ul>
-			<li> code           </li>
-			<li> binary         </li>
-			<li> correct output </li>
-		</ul>
-		code is used only to generate binary <br>
-		binary is used as input to tested implementation <br>
-		tested implementation outputs memory dump which is then compared with correct output <br>
-		<br>
-		clearly this implementation has major flaw, it requires memory to work which is not given when implementation is new <br>
-		before memory works somewhat <span class=comment>/*which is not that long time frame*/</span> it is enough and not too hard to look at waveform <br>
+		<p>
+			Each test has 3 components
+			<ul>
+				<li> code           </li>
+				<li> binary         </li>
+				<li> correct output </li>
+			</ul>
+			Code is used only to (automatically) generate binary.<br>
+			Binary is used as input to implementation under test. <br>
+			Implementation under test outputs memory dump which is then compared with correct output (also generated automatically). <br>
+		</p>
+
+		<p>
+			Clearly this implementation has major flaw, it requires memory to work which is not given when implementation is new.
+			Before memory works somewhat <span class=comment>/*which is not that long time frame*/</span> it is enough and not too hard to look at waveform. <br>
+		</p>
 
 		<hr> <h2 id=rework> REWORK </h2>
 		<h3> ISA Extension </h3>
-		up to this point, lack of multiply instruction caused significant slowdown of EVERYTHING that required multiplication <br> 
-		because mul had to be implemented in SW and so took significantly longer <br>
-		for example<br>
-		with <u>SW</u> multiply <a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t01.asm>factorial</a> takes 156 instructions <br>
-		with <u>HW</u> multiply it takes 86 instructions <br>
-		since noone uses this ISA it could have been just modified but I decided to go <i>proper</i> route and add proper extension flags <br>
-		this required introducing some ISA change but now new features can be added and simply set bit in <b>C</b>PU <b>F</b>eature Flags Register </br>
-		this register is readonly external register (writing is possible to encode but has no effect) </br>
-		<br>
-		for now this is the only extension provided, there are some new in next draft which could speed up common operations <br>
-		not sure when or if they will be added <br>
-		<span class=comment>//writing this as if it was something more than personal project</span><br>
+		<p>
+			Up to this point, lack of multiply instruction caused significant slowdown of EVERYTHING that required multiplication.
+			For example: with <u>SW</u> multiply <a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t01.asm>factorial</a> takes 156 instructions, but with <u>HW</u> multiply it takes 86 instructions.<br>
+			Since no one else uses this ISA, it could have been just modified but I decided to go <i>proper</i> route and add proper extension flags. This required introducing some ISA changes but now new features can be added and simply set bit in <b>C</b>PU <b>F</b>eature Flags Register. 
+			This register is readonly external register (writing is possible to encode but has no effect). <br>
+		</p>
+
 		<h3 id="rework>simple"> Simple </h3>
-		overall architecture did not improve drastically <span class=comment>/*because, well, there is not a lot to improve*/</span><br>
-		main improvements came in fixing stupidies that arose in first implementation <br>
-		control signals were bundled together and useless constants were removed <br>
-		and logic gate duplication was removed <span class=comment>/*<u><b><i>FINALLY</i></b></u>*/</span><br>
+		<p>
+			Overall, architecture did not improve drastically <span class=comment>/*because, well, there is not a lot to improve*/</span>. <br>
+			Main improvements came in fixing stupidies that arose in first implementation. Control signals were bundled together and useless constants were removed. Logic gate duplication was <span class=comment>/*<u><b><i>FINALLY</i></b></u>*/</span> removed. <br>
+		</p>
 
 		<h3> Cache </h3>
-		removed code duplication so now cache became single file that can be easily swapped with RAM and integrated into pretty much any implementation <br>
-		overall architecture did not change <span class=comment>/*still wishful thinking and not implementing write buffer*/</span><br>
-		
-		<h3> Pipeline </h3>
-		similar improvement were added to pipeline implementation as to simple one (<a href="#rework>simple">see Simple Rework</a>) <br>
-		<br>
-		pipeline now has 4 stages <br>
-		<ol start="0">
-			<li> fetch          </li>
-			<li> decode         </li>
-			<li> execute/memory </li>
-			<li> writeback      </li>
-		</ol>
-		as before, some writeback also happens in execute stage <br>
-		whenever stage 2 (execute) detects that bubbles should be inserted (see reasons below) then instruction in decode is overwritten with NOPs <br>
-		every potential hazard that modifies any ER (in particular, IP) has been resolved by now and instructions are fetched from correct IP <br>
-		<span class=comment>//this part is still not quite reasonable unless one assumes that memory and branch detection are fast</span><br>
-		<span class=comment>//and former happens in second clock cycle half and latter happens in first clock cycle half</span><br>
-		<br>
-		bubbles (NOPs) can be inserted for 2 reasons<br>
-		<ol>
-			<li> branch taken, since each branch is predict not taken (much simpler implementation) </li>
-			<li> write to external register</li>
-		</ol>
-		branch predict NT is generally speaking a mistake that simplifies implementation at the cost of performance <br>
-		similarly second reason should not happen <i>always</i>, current OOE implementation (<a href=#out_of_order_execution_v2>see OOEV2</a>) covers case <span class=code>WRX UI</span><br>
-		said implementation features RAS which removes the need to implement LR fast <br>  
-		since pipeline does not have it, each procedure call induces SIGNIFICANT cost <br>
-		it is usual to see same code take 1.3 as many cycles on pipeline as on simple implementation <br>
-		(of course, that 1.3 cycles is still <i>much</i> faster if pipeline's clock is 1/3 of simple's clock, but it could be better with even simple BP) <br>
+		<p>
+			Removed code duplication so now cache became single file that can be easily swapped with RAM and integrated into pretty much any implementation. <br>
+			Overall architecture did not change <span class=comment>/*still wishful thinking and not implementing write buffer*/</span>. <br>
+		</p>
 
-		<br>
+		<h3> Pipeline </h3>
+		<p>
+			Similar improvements were added to pipeline implementation as to simple one (<a href="#rework>simple">see Simple Rework</a>). <br>
+			Pipeline now has 4 stages:
+			<ol start="0">
+				<li> fetch          </li>
+				<li> decode         </li>
+				<li> execute/memory </li>
+				<li> writeback      </li>
+			</ol>
+			As before, some writeback also happens in execute stage. <br>
+			Whenever stage 2 (execute) detects that bubbles should be inserted (see reasons below) then instruction in decode is overwritten with NOP.
+			Every potential hazard that modifies any ER (in particular, IP) has been resolved by now and instructions are fetched from correct IP. <br>
+			<span class=comment>//This part is still not quite reasonable unless one assumes that memory and branch detection are fast and both happen in different halves of the cycle. </span><br>
+		</p>
+
+		<p>
+			Bubbles (NOPs) can be inserted for 2 reasons:
+			<ol>
+				<li> branch taken, since each branch is predict not taken (much simpler implementation) </li>
+				<li> write to external register</li>
+			</ol>
+
+			Branch predict NT is generally speaking a mistake that simplifies implementation at the cost of performance.
+			Similarly second reason should not happen <i>always</i>, OOE implementation (<a href=#out_of_order_execution_v2>see OOEV2</a>) covers case <span class=code>WRX UI</span> separately. 
+			Said implementation features RAS which removes the need to implement LR fast, 
+			since pipeline does not have it, each procedure call induces SIGNIFICANT cost.
+			It is usual to see the same code take 1.3 as many cycles on pipeline as on simple implementation (of course, that 1.3 cycles is still <i>much</i> faster if pipeline's clock is 1/3 of simple's clock, but it could be better with even simple branch predictoin).
+		</p>
+
 		<span class=aside>
-		<h4> Aside: Branch Delay Slot </h4>
-		branch delay slot is not a solution, it is terrible idea that introduces subtle complexities<br>
-		see <a href=https://devblogs.microsoft.com/oldnewthing/20180416-00/?p=98515>https://devblogs.microsoft.com/oldnewthing/20180416-00/?p=98515</a><br>
-		<br>
-		it exposes microarchitectural details that may not (and probably are not) relevant later <br>
-		<a href=https://compas.cs.stonybrook.edu/~nhonarmand/courses/sp16/cse502/res/R10k.pdf>MIPS R10000</a> is out of order processor that has to support branch delay slot even though it is no longer relevant, quote: <br>
-		<pre class=code>
-In a pipelined scalar processor, this delay slot instruction can be executed for free, while the target instruction is read from the cache.
-This technique improved branch efficiency in early RISC microprocessors. 
-For a superscalar design, however, it has no performance advantage, but we retained the feature in the R1OOOO for compatibility</pre>
-		<br>
-		earlier example: <a href=https://en.wikipedia.org/wiki/R4000>R4000</a> is 8 stage pipeline with branch in 4th stage (counting from 1) <br>
-		aside within aside: despite first MIPS having execute as 3rd stage, branch target is generated in 2nd half of 2nd stage<br>
-		branch condition is checked in 1st half of 3rd stage and i$ is accessed in 2nd half of 1st stage <br>
-		so, in the same cycle, branch is checked and i$ is accessed using previously generated address <br> 
-		<span class=comment>//I guess that my design is not so unrealistic then </span> <br>
-		end of aside within aside<br>
-		but this processor still supports 1 instruction branch delay slot because that how ISA specified things <br>
-		even though in this microarchitecture it makes no sense <br>
-		<br>	
-		simliar but significantly less annoying problem happened to ARM with its IP <br>
-		essentially at each point IP is IP of that instruction + 2 because of 3 stage pipeline <br>
-		see <a href=https://stackoverflow.com/questions/24091566/why-does-the-arm-pc-register-point-to-the-instruction-after-the-next-one-to-be-e>https://stackoverflow.com/questions/24091566/why-does-the-arm-pc-register-point-to-the-instruction-after-the-next-one-to-be-e</a>
+			<h4> Aside: Branch Delay Slot </h4>
+			<p>
+				Branch delay slot is not a solution, it is terrible idea that introduces subtle complexities, see <a href=https://devblogs.microsoft.com/oldnewthing/20180416-00/?p=98515>https://devblogs.microsoft.com/oldnewthing/20180416-00/?p=98515</a>. 
+				It exposes microarchitectural details that may not be (and probably are not) relevant later. <br>
+			</p>
+
+			<p>
+				<a href=https://compas.cs.stonybrook.edu/~nhonarmand/courses/sp16/cse502/res/R10k.pdf>MIPS R10000</a> is an out of order processor that has to support branch delay slot even though it is no longer relevant, quote: <br>
+				<span class=code>
+				In a pipelined scalar processor, this delay slot instruction can be executed for free, while the target instruction is read from the cache.
+				This technique improved branch efficiency in early RISC microprocessors. 
+				For a superscalar design, however, it has no performance advantage, but we retained the feature in the R1OOOO for compatibility 
+				</span> <br>
+			</p>
+
+			<p>
+				Earlier example: <a href=https://en.wikipedia.org/wiki/R4000>R4000</a> is 8 stage pipeline with branch in 4th stage (counting from 1), but this processor still supports 1 instruction branch delay slot because that is how ISA specified things, even though in this microarchitecture it makes no sense. <br>
+			</p>
+
+			<p>
+				Simliar but significantly less annoying problem happened to ARM with its IP. <br>
+				Essentially at each point IP is IP of that instruction + 2 because of 3 stage pipeline, see <a href=https://stackoverflow.com/questions/24091566/why-does-the-arm-pc-register-point-to-the-instruction-after-the-next-one-to-be-e>https://stackoverflow.com/questions/24091566/why-does-the-arm-pc-register-point-to-the-instruction-after-the-next-one-to-be-e</a> <br>
+			</p>
+
+			<p>
+				Aside within aside: despite first MIPS having execute as 3rd stage, branch target is generated in 2nd half of 2nd stage.
+				Branch condition is checked in 1st half of 3rd stage and i-cache is accessed in 2nd half of 1st stage.
+				So, in the same cycle, branch is checked and i-cache is accessed using previously generated address. <br>
+				<span class=comment>//I guess that my design is not so unrealistic then. </span> <br>
+				End of aside within aside. <br>
+			</p>
+		
 		</span>
 
 		<hr> <h2 id=out_of_order_execution_v0> OUT OF ORDER EXECUTION V0 </h2>		
+
+		<p>
 		<span class=comment>//note: OOE implementations could really benefit from pipeline but for simplicity it was omitted</span><br>
+		</p>
+
 		<h3> First Try </h3>
-		in general it is worthwhile to implement <i>something</i> knowing only how that something is supposed to work <br>
-		this allows to see <i>why</i> something is done in some way <span class=comment>/*and maybe more importantly, why something is <i>not</i> done in some way*/</span><br>
-		at that time I only knew that OOE CPUs use some kind of buffer and dispatch instructions to execution ports <br>
-		additionally since each instruction takes only 1 cycle ive decided to go superscalar as well <br>
-		<br>
-		the main idea is to fetch instructions and if an instruction can be executed, execute it <br>
-		if not then it is put away to buffer <br>
-		this works quite differently than implementations that rely on ROB where instruction is fetched to buffer either way <br>
-		whenever only 1 currently fetched execution executes, get one from buffer that by this time is free to execute <br>
-		whenever buffer has 2 entries, fetch 2 instructions from buffer <br>
-		in case they have dependency on eachother, fetch only first <br>
-		constantly check dependency on buffered instructions <br>
-		I dont remember the exact reason why this approach was scraped, it was because something could not possibly be implemented using buffer and memory at once <br>
-		unfortunately it is not documented exactly anywhere and the code is long gone <br>
-		<br>
-		I definitely want to revisit this idea because it is different than current implementations and sounds interesting <br>
-		important thing to consider is implementation of precise interrupts/exceptions because there is nothing that can invalidate instructions <br>
-		<br>
-		diagram I drew then to show how instructions are moved around: <br>
-		Y means fetch from memory while N indicates that data was fetched from buffer only <br>
-		<img src="./Images/p16b3x_i2-ooev0-f-b_c.jpg" alt=""><br>
-		<a href="./Images/p16b3x_i2-ooev0-f-b.jpg">Full Image</a><br>
-		<br>
+		<p>
+			In general it is worthwhile to implement <i>something</i> knowing only how that something is supposed to work.
+			This lets one see <i>why</i> something is done in some way <span class=comment>/*and maybe more importantly, why something is <i>not</i> done in some other way*/</span>. 
+			At that time I only knew that OOE CPUs use some kind of buffer and dispatch instructions to execution ports.
+			Since each instruction takes only 1 cycle I have decided to go superscalar as well. <br>
+		</p>
+
+		<p>
+			The main idea is to fetch instructions and if an instruction can be executed, execute it, otherwise put it away into buffer. 
+			This works quite differently than implementations that rely on ROB where instruction is always fetched into buffer first. <br>
+		</p>
+
+		<p>
+			The hardware works as follows: <br>
+			Whenever only 1 currently fetched execution executes, get one from buffer that by this time is free to execute. <br>
+			Whenever buffer has 2 entries full, fetch 2 instructions from buffer, in case they have dependency on eachother, fetch only first. <br>
+			Constantly check dependencies on buffered instructions. <br>
+		</p>
+
+		<p>
+			I don't remember the exact reason why this approach was scraped, it was because something could not possibly be implemented using buffer and memory at once, unfortunately it is not documented exactly anywhere and the code is long gone.  <br>
+			I definitely want to revisit this idea because it is different than current implementations and sounds interesting.
+			Important thing to consider is implementation of precise interrupts/exceptions because there is nothing that can invalidate instructions in this mechanism. <br>
+		</p>
+
+		<p>
+
+			Diagram I drew then to show how instructions are moved around (Y means fetch from memory while N indicates that data is to be fetched from buffer only): <br>
+			<img src="./Images/p16b3x_i2-ooev0-f-b_c.jpg" alt=""><br>
+			<a href="./Images/p16b3x_i2-ooev0-f-b.jpg">Full Image</a><br>
+		</p>
+
 		<h3> Second Try </h3>
 		<h4> Implementation </h4>
-		this time I decided to see how <i>generally</i> OOE processors work and ive seen the term <i>reorder buffer</i> <br>
-		to not dwelve into details and spoil the fun ive implemented <span class=comment>/*without knowing terminology for it*/</span> collapsing queue <br>
-		the obvious downside, visible on the picture, is HUGE logic that is required to determine dependences <br>
-		dependency checking is also quite complex and has to check for pretty much every ordering constraint <br> 
+		<p>
+			This time I decided to see how OOE processors work (from very high POV) and I have stumbled upon the term <i>reorder buffer</i>.  
+			To not dwelve into details and spoil the fun I have implemented <span class=comment>/*without knowing terminology for it*/</span> collapsing queue. <br>
+			The obvious downside, visible on the picture at the end of this section, is HUGE logic that is required to determine dependences.
+			Dependency checking is also quite complex and has to check for pretty much every ordering constraint. <br> 
 		<pre class=code>
 
 	each possible execution hazard for X and Y:
@@ -604,61 +751,76 @@ For a superscalar design, however, it has no performance advantage, but we retai
 			 for this restriction to have significant (if any) impact on performance
 	 	7. X modifies register and Y is WRM and writes that register
 		</pre>
-		<span class=comment>//above snipped is slightly modified <a href=https://github.com/sarvl/16bit_cpu/blob/478d886f95d5b6322d665962de387dd238a2b11c/implementation/vhdl/computer_oooe.vhdl#L450>comment</a> from code</span><br>
-		comment on frequency of RDX/WRX is wrong, for example <a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t05.asm>g05t05.asm</a> executes 245 WRX compared to only 201 RDM <br>
-		that is, it is more likely that a given instruction will modify external register than read data from memory <br> 
-		of course this highly depends on tested program, but the point is, WRX has to work fast, at least for UI <br>
-		<br>
-		the CPU works like follows:<br>
-		find up to 2 instructions such that nothing depends on them (check for dep_XonY) <br>
-		<span class=comment>//obviously always at least 1 instruction can be found, first instruction depends on nothing </span><br>
-		fetch and decode instructions from memory <br> 
-		move 1 or 2 instructions from buffer and simulateously insert up to 2 new instructions (decoded in previous cycle)<br> 
-		due to the way it works, startup (and branch misprediction) delay is 2 cycles <br>
-		<br>
-		lack of proper branch prediction and quite high branch misprediction penalty made performance much worse that it could be <br>
-		some speedup was achieved by starting branch execution while still in buffer but that just reduced the penalty <br>
-		it works by checking if first instruction is branch and that branch is T <br>
-		(T is determined by having additional copy of separate early flag register) <br>
-		if so and branch target is known early (uses immediate as destination) then fetch address is changed <br>
-		note that there is no danger with WRX because that branch MUST be first in buffer <br>
-		and really it could also be done without limitation on immediate destination but this way it could be done without extending datapath too much <br>
-		since registers could only be read by execution units <br>
+			<span class=comment>//Above snipped is slightly modified <a href=https://github.com/sarvl/16bit_cpu/blob/478d886f95d5b6322d665962de387dd238a2b11c/implementation/vhdl/computer_oooe.vhdl#L450>comment</a> from the code</span><br>
+			Comment on frequency of RDX/WRX is wrong, for example <a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t05.asm>g05t05.asm</a> executes 245 WRX compared to only 201 RDM. 
+			That is, it is more likely that a given instruction will modify external register than read data from memory.
+			Of course, this highly depends on tested program, but the point is, WRX has to work fast, at least for UI. <br>
+		</p>
+
+		<p>
+			The CPU works like follows:<br>
+			Find up to 2 instructions such that nothing depends on them (check for dep_XonY).
+			<span class=comment>//Obviously always at least 1 instruction can be found, first instruction depends on nothing </span><br>
+			Fetch and decode instructions from memory.<br>
+			Move 1 or 2 instructions from buffer and simulateously insert up to 2 new instructions (decoded in previous cycle). Due to the way it works, startup (and branch misprediction) delay is 2 cycles. <br>
+		</p>
+
+		<p>
+			Lack of proper branch prediction and quite high branch misprediction penalty made performance much worse that it could have been.
+			Some speedup was achieved by starting branch execution while still in buffer but that just reduced the penalty.
+			It works by checking if first instruction is branch and that branch is T (T is determined by having additional copy of separate early flag register), if so and branch target is known early (uses immediate as destination) then fetch address is changed. <br>
+			Note that there is no danger with WRX UI because that branch MUST be first in buffer, and really it could also be done without limitation on immediate destination but this way it could be done without extending datapath too much since registers could only be read by execution units. <br>
+		</p>
 
 		<h4> Performance </h4>	
-		fibonacci got WORSE from 54 to 58 cycles <br>
-		main problem is that there is not a lot of parallelism to exploit and branches are very costly <br>
-		after aligning main loop, performance improved from 54 to 45 <br>
-		<br>
-		factorial got twice as bad as it was on simple implementation <br>
-		again due to many calls and branches <br>
-		<br>
-		matrix multiply (after optimizations) executes in around 0.9 time of simple implementation <br>
-		thats abot 400 cycles, compared to 272 max achievable right now (<a href="#performance_evaluation>benchmarks">see Benchmarks</a>)<br>
-		<br>
-		highly advanced mechanism used to see what should happen when: <br>
-		<span class=comment>//yes it's slightly wrong </span> <br>
-		<img src="./Images/p16b3x_i3-ooev0-s-d_c.jpg" alt=""><br>
-		<a href="./Images/p16b3x_i3-ooev0-s-d.jpg">Full Image</a><br>
+		<p>
+			Fibonacci code got WORSE from 54 to 58 cycles. <br>
+			Main problem is that there is not a lot of parallelism to exploit and branches are very costly. 
+			After aligning main loop, performance improved from 54 to 45. <br>
+		</p>
+
+		<p>
+			Factorial got twice as bad as it was on simple implementation.
+			Again due to many calls and branches <br>
+		</p>
+		<p>
+			Matrix multiply (after optimizations) executes in around 0.9 time of simple implementation. 
+			That is abot 400 cycles, compared to 272 max achievable with newest implementation (<a href="#performance_evaluation>benchmarks">see Benchmarks</a>).<br>
+		<p>
+			Highly advanced mechanism used to see what should happen when: <br>
+			<span class=comment>//yes, it is slightly wrong </span> <br>
+			<img src="./Images/p16b3x_i3-ooev0-s-d_c.jpg" alt=""><br>
+			<a href="./Images/p16b3x_i3-ooev0-s-d.jpg">Full Image</a><br>
+		</p>
+
 		<hr> <h2 id=tooling_improvement> TOOLING IMPROVEMENT </h2>
-		<span class=comment>//this is where second period of working on this project</span> <br>
-		<span class=comment>//it was quite short </span> <br>
-		test framework has been implemented (<a href=#tests>see Tests</a>) so bugs are easier to spot <br> 
-		assembler and simulator (<a href=#assembler>see Assembler</a> <a href=#simulator>see Simulator</a>) were mostly improved around this time period <br>
+		<p>
+			<span class=comment>//this is where second period of working on this project starts</span> <br>
+			<span class=comment>//it was quite short </span> <br>
+			Test framework had been implemented (<a href=#tests>see Tests</a>) so bugs were easier to spot. <br>
+			Assembler and simulator (<a href=#assembler>see Assembler</a> <a href=#simulator>see Simulator</a>) were improved mostly around this time period. <br>
+		</p>
 
 		<hr> <h2 id=out_of_order_execution_v1> OUT OF ORDER EXECUTION V1 </h2>
 		<h3> Overview </h3>
-		this implementation works quite similarly to typical OOE implementation <br>
-		instructions are fetched to 8 entry ROB which also serves as storage for in-flight data <br>
-		if instruction has all dependences satisfied and it is first (or second) that can be executed then it is executed <br>
-		if oldest instruction(s) have completed then they are retired <br>
-		up to 2 instructions are fetched, executed and retired per cycle <br>
+		<p>
+			This implementation works quite similarly to textbook OOE implementation. <br>
+			Instructions are fetched to 8 entry ROB which also serves as storage for in-flight data.
+			If instruction has all dependences satisfied and it is first (or second) that can be executed then it is executed.
+			If oldest instruction(s) have completed then they are retired.
+			Up to 2 instructions are fetched, executed, and retired per cycle. <br>
+		</p>
+
 		<h3 id="out_of_order_execution_v1>dependency_management"> Dependency Management </h3>
-		main problem of previous implementation was very costly depedency check <br>
-		in principle ROB and register renaming solve this issue <br>
-		my implementation, however, was so terrible that it was undebuggable mess with many edge cases <br>
-		it was never fully finished, instead next implementation chose different approach and dep management became trivial <br>
-		<a href=https://github.com/sarvl/16bit_cpu/blob/12e1d1bbf0435f6ca903fef89dcae9cc210678ca/implementation/vhdl/src/computer_oooe.vhdl#L1116>code fragment</a> that is responsible for proper dependency forwarding:<br>
+		<p>
+			Main problem of previous implementation was very costly depedency check. <br>
+			In principle ROB and register renaming solve this issue.
+			My implementation, however, was so terrible that it was undebuggable mess with many edge cases.
+			It was never fully finished, instead next implementation chose different approach and dep management became trivial. <br>
+		</p>
+
+		<p>
+			<a href=https://github.com/sarvl/16bit_cpu/blob/12e1d1bbf0435f6ca903fef89dcae9cc210678ca/implementation/vhdl/src/computer_oooe.vhdl#L1116>Code fragment</a> that is responsible for proper dependency forwarding:<br>
 		<pre class=code>
 
 rob0_src0   := (2 DOWNTO 0 =&gt; instr0_r0, OTHERS =&gt; '0')        WHEN instr0_cf = '1'
@@ -674,161 +836,204 @@ rob0_src0   := (2 DOWNTO 0 =&gt; instr0_r0, OTHERS =&gt; '0')        WHEN instr0
   ELSE alu1_res WHEN exe_entry1p = '1' AND ROB(to_integer(unsigned(exe_entry1))).dest = instr0_r0 AND RAT(to_integer(unsigned(instr0_r0))).rob_entry = exe_entry1
   ELSE (2 DOWNTO 0 =&gt; RAT(rat00_e).rob_entry, OTHERS =&gt; '0');
 		</pre>
-		slightly different code was for each possible source, there were 4 sources for operations in single cycle <br>
-		details of what, why and where are not really important, whats important is that this is stupidly complex and could not work well <br>
-		<span class=comment>//I am certain that it could be done better and work well </span> <br>
-		<span class=comment>//main benefit of tests is that I know that implementation does not work, but that does not mean I have to fix it </span> <br>
-		<span class=comment>//also, vhdl verbosity is first time I have questioned strong typing verbosity </span> <br>
-		<span class=comment>//I have solved it by creating additional signals that are all generated automatically, but still </span> <br>
-		<h3> Branch Prediction </h3>
-		simple 2bc branch predictor (and not working RAS) have been implemented here <br>
-		there are not many differences between it and current design except current is more robust and not broken <br>
-		(<a href="#branch_prediction">see Branch Prediciton</a>)<br>
-		<h3> Performance Comparison </h3>
-		despite being broken, some tests passed and so performance could be compared at least somewhat <br>
-		matrix multiply improved from 485 cycles on simple implementation to 276 on OOE implementation <br> 
+			<span class=comment>//such a mess that it does not fit on the screen!</span><br>
+		</p>
 
-		<span class=comment>//I have honestly no clue why is it so fast, I need to dwelve into that</span> <br>
-		<span class=comment>//seriously, half working implementation has almost better running time than current one? what happened </span> <br>
+		<p>
+			Slightly different code was for each possible source, there were 4 sources for operations in single cycle.
+			Details of what, why, and where are not really important, what is important is that this is stupidly complex and could not work well. <br>
+			<span class=comment>//I am certain that it could be done better and work well </span> <br>
+			<span class=comment>//main benefit of tests is that I know that implementation does not work, but that does not mean I have to fix it </span> <br>
+			<span class=comment>//also, vhdl verbosity is first time I have questioned strong typing verbosity </span> <br>
+			<span class=comment>//I have solved it by creating additional signals that are all generated automatically, but still </span> <br>
+		</p>
+		
+		<h3> Branch Prediction </h3>
+		<p>
+			Simple 2bc branch predictor (and not working RAS) have been implemented here. <br>
+			There are not many differences between it and current design except current is more robust and not broken so I will not get into details here (<a href="#branch_prediction">see Branch Prediciton</a>).<br>
+		</p>
+
+		<h3> Performance Comparison </h3>
+		<p>
+			Despite being broken, some tests passed and so performance could be compared at least somewhat. <br>
+			Matrix multiply improved from 485 cycles on simple implementation to 276 on OOE implementation. <br>
+			<span class=comment>//I have honestly no clue why it is so fast</span> <br>
+			<span class=comment>//seriously, half working implementation has almost better running time than current one? what happened </span> <br>
+		</p>
 
 		<hr> <h2 id=chip_design> CHIP DESIGN </h2>
-		<span class=comment>//this is where third period of working on this project starts</span> <br>
-		previous designs were all sort of inserted into CPU, while this time CPU is part of system <br>
-		this provides much better ability to extend it with more memory chips, IO or multiprocessing <br>
-		<span class=comment>//its very unlikely any of these features will be implemented in this project</span><br>
-		this allows all components to work independently of each other knowing just BUS interface and using same clock <br>
-		this goal is much harder to achieve than I thought  <br>
-		cache implementations do require modifications to how data is sent to/from memory from/to CPU <br>
-		especially write back <br>
+		<p>
+			<span class=comment>//this is where third and final period of working on this project starts</span> <br>
+			Previous designs were all sort of inserted into CPU, while this time CPU is part of the system. 
+			This provides much better ability to extend it with more memory chips, IO, or multiprocessing.
+			<span class=comment>//At least in principle, didn't happen in practice </span><br>
+			This allows all components to work independently of each other knowing only specified protocol. 
+			This goal is much harder to achieve than I thought. 
+			Cache implementations do require modifications to how data is sent to/from memory from/to CPU, especially write back. <br>
+		</p>
 
-		additionally simple and pipeline implementations were rewritten again but there is nothing interesting about that <br>
+		<p>
+			Simple and pipeline implementations were rewritten again but there is nothing interesting about that. <br>
+		</p>
 
 		<hr> <h2 id=cache_v1> CACHE V1 </h2>
 		<h3> Overview </h3>
-		given how the system works, cache must work much more realistically <br>
-		there are 2 implementations of cache, write-through and write-back  <br>
-		<br>
-		both work with simple and pipelined implementation and <i>could</i> work with Out Of Order one <br>
-		but the problem is that cache operates on 2B chunks and OoO implementation has 4B wide memory <br>
-		<span class=comment>//I really dont want to make cache more general at this point </span> <br>
-		<span class=comment>//it is not fully obvious how to make it work for bigger sizes too </span> <br>
-		<span class=comment>//consider 2B write (as architecture specifies) to 4B memory location (as implementation works) </span> <br>
-		<span class=comment>//should it be written partially? that requires partial hit support </span> <br>
-		<span class=comment>//should full line be first fetched? that will degrade performance </span> <br>
-		<span class=comment>//should memory operate in 2B chunks? that will SEVERELY degrade performance </span> <br>
-		<span class=comment>//much better memory management is something I want to work on since there are many possible places to extract performance </span> <br>
+		<p>
+			Given how the system works, cache must work at least somewhat more realistically. <br>
+		</p>
 
+		<p>
+			There are 2 implementations of cache, write-through and write-back.  <br>
+			Both work with simple and pipelined implementation and <i>could</i> work with Out Of Order one, but the problem is that cache operates on 2B chunks and OoO implementation has 4B wide memory. <br>
+			<span class=comment>/*I really did not want to make cache more general at that point. 
+			It was not fully obvious how to make it work for bigger sizes too. <br>
+			Consider 2B write (as architecture specifies) to 4B memory location (as implementation works). <br>
+			Should it be written partially? that requires partial hit support. <br>
+			Should full line be first fetched? that will degrade performance. <br>
+			Should memory operate in 2B chunks? that will SEVERELY degrade performance. <br>
+			Much better memory management is something I want to work on since there are many possible places to extract performance */ </span> <br>
+		</p>
 
 
 		<h3 id="cache_v1>system_interaction"> System Interaction </h3>
-		waiting for data is implemented by chip stalling clock to a given component <br>
-		it could <span class=comment>/*maybe should*/</span> be implemented with each component having internal wait state but it works quite well <br>
+		<p>
+			Waiting for data is implemented by chip stalling clock to a given component. <br>
+			It could <span class=comment>/*maybe should*/</span> be implemented with each component having internal wait state but it works quite well. <br>
+		</p>
 		<h4> Write Through </h4>
-		Read: <br>
-		<ol>
-			<li> CPU sends request to read address </li>
-			<li> cache checks said address </li>
-			<li> if address is contained by cache, request is satisfied </li>
-			<li> else, request is send to memory </li>
-			<li> data comes back, is sent to both CPU and cache </li>
-		</ol>
-		Write: <br>
-		<ol>
-			<li> CPU sends request to write address </li>
-			<li> request is sent both to cache and to memory </li>
-			<li> if address is present in cache, it is updated </li>
-			<li> CPU returns back to execution </li>
-		</ol>
+		<p>
+			Read: <br>
+			<ol>
+				<li> CPU sends request to read address </li>
+				<li> cache checks said address </li>
+				<li> if address is contained by cache, request is satisfied </li>
+				<li> else, request is send to memory </li>
+				<li> data comes back and is sent to both CPU and cache </li>
+			</ol>
+		</p>
+
+		<p>
+			Write: <br>
+			<ol>
+				<li> CPU sends request to write address </li>
+				<li> request is sent both to cache and to memory </li>
+				<li> if address is present in cache, it is updated </li>
+				<li> CPU returns back to execution </li>
+			</ol>
+		</p>
 
 		<h4> Write Back </h4>
-		Read: <br>
-		<ol>
-			<li> CPU sends request to read address </li>
-			<li> cache checks said address </li>
-			<li> if address is contained by cache, request is satisfied </li>
-			<li> else, if something has to be evicted, then it is evicted first <br>
-			     eviction process looks like regular write from CPU with no cache, except CPU is completely stalled and request is sent from cache </li>
-			<li> conflicting entry is no longer present in cache and proper one is fetched from memory </li>
-			<li> data comes back, is sent to both CPU and cache </li>
-		</ol>
-		Write: <br>
-		<ol>
-			<li> CPU sends request to write to address </li>
-			<li> cache checks said address </li>
-			<li> if address is contained by cache, request is fully satisfied </li>
-			<li> else, if something has to be evicted, then it is evicted first <br>
-			     eviction process look like regular write from CPU with no cache, except CPU is completely stalled and request is sent from cache </li>
-			<li> conflicting entry is no longer present in cache and proper one is written to cache </li>
-		</ol>
-		note that read can potentially cause write to memory but write cannot <br>
+		<p>
+			Read: <br>
+			<ol>
+				<li> CPU sends request to read address </li>
+				<li> cache checks said address </li>
+				<li> if address is contained by cache, request is satisfied </li>
+				<li> else, if something has to be evicted, then it is evicted first <br>
+					 eviction process looks like regular write from CPU with no cache, except CPU is completely stalled and request is sent from cache </li>
+				<li> conflicting entry is no longer present in cache and proper one is fetched from memory </li>
+				<li> data comes back and is sent to both CPU and cache </li>
+			</ol>
+		</p>
+
+		<p>
+			Write: <br>
+			<ol>
+				<li> CPU sends request to write to address </li>
+				<li> cache checks said address </li>
+				<li> if address is contained by cache, request is fully satisfied </li>
+				<li> else, if something has to be evicted, then it is evicted first <br>
+					 eviction process look like regular write from CPU with no cache, except CPU is completely stalled and request is sent from cache </li>
+				<li> conflicting entry is no longer present in cache and proper one is written to cache </li>
+			</ol>
+			Note that read can potentially cause write to memory but write cannot. <br>
+		</p>
 
 		<h3> Inner Workings </h3>
-		none of implementation details can be observed by CPU, except by measuring time to satisfy requests <br>
+		<p>
+			None of implementation details can be observed by CPU, except by measuring time to satisfy requests. <br>
+		</p>
 
 		<h4> Write Through </h4>
-		the cache is write allocate, DM and has 128 entries, each containing 2B of data <br>
-		<br>
-		on read, address is compared against stored tag <br>
-		if they are equal, data is returned <br>
-		else miss is asserted <br>
-		<br>
-		on write, data is always written and entry is updated accordingly<br>
+		<p>
+			The cache is write allocate, directly mapped, and has 128 entries, each containing 2B of data. <br>
+		</p>
+
+		<p>
+			On read, address is compared against stored tag, if they are equal, data is returned, otherwise miss is asserted. <br>
+			On write, data is always written and entry is updated accordingly. <br>
+		</p>
 
 		<h4> Write Back </h4>
-		the cache is write allocate, 2 way SA and has 256 entries, each containing 2B of data <br>
-		<br>
-		on read, cache compares data from 2 entries <br>
-		if hit occured, return data and set LRU to other entry <br>
-		if there is a read miss, then entry to evict (denoted by LRU) is sent to memory and removed from cache <br>
-		after that there is free entry to which data from memory (requested by CPU) is inserted <br>
-		at the end LRU bit is set to point to OTHER entry <br>
-		<br>
-		writes work exactly like reads except after a miss and potential write to memory data is satisfied from CPU <br>
-		note that read causes at most 2 memory accesses while write causes at most 1 <br>
-		<br>
-		obvious and commont optimization is to include dirty bit to evict entry only when necessary <br>
-		in fact, the implementation does exactly this <br>
-		<br>
-		one problem came up because tests (<a href=#tests>see Tests</a>) work by dumping memory contents <br> 
-		in cache write back then by design, memory does not contain most recent copy <br>
-		therefore there is no guarantee <span class=comment>/*and indeed I wasted some time debugging code that worked*/</span> that on halt correct value is dumped <br>
-		the solution copies memory content to a buffer (simulation only)<br>
-		then checks cache contents and changes values of that buffer wherever cache contains newer copy <br>
-		<br>
-		<span class=comment>//by the way, the vhdl support sucks </span> <br>
-		<span class=comment>//feature required to implement this check is from VHDL-2008 and (during 2023-12) <a href=https://github.com/ghdl/ghdl>ghdl</a> did not support it in backend that I was using </span> <br>
-		<span class=comment>//this by no means critizes ghdl, I switched backend and it worked, I have encountered few compiler crashes on the way and they were fixed very quickly </span> <br>
-		<span class=comment>//this issue is with pretty much every tool, almost every recent-ish post on SO talks about VHDL-2008 even though the most recent version is VHDL-2019</span> <br>
-		<span class=comment>//VHDL-2019 support is pretty much non existent </span> <br>
+		<p>
+			the cache is write allocate, 2 way set-associative and has 256 entries, each containing 2B of data.
+		</p>
+
+		<p>
+			On read, cache compares data from 2 entries, if hit occured, return data and set LRU to other entry, if there is a read miss, then entry to evict (denoted by LRU) is sent to memory and removed from cache. 
+			After that there is free entry to which data from memory (requested by CPU) is inserted, at the end LRU bit is set to point to OTHER entry. <br>
+
+			Writes work exactly like reads except after a miss and potential write to memory data is satisfied from CPU.
+			Note that read causes at most 2 memory accesses while write causes at most 1. <br>
+
+			Obvious and commont optimization is to include dirty bit to evict entry only when necessary, this is indeed implemented. <br>
+		</p>
+
+		<p>
+			One problem came up because tests (<a href=#tests>see Tests</a>) work by dumping memory contents. <br> 
+			In write back cache, by design, memory does not contain most recent copy.
+			Therefore there is no guarantee <span class=comment>/*and indeed I wasted some time debugging code that worked*/</span> that on halt correct value is dumped. <br>
+			The solution copies memory content to a buffer (simulation only), then checks cache contents and changes values of that buffer wherever cache contains newer copy. <br>
+		</p>
+
+		<p class=comment>
+			/*By the way, the vhdl support sucks. <br>
+			Feature required to implement this check is from VHDL-2008 and (during 2023-12) <a href=https://github.com/ghdl/ghdl>ghdl</a> did not support it in backend that I was using. 
+			This by no means critizes ghdl, I switched backend and it worked, I have encountered few compiler crashes on the way and they were fixed very quickly.
+			This issue is with pretty much every tool, almost every recent-ish post on SO talks about VHDL-2008 even though the most recent version is VHDL-2019, support for which was pretty much non existent at the time of writing */<br> 
+		</p>
 
 		<h3> Performance </h3>
-		write through cache waveform  is mostly the same as <a href=#cache_v0>previously</a><br> 
-		<br>
-		<img src="./Images/p16b3x_i5-c-wb-misses_c.png" alt="write back cache waveform"><br>
-		<a href="./Images/p16b3x_i5-c-wb-misses.png">Full Image</a><br>
-		notice that: <br>
-		<ol>
-			<li> around 0ns there are no cache misses and so cpu is stalled only for single cycle when accessing memory <br> 
-			this is because initially instructions are loaded into cache </li>
-			<li> around 100ns cache misses occur but they do not cause eviction <br>
-			therefore theres single memory access <br>
-			<li> around 200ns misses that cause eviction appear <br>
-			first they do some internal work, then access memory TWICE </li>
-		</ol>
-		<br>
-		with write back cache, mat mult takes 879 cycles<br>
-		without mat mult takes 4363 cycles <br>
-		in other words, cache provides near 5x speedup <br>
+		<p>
+			Write through cache waveform is mostly the same as <a href=#cache_v0>previously</a>.<br> 
+			<br>
+			<img src="./Images/p16b3x_i5-c-wb-misses_c.png" alt="write back cache waveform"><br>
+			<a href="./Images/p16b3x_i5-c-wb-misses.png">Full Image</a><br>
+		</p>
+
+		<p>
+			Notice that: <br>
+			<ol>
+				<li> Around 0ns there are no cache misses and so cpu is stalled only for single cycle when accessing memory. 
+				This is because initially instructions are loaded into cache </li>
+				<li> Around 100ns cache misses occur but they do not cause eviction.
+				Therefore there are still single memory accesses. <br>
+				<li> Around 200ns misses that cause eviction appear. <br>
+				First they do some internal work, then access memory TWICE. </li>
+			</ol>
+		</p>
+
+		<p>
+			With write back cache, mat mult takes 879 cycles, without 4363 cycles.
+			In other words, cache provides near 5x speedup. <br>
+		</p>
 
 		<hr> <h2 id=out_of_order_execution_v2> OUT OF ORDER EXECUTION V2 </h2>
 		<h3> Overview </h3>
-		out of order 2 way superscalar CPU with internal cache, branch prediction, and instruction elimination <br> 
+		<p>
+			Out of order 2 way superscalar CPU with internal cache, branch prediction, and instruction elimination. <br> 
+		</p>
 
 		<h3> Physical Registers </h3>
-		in this implementation data is not stored in ROB but instead ROB holds pointers to data <br>
-		managing dependences now is as simple as managing <b>P</b>hysical <b>R</b>egister pointers<br>
-		additionally, less data has to be moved each time an operation is to be made, but this is not big concern for simulation<br>
-		entire dependency management now (for one execution port): <br>
+		<p>
+			In this implementation data is not stored in ROB but instead ROB holds pointers to data.
+			Managing dependences now is as simple as managing <b>P</b>hysical <b>R</b>egister pointers.
+			Less data has to be moved each time an operation is to be made, but this is not big concern for simulation.  <br>
+		</p>
+
+		<p>
+			Entire dependency management now (for one execution port): <br>
 		<pre class=code>
 
   FOR i IN 0 TO par_rob_size - 1 LOOP 
@@ -837,336 +1042,388 @@ rob0_src0   := (2 DOWNTO 0 =&gt; instr0_r0, OTHERS =&gt; '0')        WHEN instr0
   END LOOP; 
   prf_present(to_integer(unsigned(eu0.rd))) &lt;= '1' WHEN eu0.signals.rwr ELSE UNAFFECTED;
 		</pre>
-		inserting data into ROB is as simple as setting correct PR id and present bit <br>
-		<br>
-		to simplify implementation, 1 PR is provided for each ROB entry but this is not necessary <br>
-		in fact this is pretty wasteful as it is very unlikely that every instruction writes to register <br>
-		for example <a href=https://www.realworldtech.com/haswell-cpu/3/>Intel haswell</a> has 192 entry ROB and 168 entry PRF <br>
-		<span class=comment>//haswell has mov elimination which makes it need even less PRs </span> <br>
-		<br>
-		however PRF is much less convienient to debug, after all the entire point is that at one point values from 1 AR can be in many PRs <br>
-		since now there is no ARF and it is really useful to check actual values, CPU contains simulation only signals that read current mapping <br>
-		these mappings are then shown in waveform in addition to PRF so it is straightforward to see current mapping and check whether something goes wrong <br>
-		<br>
-		PR sharing allows to reuse same data without copying it to another register <br>
-		each PR has associated counter that keeps track how many instructions point to it <br>
-		see <a href="#out_of_order_execution_v2>instruction_elimination>mov_elimination">see Mov Elimination</a> for more details<br>
+			Inserting data into ROB is as simple as setting correct PR id and present bit. <br>
+		</p>
+
+		<p>
+			To simplify implementation, 1 PR is provided for each ROB entry but this is not necessary.
+			In fact this is pretty wasteful as it is very unlikely that every instruction writes to register.
+			For example <a href=https://www.realworldtech.com/haswell-cpu/3/>Intel haswell</a> has 192 entry ROB and 168 entry PRF . <br>
+			<span class=comment>//Haswell has mov elimination which makes it need even less PRs, something I implemented later </span> <br>
+		</p>
+
+		<p>
+			PRF is however much less convienient to debug, after all the entire point is that at one point values from 1 AR can be in many PRs. 
+			Since now there is no ARF and it is really useful to check actual values, CPU contains simulation only signals that read current mapping. 
+			These mappings are then shown in waveform in addition to PRF so it is straightforward to see current mapping and check whether something goes wrong.  <br>
+		</p>
+
+		<p>
+			PR sharing allows reuse of data without copying it to another register.
+			Each PR has associated counter that keeps track how many instructions point to it.
+			<a href="#out_of_order_execution_v2>instruction_elimination>mov_elimination">See Mov Elimination</a> for more details.<br>
+		</p>
 
 		<h3 id="out_of_order_execution_v2>instruction_elimination"> Instruction Elimination </h3>
 		<h4> NOP </h4>
-		just not add it to ROB <br>
+		<p>
+			just not add it to ROB, it is always correct. <br>
+		</p>
 		<h4> UI </h4>
-		Upper Immediate is absolutely crucial to get fast, as anytime data requires more than 8 bits UI is used <br>
-		for example when there are more than 256 instructions, jump dest will require upper immediate <br>
-		<span class=comment>//lack of relative jumps is major shortcoming of ISA </span> <br>
-		most of the time <span class=code>wrx UI, imm8</span> instructions fall into category of ignored ones so they dont need to execute at all <br>
-		whenever second operand is not immediate but register, execution is serialized<br>
-		I have not yet encountered single real program use for this instruction <br> 
-		<span class=comment>//it could replace <span class=code>mov R0, R1 ; sll R0, 8 ; orr R0, imm8</span> with <span class=code>wrx UI, R1 ; mov R0, imm8</span></span><br>
-		<span class=comment>//but this is too unlikely to justify higher complexity</span><br>
-		<br>
-		there are two cases <br>
-		1. <span class=code>wrx UI, imm8</span> is aligned <br>
-		UI value is directly accessible for next instruction to use so this immediate is merged with next one <br>
-		2. <span class=code>wrx UI</span> is not aligned <br>
-		value has to wait until next instruction is fetched so data is simply stored for some number of cycles <br>
-		either way, <span class=code>wrx UI</span> is not even inserted into ROB<br>
-		this optimization is possible since UI is cleared after consecutive instruction anyway (as definde by ISA)<br> 
-		so under no circumstances <span class=code>wrx UI</span> has observable effects after the following instruction <br>
+		<p>
+			Upper Immediate is absolutely crucial to get fast, as anytime data requires more than 8 bits UI is used.
+			For example when there are more than 256 instructions, jump dest will require upper immediate.
+			<span class=comment>//Lack of relative jumps is major shortcoming of this ISA </span> <br>
+		</p>
+
+		<p>
+			Most of the time <span class=code>wrx UI, imm8</span> instructions fall into category of ignored ones so they do not need to execute at all.
+			Whenever second operand is not immediate but register, execution is serialized.
+			I have not yet encountered single real program use for this instruction. <br> 
+			<span class=comment>//It could replace <span class=code>mov R0, R1 ; sll R0, 8 ; orr R0, imm8</span> with <span class=code>wrx UI, R1 ; mov R0, imm8</span></span><br>
+			<span class=comment>//But this is too unlikely to justify higher complexity</span><br>
+		</p>
+
+		<p>
+			There are two cases: 
+			<ol>
+				<li> 
+					<span class=code>wrx UI, imm8</span> is aligned with fetching.
+					UI value is directly accessible for next instruction to use so this immediate is merged with next one.
+				</li>
+				<li>
+					<span class=code>wrx UI</span> is not aligned with fetching. <br>
+					Value has to wait until next instruction is fetched so data is simply stored for some number of cycles. <br>
+				</li>
+			</ol>
+			Either way, <span class=code>wrx UI</span> is not even inserted into ROB. 
+			This optimization is possible since UI is cleared after following instruction anyway (as defined by ISA). 
+			So under no circumstances <span class=code>wrx UI</span> has observable effects after the following instruction. <br>
+		</p>
 
 		<h4 id="out_of_order_execution_v2>instruction_elimination>mov_override"> Mov Override </h4>
-		whenever instructions of the form <span class=code>mov R0, R1 ; op R0, R2</span> are fetched aligned <br>
-		they are internally replaced with <span class=code>op R0, R1, R2</span><br>
-		this mechanism skips mov elimination (see below) <br>
-		<span class=comment>//I am honestly surprised that it worked first time with mov elimination, I thought that it will be major pain</span> <br>
-		<br>
-		there is no need to consider only alligned instructions but fetch buffer is only 2 instruction wide <br>
-		even then, in <a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t05.asm>simulator</a> there are 492 cases of <span class=code>mov R, R</span>, around 150 of which can use this optimization <br>
-		<span class=comment>//quite significant drawback of 2 address ISA </span> <br>
-		<br>
+		<p>
+			Whenever instructions of the form <span class=code>mov R0, R1 ; op R0, R2</span> are fetched aligned, 
+			They are internally replaced with <span class=code>op R0, R1, R2</span>. 
+			This mechanism skips mov elimination (see below). <br>
+			<span class=comment>//I am honestly surprised that it worked first time with mov elimination, I thought that it will be major pain</span> <br>
+		</p>
+		<p>
+			There is no need to consider only alligned instructions but fetch buffer is only 2 instruction wide.
+			Even then, in <a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t05.asm>simulator</a> there are 492 cases of <span class=code>mov R, R</span>, around 150 of which can use this optimization.
+			<span class=comment>//Quite significant drawback of 2 address ISA </span>.
+		</p>
+
 		<h4 id="out_of_order_execution_v2>instruction_elimination>mov_elimination"> Mov Elimination </h4>
-		instructions <span class=code>mov Rd, Rs</span> are executed in frontend by the renamer and are NOT sent to any execution units <br>
-		this is slightly more tricky than it initially appears but most of mechanism revolves around making sure proper registers are allocated/freed <br> 
-		especially in superscalar implementation where many instructions can be fetched/retired at once <br>
-		<br>
-		each PR has associated counter that keeps track how many ROB and RAT entries point to it <br>
-		each cycle between 0 and 4 instructions need to allocate/deallocate between 0 and 4 registers <br>
-		<span class=comment>//it is possible that 4 need to access 1 counter </span> <br>
-		this is managed by 4 separate adders, nth adder checks how many instructions access nth register <br>
-		if many instructions write to same PR then they are simply redundant <br>
-		then writes are prioritized from 0th to 3rd adder to not write from 2 sources to same destination, even though the result would be the same <br>
-		<br>
-		for example, assume that <span class=code>PR0</span> has to be deallocated and <span class=code>PR0</span> and <span class=code>PR1</span> have to be allocated <br>   
-		adder0 will see that <span class=code>PR0</span> has to be deallocated 1 time and allocated 1 so it will not change the value of <span class=code>PR0</span>'s counter <br>
-		adder1 will see nothing since only 1 PR is deallocated <br> 
-		adder2 will see the same thing as adder0 but it result does not matter since adder0 gets priority <br> 
-		adder3 will see that <span class=code>PR1</span> has to be allocated 1 time so it will change the value of <span class=code>PR1</span>'s counter by 1 up<br>
-		<br>
-		Register Free List operation changes slightly <br>
-		instead of new instruction =&gt; allocate and pr overwritten =&gt; deallocate <br>
-		whenever value of counter changes FROM 0, register is taken from RFL <br>
-		whenever value of counter changes TO 0, register RFL put back there <br>
-		<br>
-		reference counting makes flushes more expensive since without it, it is enough to restore RFL pointer and commited RAT <br>
-		here, it is necessary to checkpoint state that is also updated on commit (or walk through all instructions in RAT but that is slow) <br>
-		otherwise, before that checkpoint state is used, some instruction may have committed and decremented counter <br>
-		then on checkpoint restore, that counter is bringed back to previous value, overriding mentioned decrement and putting that PR into unfreeable state <br>
-		<br>
-		this can be solved by keeping separate counters for deallocate and allocate, checkpointing only allocate <br>
-		instead, since flush can be caused only be retiring instruction <br>
-		I have decided to simply keep additional commited copy of <i>every</i> PR counter that gets restored on flush<br>
-		<span class=comment>//quite expensive but simple and works </span> <br>
-		<span class=comment>//full ref counting is expensive either way, real CPUs use separate sets for keeping track of ref counted PRs </span> <br>
-		<span class=comment>//and most PRs do not get such set, because there is no need to </span> <br>
-		<br>
-		other than that, it is of course necessary to copy RAT mapping <br>
-		<span class=comment>//most of the stuff just works really, as long as RFL and counters behave properly </span> <br>
-		<br>
-		overall the speedup is not as major as I thought it will be <br>
-		<a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t05.asm>simulator</a> despite having 492 <span class=code>mov R, R</span>, gets only 12 cycle speedup (1935 =&gt; 1923)<br>
-		on the other hand, execution ports' utilization dropped significantly <br> 
-		port0 from 1418 downto 1238 (cycles active)<br>
-		port1 from 974  downto  874<br>
-		and the execution goes fast enough to make 16entry ROB full, increasing the size further does not improve performance  <br>
-		<br>
-		<span class=comment>//Lack of speedup is caused simply by execution resources not being a bottleneck </span> <br>
-		<span class=comment>//small improvement to external register management gained about twice as much </span> <br>
-		<span class=comment>//not described anywhere else because its boring, simple check whether <span class=code>RDX</span> can be executed cycle earlier </span> <br>
-		<span class=comment>//for this particula test, later improvement in indirect branch handling (<a href="#branch_prediction">see Branch Prediction</a>) improved performance by nearly 500 cycles</span> <br>
-		<span class=comment>//not a typo </span> <br>
-		<br>
+		<p>
+			Instructions <span class=code>mov Rd, Rs</span> are executed in frontend by the renamer and are NOT sent to any execution units. 
+			This is slightly more tricky than initially appears but most of mechanism revolves around making sure proper registers are allocated/freed.
+			Especially in superscalar implementation where many instructions can be fetched/retired at once. <br>
+		</p>
+		
+		<p>
+			Each PR has associated counter that keeps track how many ROB and RAT entries point to it.
+			Each cycle between 0 and 4 instructions need to allocate/deallocate between 0 and 4 registers. 
+			<span class=comment>//It is possible that 4 need to access 1 counter </span> <br>
+			This is managed by 4 separate adders, nth adder checks how many instructions access nth register. <br>
+			If many instructions write to the same PR then they are simply redundant, writes are prioritized from 0th to 3rd adder to not write from 2 sources to same destination, even though the result would be the same. <br>
+			For example, assume that <span class=code>PR0</span> has to be deallocated and <span class=code>PR0</span> and <span class=code>PR1</span> have to be allocated.<br>
+			Adder0 will see that <span class=code>PR0</span> has to be deallocated 1 time and allocated 1 so it will not change the value of <span class=code>PR0</span>'s counter. <br>
+			adder1 will see nothing since only 1 PR is deallocated. <br> 
+			Adder2 will see the same thing as adder0 but it result does not matter since adder0 gets priority. <br> 
+			Adder3 will see that <span class=code>PR1</span> has to be allocated 1 time so it will change the value of <span class=code>PR1</span>'s counter by 1 up. <br>
+		</p>
+
+		<p>
+			Register Free List operation changes slightly. <br>
+			Instead of new instruction, allocate and instead of pr overwritten, deallocate. <br>
+			Whenever value of counter changes FROM 0, register is taken from RFL. <br>
+			Whenever value of counter changes TO 0, register RFL put back there. <br>
+		</p>
+
+		<p>
+			Reference counting makes flushes more expensive since without it, it is enough to restore RFL pointer and commited RAT.
+			Here, it is necessary to checkpoint state that is also updated on commit (or walk through all instructions in RAT but that is slow).
+			If that is not then then, before that checkpoint state is used, some instruction may have committed and decremented counter.
+			Then on checkpoint restore, that counter is bringed back to previous value, overriding mentioned decrement and putting that PR into unfreeable state. <br>
+			<br>
+			This can be solved by keeping separate counters for deallocate and allocate, checkpointing only allocate.
+			Instead, since flush can be caused only be retiring instruction, I have decided to simply keep additional commited copy of <i>every</i> PR counter that gets restored on flush. <br>
+			<span class=comment>//Quite expensive but simple and works </span> <br>
+			<span class=comment>//Full ref counting is expensive either way, real CPUs use separate sets for keeping track of ref counted PRs </span> <br>
+			<span class=comment>//and most PRs do not get such set, because there is no need to </span> <br>
+			Other than that, it is of course necessary to copy RAT mapping <br>
+			<span class=comment>//Most of the stuff just works really, as long as RFL and counters behave properly </span> <br>
+		</p>
+
+		<p>
+			Overall the speedup is not as major as I thought it will be. <br>
+			<a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t05.asm>Simulator</a> despite having 492 <span class=code>mov R, R</span>, gets only 12 cycle speedup (1935 =&gt; 1923). 
+			On the other hand, execution ports' utilization dropped significantly: <br> 
+			port0 from 1418 downto 1238 (cycles active),<br>
+			port1 from 974  downto  874. <br>
+			And the execution goes fast enough to make 16entry ROB full, increasing the size further does not improve performance.  <br>
+			<span class=comment>//Lack of speedup is caused simply by execution resources not being a bottleneck </span> <br>
+			<span class=comment>//small improvement to external register management gained about twice as much </span> <br>
+			<span class=comment>//not described anywhere else because it is boring, simple check whether <span class=code>RDX</span> can be executed cycle earlier </span> <br>
+			<span class=comment>//for this particular test, later improvement in indirect branch handling (<a href="#branch_prediction">see Branch Prediction</a>) improved performance by nearly 500 cycles</span> <br>
+			<span class=comment>//not a typo </span> <br>
+			<span class=comment>//That is why proper measurement and diagnostic framework is so important </span> <br>
+		</p>
 
 		<h3 id="out_of_order_execution_v2>flush_mechanism"> Flush Mechanism </h3>
-		each time a branch is mispredicted or write to instruction occurs or UI value could not be retrieved a flush occurs <br>
-		all instructions are removed from the ROB and execution restarts at first known point, that is after instruction that caused flush <br>
-		or branch destination for mispredicted branches <br>
-		flush can <i>only</i> happen because of retiring instruction <br>
-		after flush, RAT is restored to commited state and ROB  pointers are restored to initial entry <br>
-		note that PRF is <i> NOT </i> changed, there is no need to as architectural state is held by RAT <br>
-		there is also no need to restore register free list as it contains only registers that are free to use <br>
-		<br>
-		this is (should) be very well tested mechanism without any flaws <br>
-		because if something is flushed when it shouldnt or not flushed when is should, illusion of sequential execution is broken and all bets are off <br>
-		<br>
-		<span class=comment>//previous iteration of this webpage contained quite detailed explanation of why something went wrong </span> <br>
-		<span class=comment>//that explanation was somewhat correct but the root issue was different </span> <br>
-		<span class=comment>//it is available on <a href=https://web.archive.org/web/20240424103317/http://sarvel.xyz/Projects/p16b3x.html#out_of_order_execution_v2%3Eflush_mechanism>webarchive</a> </span> <br>
-		<span class=comment>//the actual problem was caused by SMC detection too but i honestly have no clue why it broke in that particular way</span> <br>
-		<span class=comment>//in short, the issue was that IP was not properly hashed into bloom filter </span> <br>
-		<span class=comment>//and this somehow caused instruction to reexecute instead of fetching next one </span> <br>
-		<br>
-		this works but obviously has a flaw that any flush can happen only during retirement, and even more it has to be detectable during retirement <br>
-		with current implementation it is fully possible to do so but in general it is not enough and flush (exception) info should be stored within rob entry <br>
-		for example, SMC detection can be triggered by <i>any</i> memory write so if memory writes are in any way speculative and executed before retirement then it wont work <br>
-		<span class=comment>//writes can be sent to separate write buffer before commitment to memory so early execution is possible </span> <br>
-		much more significant problem is lack of ability to resolve branch before it is retiring <br>
-		for 8 entry ROB this is not a big deal but for larger ones it starts to be problematic <br>
-		this requires to do much better management of PRs to be able to unwind translation <br>
-		or store checkpoint state like <a href=https://compas.cs.stonybrook.edu/~nhonarmand/courses/sp16/cse502/res/R10k.pdf>MIPS R10000</a></span> or <a href= https://stackoverflow.com/questions/50984007/what-exactly-happens-when-a-skylake-cpu-mispredicts-a-branch">BOB on skylake</a> <br>
-		<span class=comment>//how many references to same paper are too many? </span> <br>
-
-
+		<p>
+			Each time a branch is mispredicted or write to instruction occurs or UI value could not be retrieved a flush occurs.
+			All instructions are removed from the ROB and execution restarts at first known point, that is after instruction that caused flush or branch destination for mispredicted branches. <br>
+		</p>
 		
+		<p>
+			Flush can <i>only</i> happen because of retiring instruction. 
+			After flush, RAT is restored to commited state and ROB pointers are restored to initial entry.
+			Note that PRF is <i> NOT </i> changed, there is no need to as architectural state is held by RAT. 
+			There is also no need to restore register free list as it contains only registers that are free to use. <br>
+		</p>
+
+		<p>
+			This is (should be) very well tested mechanism without any flaws, because if something is flushed when it should not or not flushed when is should, illusion of sequential execution is broken and all bets are off. <br>
+		</p>
+
+		<p class=comment>
+			/*
+			Previous iteration of this webpage contained quite detailed explanation of why something went wrong. 
+			That explanation was somewhat correct but the root issue was different.
+			<span class=comment>It is available on <a href=https://web.archive.org/web/20240424103317/http://sarvel.xyz/Projects/p16b3x.html#out_of_order_execution_v2%3Eflush_mechanism>webarchive</a>. <br>
+			The actual problem was caused by SMC detection too but i honestly have no clue why it broke in that particular way.
+			In short, the issue was that IP was not properly hashed into bloom filter and this somehow caused instruction to reexecute instead of fetching next one. 
+			*/ <br>
+		</p>
+
+		<p>
+			This mechanism works but obviously has a flaw that any flush can happen only during retirement, and even more it has to be detectable during retirement. <br>
+			With current implementation it is fully possible to do so but in general it is not enough and flush (exception) info should be stored within rob entry. 
+			For example, SMC detection can be triggered by <i>any</i> memory write so if memory writes are in any way speculative and executed before retirement then it will not work. <br>
+			<span class=comment>//Writes can be sent to separate write buffer before commitment to memory so early execution is possible. </span> <br>
+			Much more significant problem is lack of ability to resolve branch before it is retiring, especially for larger ROB.
+			This requires to do much better management of PRs to be able to unwind translation or store checkpoint state like <a href=https://compas.cs.stonybrook.edu/~nhonarmand/courses/sp16/cse502/res/R10k.pdf>MIPS R10000</a></span> and <a href= https://stackoverflow.com/questions/50984007/what-exactly-happens-when-a-skylake-cpu-mispredicts-a-branch">BOB on skylake</a>.<br>
+			<span class=comment>//How many references to the same paper are too many? </span> <br>
+		</p>
+
 
 		<h3 id="out_of_order_execution_v2>self_modifying_code_detection"> Self Modifying Code Detection </h3>
-		the very annoying yet necessary thing to protect execution against <br>
-		each time an instruction is fetched, its address is stored into <a href=https://en.wikipedia.org/wiki/Bloom_filter>bloom filter</a><br> 
-		specifically: entries corresponding to {low 8bits ; high 8bits ; middle 8bits} are all marked with '1' <br>
-		then each time any sort of write is performed, it is checked whether bloom filter contains that particular address <br>
-		if it does then machine flush is performed and currently problematic instruction reexecutes <br>
-		<br>
-		importantly if there IS write to instruction then it IS detected <br>
-		converse is not true, its relatively easy to construct addresses that are different but map to the same entry<br>
-		for example, with current hashing <span class=code>x0500</span> and <span class=code>x0050</span> map to the same entry </span><br>
-		as long as it happens rarely enough, it's fine because of significant space reduction <br>
-		64kib (1 bit for each address) is compressed down to 256b <br>
-		<br>
-		<span class=comment>//this feature does not quite work right now since flush is specific to that feature instead of reusing branch flush,</span><br>
-		<span class=comment>//this has happened so many times that I have to rewrite entire flush mechanism</span> <br>
-		<br>
-		another solution is to have 2 separate bit vectors, each with 256b <br>
-		first stores whether high part of address appeared somewhere and second stores whether low part of address appeared somewhere <br> 
-		this way false positive requires write to high and low part that appeared somewhere but not at once, this is less likely <br>
-		especially because code is usually at <span class=code>x00XX</span> and data is usually stored at higher addresses <br>
-		(either because of stack or simply convienience) <br>
-		<span class=comment>//I have not tested precisely how well it works but it seems to be better</span><br>
+		<p>
+			The very annoying yet necessary thing to protect execution against. <br>
+		</p>
+
+		<p>
+			Each time an instruction is fetched, its address is stored into <a href=https://en.wikipedia.org/wiki/Bloom_filter>bloom filter</a>. <br> 
+			Specifically: entries corresponding to {low 8bits ; high 8bits ; middle 8bits} are all marked with '1', then each time any sort of write is performed, it is checked whether bloom filter contains that particular address, if it does then machine flush is performed and currently problematic instruction reexecutes <br>
+		</p>
+
+		<p>
+			Importantly if there IS write to instruction then it IS detected. 
+			Converse is however not true, it is relatively easy to construct addresses that are different but map to the same entry.
+			For example, with current hashing <span class=code>x0500</span> and <span class=code>x0050</span> map to the same entry.
+			As long as it happens rarely enough, it is fine because of significant space reduction -  64kib (1 bit for each address, for perfect check) is compressed down to 256b. <br>
+		</p>
+
+		<p class=comment>
+			//This feature does not quite work since flush is specific to that feature instead of reusing branch flush, but due to poor design, branch flush was kinda buggy and not general enough.
+		</p>
+
+		<p>
+			Another solution is to have 2 separate bit vectors, each with 256b. 
+			First stores whether high part of address appeared somewhere and second stores whether low part of address appeared somewhere.
+			This way false positive requires write to high and low part that appeared somewhere but not at once, this is less likely. 
+			Especially because code is usually at <span class=code>x00XX</span> and data is usually stored at higher addresses (either because of stack or simply convienience). <br>
+			<span class=comment>//I have not tested precisely how well it works but it seems to be better.</span><br>
+		</p>
 
 		<h3> Internal Instruction Cache </h3>
 		<h4> Overview </h4>
-		external cache requires a lot more time to access, even if it is much faster than memory <br>
-		internal cache can be wired independently of memory bus so code being supplied from cache makes memory bus free <br>
-		so instructions that use memory can do so whenever they need without fighting with processor fetching next instructions <br> 
+		<p>
+			External cache requires a lot more time to access, even if it is much faster than memory.
+			Internal cache can be wired independently of memory bus so code being supplied from cache makes memory bus free, so instructions that use memory can do so whenever they need without fighting with processor fetching next instructions. <br>
+		</p>
+
 		<h4> Implementation </h4>
-		I$ is implemented simply as DM cache with space for between up to 64 instructions (assuming ideal distribution and alignment) <br>
-		each time instructions are fetched they are added to that cache <br>
-		since this cache is assumed read only (if that assumption is violated, see below) there is no problem of writethrough/writeback <br>
+		<p>
+			I-cache is implemented simply as Directly Mapped cache with space for up to 64 instructions (assuming ideal distribution and alignment).
+			Each time instructions are fetched they are added to that cache.
+			Since this cache is assumed read only (if that assumption is violated, see below) there is no problem of writethrough/writeback. <br>
+		</p>
 
 		<h4> Self Modifying Code </h4>
-		such cache only makes SMC worse (<a href="#out_of_order_execution_v2>self_modifying_code_detection">see Self Modifying Code</a>) as not only ROB but every instruction that was ever fetched have to be flushed too <br>
-		it is possible to augment SMC protection such that cache flush is not necessary <br>
-		if write to instruction is detected from BF then flush that particular line from cache (if it is present) <br>
-		since it is possible that write happens to instruction that was fetched before BF flush <br>
-		there should also be additional check against cache content <br>
-		for example, instruction at index i caused flush of BF, instruction at index i + 2 is still in cache but instruction i + 1 writes to i + 2 <br>
-		this should improve performance against false positive SMC detection <br>	
-		<span class=comment>//this smarter handling is not implemented so this is only speculation</span> <br>
-		<span class=comment>//but PLEASE do not write SMC </span> <br>
+		<p>
+			Such cache only makes SMC worse (<a href="#out_of_order_execution_v2>self_modifying_code_detection">see Self Modifying Code</a>) as not only ROB but all instruction that were ever fetched have to be flushed too. <br>
+			While it is possible to augment SMC protection such that cache flush is not necessary, it is a lot more bookkeeping and adding things that can go wrong. <br>
+		</p>
+
 		<h4> Performance </h4>
-		<a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t02.asm>matrix multiply</a> without i$ takes 321 cycles <br>
-		with i$ it takes 313 cycles <br>
-		<span class=comment>//truly incredible!</span> <br>
-		<img src="./Images/p16b3x_i4-ic-wf_c.png" alt="i$ waveform"><br>
-		<a href="./Images/p16b3x_i4-ic-wf.png">Full Image</a><br>
-		main gain comes initially, notice that a bus is often yellow, that indicates it is unused <br>
+		<p>
+			<a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t02.asm>Matrix multiply</a> without i-cache takes 321 cycles, with i-cache it takes 313 cycles. <br>
+			<span class=comment>//truly incredible!</span> <br>
+			<img src="./Images/p16b3x_i4-ic-wf_c.png" alt="i$ waveform"><br>
+			<a href="./Images/p16b3x_i4-ic-wf.png">Full Image</a><br>
+			Main gain comes initially, notice that a bus is often yellow, that indicates it is unused. <br>
+		</p>
 
 		<h3 id="out_of_order_execution_v2>memory_operations"> Memory Operations </h3>
 		<h4> Motivation </h4>
-		<span class=comment>//for any multiprocessor design there should be some mechanism to keep memory consistent </span> <br>
-		<span class=comment>//memory can be defined to not have to be consistent but thats so boring answer to a problem </span> <br>
-		having to execute memory operations strictly in order needlessly slows down execution, especially for loads <br>
-		main problem comes from long dependency chains where even though load can execute safely it has to wait for previous mem operations <br>
-		additional problem with this particular implementation is when memory operations are in order they have to be executed as first-to-retire <br>
-		this slows down retirement as retirement can happen only the following cycle so constant retirement cannot be sustained <br>
-		however rob is usually not full and so at some point that 1 cycle loss usually disappears <br>
+		<p>
+			<span class=comment>//For any multiprocessor design there should be some mechanism to keep memory consistent. </span> <br>
+			<span class=comment>//Memory can be defined to not have to be consistent but that is such boring answer to a problem. </span> <br>
+			Having to execute memory operations strictly in order needlessly slows down execution, especially for loads. 
+			Main problem comes from long dependency chains where even though load can execute safely it has to wait for previous memory operations.
+			Additional problem with this particular implementation is when memory operations are in order they have to be executed as first-to-retire. 
+			This slows down retirement as retirement can happen only the following cycle so constant retirement cannot be sustained,
+			However rob is usually not full and so at some point that 1 cycle loss usually disappears. <br>
+		</p>
+
 		<h4 id="out_of_order_execution_v2>memory_operations>speculation"> Speculation </h4>
-		quite simple and effective method utilizing bloom filter similarly to SMC protection (<a href="#out_of_order_execution_v2>self_modifying_code_detection">see Self Modifying Code Detection</a>)<br>
-		works like follows: <br>
-		execute loads and stores as soon as possible, marking written addresses in bloom filter <br>
-		whenever operation hits in BF then it is quite likely that ordering violation happened, so flush<br>
-		<br>
-		of course this is suboptimal when data is read from memory after being written often <br>
-		but for compute programs that rarely use memory for data, this is great solution <br>
-		see Performance below for evaluation<br>
-		<span class=comment>//numbers there may be slightly wrong as bloom filter implementation had to be ported from older version of code </span> <br>
-		<span class=comment>//but it shows the potential, especially on memory heavy programs </span> <br>
+		<p>
+			Quite simple and effective method utilizing bloom filter similarly to SMC protection (<a href="#out_of_order_execution_v2>self_modifying_code_detection">see Self Modifying Code Detection</a>) works like follows: <br>
+			Execute loads and stores as soon as possible, marking written addresses in bloom filter. <br>
+			Whenever operation hits in BF then it is quite likely that ordering violation happened, so flush. <br>
+		</p>
+
+		<p>
+			Of course this is suboptimal when data is read from memory after being written often, but for compute programs that rarely use memory for data, this is great solution. See Performance below for evaluation. <br>
+			<span class=comment>//Numbers there may be slightly wrong as bloom filter implementation had to be ported from older version of code </span> <br>
+			<span class=comment>//But it shows the potential, especially on memory heavy programs. </span> <br>
+		</p>
+
 		<h4 id="out_of_order_execution_v2>memory_operations>load_store_queue"> Load Store Queue </h4>
-		a different approach is to keep track of which loads can execute out of order<br>
-		to do this, it is necessary to keep track of all memory operations as there may be preceeding store <br>
-		there is still speculation as loads are executed out of order and it may happen that this particular address was bogus <br>
-		it is not a problem as in this particular implementation memory reads do not leave architectural side effects <br>
-		<br>
-		when intructions get added into ROB and they use memory they are also added into LSQ <br>
-		<span class=comment>//this introduces another stall condition - full LSQ - but it is usually not significant </span> <br>
-		write is just added but read has to check for dependences <br>
-		this is achieved by keeping bit array for each entry, if instruction X depends on Y then Yth entry in X's bit array is 1, otherwise it is 0 <br>
-		this is not speculative so if Y is store and its address is unknown, X depends on Y <br>
-		when store address is known then its dependents are updated and dependence is either kept or removed, depending on address <br>
-		similarly if X is load and its address is unknown, X depends on Y <br>
-		if X has no more dependences, it can be executed by execution unit <br>
-		<span class=comment>//my implementation introduced another execution unit to not have too big slowdown, but it is not strictly necessary</span> <br>
-		loads never depend on loads and stores never depend on stores<br>
-		<br>
-		so memory operation goes through execution like follows: <br>
-		fetch - insert into ROB - executed by putting address (possibly data) into LSQ - executed by sending to memory <br>
-		<br>
-		small optimization happens for <span class=code>pop</span> and <span class=code>psh</span> since their address is almost always known early <br>
-		whenever SP is modified with <span class=code>wrx</span>, flush occurs since it invalidates speculation on stack <br>
-		internally CPU keeps its own SP that is updated and used in the front end, this allows to fill LSQ entries for stack ops on allocation <br>
-		this allows to reduce conservative dependences and for <span class=code>psh</span> removes the need to be executed twice <br>
-		<span class=comment>//x86 CPUs do this too and are much smarter, they can handle modifying SP with 1 stack sync uop </span> <br>
-		<br>
-		it is possible to separate filling of address and data of store, this may be beneficial for when address is known much earlier <br>
-		it may not be that beneficial here because it would make stores much more time consuming, hard to guess, it is not implemented <br>
-		<span class=comment>//thats what modern x86 CPUs do by splitting stores into 2 uops, 1 for address generation and 1 for data </span> <br>
-		<br>
-		in a case when load depends on store and store data is known, then data is forwarded from store to load <br>
-		this makes said load not have to go to memory which reduces contention on bus <br>
-		see Performance below for evaluation <br>
-		<span class=comment>//"evaluation" also known as "disappoinment" </span> <br>
-		<br>
-		LSQ itself can also speculate on dependences like previous approach but flushes only on definite violation <br>
-		not like above approach that flushes when it is likely <br>
-		this is implemented to some degree<br>
-		each read goes as soon as it can and if it is speculative it just fills its own data field <br>
-		if that speculation is succesfull then on load finish memory does not have to be accessed <br>
-		if it was incorrect then some write will overwrite data retrieved from memory <br>
-		in other words, there is no need to flush <br>
-		see Performance below for evaluation <br>
-		<span class=comment>//actually it is somewhat broken but the potential gain is very small so I did not bother too much with it </span> <br>
-		<br>
-		another optimization is store-&gt;load forwarding which works by supplying store data to depedent load <br>
-		and yet another one is to coalesce reads that access same 4B block since memory supplies entire such chunk <br>
+		<p>
+			A different approach is to keep track of which loads can execute out of order. <br>
+			To do this, it is necessary to keep track of all memory operations as there may be preceeding store. 
+			There is still speculation as loads are executed out of order and it may happen that this particular address was bogus.
+			But it is not a problem as in this ISA memory reads do not leave architectural side effects. <br>
+		</p>
+
+		<p>
+			When intructions get added into ROB and they use memory they are also added into LSQ. <br>
+			<span class=comment>//This introduces another stall condition - full LSQ - but it is usually not significant. </span> <br>
+			Write is just added to LSQ but read has to check for dependences.
+			This is achieved by keeping bit array for each entry, if instruction X depends on Y then Yth entry in X's bit array is 1, otherwise it is 0. 
+			This is not speculative so if Y is store and its address is unknown, X depends on Y. 
+			When store address is known then its dependents are updated and dependence is either kept or removed, depending on address. 
+			Similarly if X is load and its address is unknown, X depends on Y. 
+			if X has no more dependences, it can be executed by execution unit. <br>
+			<span class=comment>//My implementation introduced another execution unit to not have too big slowdown, but it is not strictly necessary</span> <br>
+			Loads never depend on loads and stores never depend on stores (stores are executed in order anyway due to affecting architectural state). <br>
+		</p>
+
+		<p>
+			So memory operation goes through execution like this: <br>
+			Fetch - insert into ROB - executed by putting address (possibly data) into LSQ - executed by sending to memory. <br>
+		</p>
+
+		<p>
+			Small optimization happens for <span class=code>pop</span> and <span class=code>psh</span> since their address is almost always known early.  <br>
+			Whenever SP is modified with <span class=code>wrx</span>, flush occurs since it invalidates speculation on stack. 
+			Internally CPU keeps its own SP that is updated and used in the front end, this allows to fill LSQ entries for stack ops on allocation. 
+			This allows to reduce conservative dependences and for <span class=code>psh</span> and removes the need to be executed twice. <br>
+			<span class=comment>//x86 CPUs do this too and are much smarter, they can handle modifying SP with 1 stack sync uop. </span> <br>
+		</p>
+
+		<p>
+			It is possible to separate filling of address and data of store, this may be beneficial for when address is known much earlier, but it may not be that beneficial here because it would make stores much more time consuming, hard to guess, it is not implemented.
+			<span class=comment>//That is what modern x86 CPUs do by splitting stores into 2 uops, 1 for address generation and 1 for data. </span> <br>
+		</p>
+
+		<p>
+			LSQ itself can also speculate on dependences like previous approach but flushes only on definite violation.
+			This is implemented to some degree, each read goes as soon as it can and if it is speculative it just fills its own data field. 
+			If that speculation is succesfull then on load finish memory does not have to be accessed. 
+			If it was incorrect then some write will overwrite data retrieved from memory. 
+			In other words, there is no need to flush. See Performance below for evaluation.
+			<span class=comment>//Actually it is somewhat broken but the potential gain is very small so I did not bother too much with it </span> <br>
+		</p>
+
+		<p>
+			Another optimization is store-&gt;load forwarding which works by supplying store data to depedent load. <br>
+			And yet another one is to coalesce reads that access same 4B block since memory supplies entire such chunk. <br>
+		</p>
+
 		<h4 id="out_of_order_execution_v2>memory_operations>performance"> Performance </h4>
 
-		<a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t05.asm>simulator (in asm)</a>: <br>
-		<span class=wsp>  baseline   : 2009 cycles </span><br>
-		<span class=wsp>  speculation: 1903 cycles </span><br>
-		<span class=wsp>  lsq        : 1947 cycles </span><br>
-		<br>
-		<a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t02.asm>matrix multiply</a>:<br>
-		<span class=wsp>  baseline   :  313 cycles </span><br>
-		<span class=wsp>  speculation:  272 cycles </span><br>
-		<span class=wsp>  lsq        :  271 cycles </span><br> 
-		<br>
-		clearly each method provides speedup over lack of it however it appears that speculation is generally better than LSQ <br>
-		massive downside of LSQ implementation is 2 cycles/execution of most memory operations <br>
-		which is probably the reason why g05t05 benefits more from prediction <br>
-		but for memory heavy program like matrix multiply, LSQ is slightly better which is great <br>
-		<br>
-		for LSQ it seems that store load forwarding, speculation and read coalescing (see above) do not improve performance meaningfully <br>
-		mostly because there is simply not many occasions when they can be activated <br>
-		coalescing however probably fails because as soon as load gets its address into LSQ then it is usually executed straight away <br>
-		so there is no way to satisfy more than 1 request at once <br>
-		<br>
-		these benchmarks are not lower bound for performance of memory bound programs, write cache can be implemented <br>
-		essentially, store last N <b>commited</b> writes and forward data from them to reads <br>
-		for example, 4 entry cache reduced execution time of simulator from 1947 down to 1935 cycles and for mat mult from 271 down to 266 <br>
-		<br>
-		I dont know the definitive reason why write cache improves performance but SL forwarding does not <br>
-		my <i>hypotheses</i> is that the execution window is simply too small to see reuse of data <br>
+		<p>
+			<a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t05.asm>simulator (in asm)</a>: <br>
+			<span class=wsp>  baseline   : 2009 cycles </span><br>
+			<span class=wsp>  speculation: 1903 cycles </span><br>
+			<span class=wsp>  lsq        : 1947 cycles </span><br>
+		</p>
+		<p>
+			<a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t02.asm>matrix multiply</a>:<br>
+			<span class=wsp>  baseline   :  313 cycles </span><br>
+			<span class=wsp>  speculation:  272 cycles </span><br>
+			<span class=wsp>  lsq        :  271 cycles </span><br> 
+		</p>
+
+		<p>
+			Clearly each method provides speedup over lack of it however it appears that speculation is generally better than LSQ.
+			Massive downside of LSQ implementation is 2 cycles/execution of most memory operations, which is probably the reason why g05t05 benefits more from prediction, but for memory heavy program like matrix multiply, LSQ is slightly better which is great. 
+		</p>
+
+		<p>
+			For LSQ it seems that store load forwarding, speculation and read coalescing (see above) do not improve performance meaningfully, mostly because there is simply not many occasions when they can be activated.
+			Coalescing however probably fails because as soon as load gets its address into LSQ then it is usually executed straight away, so there is no way to satisfy more than 1 request at once. <br>
+		</p>
+
+		<p>
+			These benchmarks are not lower bound for performance of memory bound programs, eg write cache could be implemented. Essentially, store last N <b>commited</b> writes and forward data from them to reads. For example, 4 entry cache reduced execution time of simulator from 1947 down to 1935 cycles and for mat mult from 271 down to 266. <br>
+			I do not know the definitive reason why write cache improves performance but SL forwarding does not, my <i>hypotheses</i> is that the execution window is simply too small to see reuse of data. <br>
+		</p>
 	
 		<h3 id="out_of_order_execution_v2>performance_bugs"> Performance Bugs </h3>
-		<h4> I-Cache Slowdown </h4>
-		I$ caused performance of matrix multiplication to be worse than without it <br>
-		it turned out SMC protection (<a href="out_of_order_execution_v2>self_modifying_code_detection">see Self Modifying Code Detection</a>) caused this degradation <br>
-		since I$ allows to load instructions faster, more addresses are hashed into BF <br>
-		pure chance caused them to conflict more often with current writes <br>
-		since there were more conflicts, there were more flushes which are quite expensive <br>
-		with SMC protection disabled, performance improved by few cycles <br>
-		<span class=comment>//underwhelming but better </span> <br> 
-		<span class=comment>//it turned out cache was implemented wrongly and later it was fixed </span> <br>
-</span> <br>
 
 		<h4> Bigger ROB But Worse Execution </h4>
-		bigger ROB should allow for more instructions to be in flight <br>
-		and thus improve performance because there should be more instructions to extract parallelism from <br>
-		especially with i$ which should reduce the need to have better memory bandwidth <br>
-		it turned however that after extending ROB from 8 to to 16 entries, performance was worse <br>
-		<br>
-		the problem was execution priority <br>
-		arithmetic instructions had higher priority than memory operations<br>
-		(even if memory operation was to-be-retired instruction that blocked retirement)<br>
-		it is less of a problem with 8 entry ROB where it can cause at most 4 cycles (2 execution units, 2 instr/cycle) <br>
-		but with 16 entries there can be twice as large slowdown <br>
-		in practice such slowdown is VERY unlikely but smaller one really did happen <br>
-		especially in the larger programs that execute for more time <br>
-		<br>
-		(tested on some program, dont remember which) <br>
-		originally performance (with i$) degraded from 2105 =&gt; 2132 <br>
-		after fix, baseline improved to 1980 and bigger rob did not improve perf <br> 
-		<span class=comment>//lack of improvement is still annoying but it highly depends on particular program being run </span><br>
-		<span class=comment>//for matrix multiplication larger ROB makes program run in 0.9 * time of 8entry ROB </span> <br>
+		<p>
+			Bigger ROB should allow for more instructions to be in flight, and thus improve performance because there should be more instructions to extract parallelism from. 
+			Especially with i-cache which should reduce the need to have better memory bandwidth.
+			It however turned out that after extending ROB from 8 to to 16 entries, performance was worse. <br>
+		</p>
+
+		<p>
+			The problem was execution priority. <br>
+			Arithmetic instructions had higher priority than memory operations (even if memory operation was to-be-retired instruction that blocked retirement). 
+			It is less of a problem with 8 entry ROB where it can cause at most 4 cycles delay (2 execution units, 2 instr/cycle), but with 16 entries there can be twice as large slowdown. 
+			In practice such slowdown is VERY unlikely but smaller one really did happen. 
+			Especially in the larger programs that execute for more time.
+		</p>
+		
+		<p>
+			(tested on some program, dont remember which) <br>
+			Originally performance (with i-cache) degraded from 2105 =&gt; 2132 <br>
+			After fix, baseline improved to 1980 and bigger rob did not improve perf <br> 
+			<span class=comment>//lack of improvement is still annoying but it highly depends on particular program being run </span><br>
+			<span class=comment>//for matrix multiplication larger ROB makes program run in 0.9 * time of 8entry ROB </span> <br>
+		</p>
 
 		<h4> Bigger ROB But Worse Execution, Again </h4>
-		<span class=comment>//identifying these bugs is annoying because my gtkwave setup has only 8 entries of ROB </span> <br>
-		<span class=comment>//and with more entries there are MANY waves and its getting hard to scroll </span> <br>
-		<span class=comment>//also I have almost run out of memory because debugging it requires having 2 gtkwave windows open at once </span> <br>
-		<span class=comment>//then tracing each point to identify when bigger ROB gets slower </span> <br>
-		<br>
-		this one was particularly annoying because there was no obvious mistake, and indeed there was no mistake at all in implementation <br> 
-		particular program tested was <a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t05.asm>g05t05</a> and exec time rised from 1947 to 1962 <br>
-		other programs showed similar results on different scales (sometimes none) <br> 
-		<br>
-		as it turns out due to incredibly bad luck, memory operations get scheduled EXACTLY on indirect branch which ALWAYS misses <br>
-		then in some steady state this code executes over and over again causing this situation to repeat <br>
-		<span class=comment>//BTB would not really solve the issue here as its very unlikely that same direction repeats in this case</span> <br>
-		now the flush has 2 or 3 cycle of penalty depending whether memory bus is currently occupied <br>
-		if the bus is occupied then proper address cannot be put on the bus and it is put next cycle <br>
-		if the bus is free, then proper address is put right away and next cycle resumes fetching <br>
-		so if the performance really was worse because of it then stopping memory from using bus would improve it <br>
-		<br>
-		this hypotheses was quickly tested with <br>
-		<pre class=code>
+
+		<p class=comment>
+			/*
+			Identifying these bugs is annoying because my gtkwave setup has only 8 entries of ROB, and with more entries there are MANY waves and it is getting hard to scroll. 
+			Also I have almost run out of memory because debugging it requires having 2 gtkwave windows open at once, then tracing each point to identify when bigger ROB gets slower. 
+		</p>
+
+		<p>
+			This one was particularly annoying because there was no obvious mistake, and indeed there was no direct mistake at all. Particular program tested was <a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t05.asm>g05t05</a> and exec time rised from 1947 to 1962. Other programs showed similar results on different scales (sometimes none). <br>
+		</p>
+		
+		<p>
+			As it turns out due to incredibly bad luck, memory operations got scheduled EXACTLY on indirect branch which ALWAYS misses, then in some steady state this code executes over and over again causing this situation to repeat. <br>
+			<span class=comment>//BTB would not really solve the issue here as its very unlikely that same direction repeats in this case</span> <br>
+			Now the flush has 2 or 3 cycle of penalty depending whether memory bus is currently occupied. <br>
+			If the bus is occupied then proper address cannot be put on the bus and it is put next cycle. <br>
+			If the bus is free, then proper address is put right away and next cycle resumes fetching. <br>
+			So if the performance really was worse because of it then stopping memory from using bus would improve it. <br>
+		</p>
+
+		<p>
+			This hypotheses was quickly tested with <br>
+			<pre class=code>
 
 	FOR i IN 0 TO par_lsq_size - 1 LOOP
 	--checks whether to-be-retired entry is branch
@@ -1174,168 +1431,189 @@ rob0_src0   := (2 DOWNTO 0 =&gt; instr0_r0, OTHERS =&gt; '0')        WHEN instr0
 			EXIT;
 		END IF;
 	[...]
-  		</pre>
-		and later improved to <br>
-		<pre class=code>
+			</pre>
+			and later improved to <br>
+			<pre class=code>
 
 	FOR i IN 0 TO par_lsq_size - 1 LOOP
 		IF flush THEN 
 			EXIT;
 		END IF;
 	[...]
-  		</pre>
-		initially performance IMPROVED by 4 cycles even though EVERY branch blocked memory operation <br>
-		with latter fix, performance is the same regardless of ROB size <br>
-		<br>
-		still underwhelming but if ROB is not the bottleneck then not a lot can be done by increasing its size <br>
+			</pre>
+			Initially performance IMPROVED by 4 cycles even though EVERY branch blocked memory operation.
+			With latter fix, performance is the same regardless of ROB size. <br>
+			Still underwhelming but if ROB is not the bottleneck then not a lot can be done by increasing its size <br>
+		</p>
 
 		<hr> <h2 id=branch_prediction> BRANCH PREDICTION </h2>
-		<span class=comment>//Im considering turning part of this section into aside </span> <br>
-		<br>
-		well working BP is essential for any meaningfull perf gain <br>		
-		<span class=comment>//check for example <a href=https://danluu.com/branch-prediction/>https://danluu.com/branch-prediction/</a> to see how many options are there</span><br>
-		<span class=comment>//that list is by no means exhaustive</span> <br>
-		determining best BP to use is quite complicated problem and my use of small programs does not fully address complexities <br>
-		simulator implementes few branch predictors but they occupy most of the code and drastically reduce readability (<a href=#simulator>see Simulator</a>)<br>
-		<span class=comment>//also Im fairly sure that tournament predictor is broken but I did not ever debug it</span><br>
-		<span class=comment>//debugging BP is tricky since properly implemented BP is always correct </span> <br>
-		<span class=comment>//in a sense that, even if it has 0% accuraccy then it can never cause wrong execution </span> <br>
-		<span class=comment>//AFAIK debugging it is either single stepping it to make sure it works as intended </span> <br>
-		<span class=comment>//or generate some test that should perform with certain accuraccy </span> <br>
-		out of the ones implemented, usually 2BP start T performs the best <br>
-		therefore thats what what CPU implements for branch prediction<br>
-		although with quicksort before optimizations, 2bc history performed better <br>
-		<span class=comment>//current framework also has the problem that all history predictors have same history length</span> <br>
-		<span class=comment>//but global history requires more bits to operate as good as local history </span> <br>
-		<span class=comment>//that is, more per history register but in total it requires less </span> <br>
-		<br>
-		CALs and RETs are always predict taken and operate using RAS <br>
-		this prediction scheme makes fast LR not necessary as it is implemented using microarchitecture feature <br>
-		typically thats all, CALs and RETs are always taken so there is no problem <br>
-		however this ISA allows them to be executed conditionally, this comes mostly from how easy it was to encode it <br>
-		<span class=comment>//in retrospect, it may have been smarter to use extra bits for greater address range and provide separate conditional relative jump</span><br>
-		as long as not taken path is very rare then it is fine to use it, for anything else this is bad for performance <br>
-		unconditional JMPs, CALs and RETs are always predict taken <br>
-		<br>	
-		indirect branches require knowing the address early enough, the CPU just waits until that address is available <br>
-		and when it is, it <i>knowns</i> where to jump <br>
-		this introduced massive speedup for <a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t05.asm>g05t05.asm</a> which improved by almost 200c <br>
-		with improved code it is possible to reduce that even further, in total reducing execution time from 1923 to 1441 cycles <br>
-		improved code means more time between when destination is availabe and actual jump <br>
-		<span class=comment>//I am genuinely shocked by how much it gains </span> <br>
-		<span class=comment>//in real processors need for BTB comes mostly from the fact that branch target is not known early enough </span> <br>
-		<br>
-		verification happens at retire when branch direction is compared against flag register (also updated at retire) <br>
-		if the branch direction does not agree, flush is performed <br>
-		one exception being, when branch is correctly predicted it can be retired while being second-to-retire, not first <br>
-		if specific conditions allow it to be known by then, then it is retired <br>
-		<span class=comment>//specific conditions are not interesting, they just make sure nothing breaks </span><br>
-		after misprediction is detected, Register Allocation Table is restored to its commited state <br>
-		then execution begins from last known instructions (<a href="#out_of_order_execution_v2>flush_mechanism">see Flush Mechanism</a>) <br>
-		such recovery is fine for small ROB but for more agressive CPUs with 100s of ROB entries this is terrible approach<br>
-		<a href=https://compas.cs.stonybrook.edu/~nhonarmand/courses/sp16/cse502/res/R10k.pdf>MIPS R10000</a> implements 4 such "commit" states, so up to 4 branches can be in flight at once <br>
-		then if misprediction is detected state of machine is restored to corresponding branch's "commit" state <br>
-		<span class=comment>//there is also approach of unwinding register mappings but, honestly, I dont know how that works in detail</span> <br>
+		<p>
+			Well working BP is essential for any meaningfull perf gain. <br>		
+			<span class=comment>//check for example <a href=https://danluu.com/branch-prediction/>https://danluu.com/branch-prediction/</a> to see how many options are there, the list is by no means exhaustive</span><br>
+			Determining best BP to use is quite complicated problem and my use of small programs does not fully address complexities.
+			Simulator implementes few branch predictors but they occupy most of the code and drastically reduce readability (<a href=#simulator>see Simulator</a>). <br>
+			<span class=comment>/*
+			Also I am fairly sure that tournament predictor is broken but I ever debuged it. Debugging BP is tricky since properly implemented BP is always correct in a sense that, even if it has 0% accuraccy then it can never cause wrong execution.
+			AFAIK debugging it is either single stepping it to make sure it works as intended or generate some test that should perform with certain accuraccy.
+			*/
+			</span>
+		</p>
 
-		<br>
-		after all, particular program <span class=comment>/*I really shouldve written what is what then*/</span> originally had 256 misses and took 1562 cycles <br>
-		with 2BC branch predictor it has 3 misses and takes 1055 cycles <br>
-		<br>
+		<p>
+			Out of the ones implemented, usually 2BP start T performs the best, therefore that is what what CPU implements for branch prediction. 
+			Although with quicksort before optimizations, 2bc history performed better. <br>
+		<span class=comment>//Current framework also has the problem that all history predictors have same history length, but global history requires more bits to operate as good as local history, that is, more per history register but in total it requires less. </span> <br>
+		</p>
+
+		<p>
+			CALs and RETs are always predict taken and operate using RAS. This prediction scheme makes fast LR not necessary as it is implemented using microarchitecture feature. 
+			Typically that is all, CALs and RETs are always taken so there is no problem, however this ISA allows them to be executed conditionally, this comes mostly from how easy it was to encode it. <br>
+		<span class=comment>//In retrospect, it may have been smarter to use extra bits for greater address range and provide separate conditional relative jump</span><br>
+			As long as not taken path is very rare then it is fine to use it, for anything else this is bad for performance, unconditional JMPs, CALs and RETs are always predict taken. <br>
+		</p>
+		
+		<p>
+			Indirect branches require knowing the address early enough, the CPU just waits until that address is available and when it is, it <i>knowns</i> where to jump.
+			This introduced massive speedup for <a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t05.asm>g05t05.asm</a> which improved by almost 200c, with improved code it is possible to reduce that even further, in total reducing execution time from 1923 to 1441 cycles.  
+			Improved code means more time between when destination is availabe and actual jump. <br>
+			<span class=comment>//I am genuinely shocked by how much it gains, maybe it unlocked full potential of earlier optimizations? </span> <br>
+			<span class=comment>//in real processors need for BTB comes mostly from the fact that branch target is not known early enough </span> <br>
+		</p>
+
+		<p>
+			Verification happens at retire when branch direction is compared against flag register (also updated at retire), if the branch direction does not agree, flush is performed.
+			One exception being, when branch is correctly predicted it can be retired while being second-to-retire, not first. 
+			<span class=comment>//specific conditions are not interesting, they just make sure nothing breaks </span><br>
+			After misprediction is detected, Register Allocation Table is restored to its commited state, then execution begins from last known instructions (<a href="#out_of_order_execution_v2>flush_mechanism">see Flush Mechanism</a>). 
+			Such recovery is fine for small ROB but for more agressive CPUs with 100s of ROB entries this is terrible approach. 
+			<a href=https://compas.cs.stonybrook.edu/~nhonarmand/courses/sp16/cse502/res/R10k.pdf>MIPS R10000</a> implements 4 such "commit" states, so up to 4 branches can be in flight at once, then if misprediction is detected state of machine is restored to corresponding branch's "commit" state.  <span class=comment>//there is also approach of unwinding register mappings but, honestly, I do not know how that works in detail. </span> <br>
+		</p>
+
+		<p>
+			After all, particular program <span class=comment>/*I really shouldve written what is what back then*/</span> originally had 256 misses and took 1562 cycles. With 2BC branch predictor it has 3 misses and takes 1055 cycles. <br>
+		</p>
+
 		<hr> <h2 id=performance_evaluation> PERFORMANCE EVALUATION </h2> 
-		<span class=comment>//as a performance freak, it is <b>THE MOST</b> satisfying part of entire project</span> <br>
+		<p>
+			<span class=comment>//as a performance freak, it is <b>THE MOST</b> satisfying part of entire project</span> <br>
+		</p>
 		<h3> Performance Counters </h3>
-		despite what simulator provides, it is inconvienient to try to replicate implementations, especially complex ones, in another simulator <br>
-		<span class=comment>//that said, simulator in c++ runs significantly faster than implementation in vhdl so replication is not a bad idea</span> <br>
-		therefore CPU has some counters to check how many cycles there were with specific event <br>
-		this is very useful to identify bottlenecks and find what potentially could be optimized <br>
-		current list: <br>
-		<ul>
-			<li class=wsp> miss    - branch misprediction                                                </li>
-			<li class=wsp> fetch   - fetched at least 1 instruction from memory                          </li>
-			<li class=wsp> cache   - fetched at least 1 instruction from cache                           </li>
-			<li class=wsp> retire0 - retired 0 instructions                                              </li>
-			<li class=wsp> retire1 - retired 1 instruction                                               </li>
-			<li class=wsp> retire2 - retired 2 instructions                                              </li>
-			<li class=wsp> exec0   - port 0 executed something                                           </li>
-			<li class=wsp> exec1   - port 1 executed something                                           </li>
-			<li class=wsp> exec2   - port 2 executed something                                           </li>
-			<li class=wsp> noexec  - no execution during that cycle                                      </li>
-			<li class=wsp> movrr   - mov register register                                               </li>
-			<li class=wsp> movrrov - mov register register that can be merged with following instruction </li>
-			<li class=wsp> ignore  - instructions not added to ROB because there was no need to          </li>
-			<li class=wsp> flush   - flushes                                                             </li>
-			<li class=wsp> w2i     - write to instruction detected                                       </li>
-			<li class=wsp> robfull - ROB full                                                            </li>
-			<li class=wsp> indstal - indirect branch wait stall                                          </li>
-			<li class=wsp> lsqfull - LSQ full                                                            </li>
-			<li class=wsp> lsqflst - LSQ full stall                                                      </li>
-			<li class=wsp> lsqfrwd - LSQ forward                                                         </li>
-			<li class=wsp> lsqmrge - LSQ merge reads                                                     </li>
-			<li class=wsp> lsqspec - LSQ speculative execution                                           </li>
-			<li class=wsp> instr   - instructions retired                                                </li>
-			<li class=wsp> wb1     - wait caused by branch in slot 1                                     </li>
-			<li class=wsp> rb1     - branch in slot 1 retired                                            </li>
-			<li class=wsp> wrchit  - hit in write cache                                                  </li>
-			<li class=wsp> specex  - cycles spent when there was some branch in ROB                      </li>
-		</ul>
-		some of these counters are more useful than others and there is always need for more and more detailed counters <br>
-		unfortunately they are still usually not able to capture the real bottlneck<br>
-		<span class=comment>//or maybe more likely, I am not able to properly identify one </span> <br>
-		<h3 id="performance_evaluation>benchmarks"> Benchmarks </h3>
-		<a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t07.asm>quicksort</a>: <br>
-		<span class=wsp>  instructions: 1437        </span><br>
-		<span class=wsp>  simple      : 1809 cycles </span><br>
-		<span class=wsp>  OOE         : 1272 cycles </span><br>
-		<br>
-		<span class=wsp>  IPC         :  1.13       </span><br>
-		<span class=wsp>  OOE/simple  :  0.70       </span><br>
-		<br>
-		<a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t02.asm>matrix multiply</a>: <br>
-		<span class=wsp>  instructions:  322        </span><br>
-		<span class=wsp>  simple      :  437 cycles </span><br>
-		<span class=wsp>  OOE         :  250 cycles </span><br>
-		<br>
-		<span class=wsp>  IPC         :  1.29       </span><br>
-		<span class=wsp>  OOE/simple  :  0.57       </span><br>
-		<br>
-		<a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t05.asm>simulator</a>: <br>
-		<span class=wsp>  instructions: 2332        </span><br>
-		<span class=wsp>  simple      : 2662 cycles </span><br>
-		<span class=wsp>  OOE         : 1570 cycles </span><br>
-		<br>
-		<span class=wsp>  IPC         :  1.49       </span><br>
-		<span class=wsp>  OOE/simple  :  0.59       </span><br>
-		<br>
-		after slight source code modifications, simulator can be run at 1441 cycles making at run at ~0.54 time of simple one with IPC ~ 1.62 <br>
-		<br>
-		one problem with benchmarks is that it is usually not possible to make same program run well on all implementations <br>
-		for example, additional alignment is potentially very useful for OOE as it may make branches effectively free while simple will be punished by additional NOPs to execute <br>
+		<p>
+			Despite what simulator provides, it is inconvienient to try to replicate implementations, especially complex ones, in another simulator.  
+			<span class=comment>//That said, simulator in c++ runs significantly faster than implementation in vhdl so replication is not a bad idea</span> <br>
+			Therefore CPU has some counters to check how many cycles there were with specific event.
+			This is very useful to identify bottlenecks and find what potentially could be optimized.<br>
+			Current list: <br>
+			<ul>
+				<li class=wsp> miss    - branch misprediction                                                </li>
+				<li class=wsp> fetch   - fetched at least 1 instruction from memory                          </li>
+				<li class=wsp> cache   - fetched at least 1 instruction from cache                           </li>
+				<li class=wsp> retire0 - retired 0 instructions                                              </li>
+				<li class=wsp> retire1 - retired 1 instruction                                               </li>
+				<li class=wsp> retire2 - retired 2 instructions                                              </li>
+				<li class=wsp> exec0   - port 0 executed something                                           </li>
+				<li class=wsp> exec1   - port 1 executed something                                           </li>
+				<li class=wsp> exec2   - port 2 executed something                                           </li>
+				<li class=wsp> noexec  - no execution during that cycle                                      </li>
+				<li class=wsp> movrr   - mov register register                                               </li>
+				<li class=wsp> movrrov - mov register register that can be merged with following instruction </li>
+				<li class=wsp> ignore  - instructions not added to ROB because there was no need to          </li>
+				<li class=wsp> flush   - flushes                                                             </li>
+				<li class=wsp> w2i     - write to instruction detected                                       </li>
+				<li class=wsp> robfull - ROB full                                                            </li>
+				<li class=wsp> indstal - indirect branch wait stall                                          </li>
+				<li class=wsp> lsqfull - LSQ full                                                            </li>
+				<li class=wsp> lsqflst - LSQ full stall                                                      </li>
+				<li class=wsp> lsqfrwd - LSQ forward                                                         </li>
+				<li class=wsp> lsqmrge - LSQ merge reads                                                     </li>
+				<li class=wsp> lsqspec - LSQ speculative execution                                           </li>
+				<li class=wsp> instr   - instructions retired                                                </li>
+				<li class=wsp> wb1     - wait caused by branch in slot 1                                     </li>
+				<li class=wsp> rb1     - branch in slot 1 retired                                            </li>
+				<li class=wsp> wrchit  - hit in write cache                                                  </li>
+				<li class=wsp> specex  - cycles spent when there was some branch in ROB                      </li>
+			</ul>
+			Some of these counters are more useful than others and there is always need for more and more detailed counters. 
+			Unfortunately they are still usually not able to capture the real bottlneck. 
+			<span class=comment>//or maybe more likely, I am not able to properly identify one </span> <br>
+		</p>
 
-		that said, usually OOE is so much faster that simple implementation and slowdown is within noise range <br>
-		<span class=comment>//despite there being no noise</span> <br>
+		<h3 id="performance_evaluation>benchmarks"> Benchmarks </h3>
+		<p>
+			<a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t07.asm>quicksort</a>: <br>
+			<span class=wsp>  instructions: 1437        </span><br>
+			<span class=wsp>  simple      : 1809 cycles </span><br>
+			<span class=wsp>  OOE         : 1272 cycles </span><br>
+			<br>
+			<span class=wsp>  IPC         :  1.13       </span><br>
+			<span class=wsp>  OOE/simple  :  0.70       </span><br>
+		</p>
+
+		<a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t02.asm>matrix multiply</a>: <br>
+		<p>
+			<span class=wsp>  instructions:  322        </span><br>
+			<span class=wsp>  simple      :  437 cycles </span><br>
+			<span class=wsp>  OOE         :  250 cycles </span><br>
+			<br>
+			<span class=wsp>  IPC         :  1.29       </span><br>
+			<span class=wsp>  OOE/simple  :  0.57       </span><br>
+		</p>
+
+		<a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t05.asm>simulator</a>: <br>
+		<p>
+			<span class=wsp>  instructions: 2332        </span><br>
+			<span class=wsp>  simple      : 2662 cycles </span><br>
+			<span class=wsp>  OOE         : 1570 cycles </span><br>
+			<br>
+			<span class=wsp>  IPC         :  1.49       </span><br>
+			<span class=wsp>  OOE/simple  :  0.59       </span><br>
+		</p>
+
+		<p>
+			After slight source code modifications, simulator can be run at 1441 cycles making at run at ~0.54 time of simple one with IPC ~ 1.62. <br>
+		</p>
+
+		<p>
+			One problem with benchmarks is that it is usually not possible to make same program run well on all implementations. 
+			For example, additional alignment is potentially very useful for OOE as it may make branches effectively free while simple will be punished by additional NOPs to execute. <br>
+		</p>
+
 		<hr> <h2 id=the_good> THE GOOD </h2> 
-		the absolute best thing is, the speedup is very close to 2x which is about the max of 2 way superscalar execution <br> 
-		in other words, the machinery does what it is supposed to do <br>
-		<br>
-		many mechanisms are very reliable and have not failed even once after initial implementation <br>
-		mostly: dependency management, execution units, PR reference counting, branch verification <br>
-		<br>
-		I learned a lot about how features <i>really</i> work and not just high level overview <br>
+		<p>
+			The absolute best thing is, the speedup is very high, nearly 2x. <br> 
+		</p>
+
+		<p>
+			Many mechanisms are very reliable and have not failed even once after initial implementation.
+			Mostly: dependency management, execution units, PR reference counting, branch verification.
+		</p>
+
+		<p>
+			I learned a lot about how features <i>really</i> work and not just high level overview. <br>
+		</p>
+
 		<hr> <h2 id=the_bad> THE BAD </h2> 
-		the only major flaw is the project organization which really, really sucks<br>
-		it improved somewhat but most features are in the single file <br>
-		most cannot be turned off (though not all) and debugged on their own <br>
+		<p>
+			The only major flaw is the project organization which really, really sucks. 
+			It improved somewhat but most features are in the single file, most cannot be turned off (though not all) and debugged on their own. <br>
+		</p>
+
 		<hr> <h2 id=the_ugly> THE UGLY </h2> 
-		performance extraction is somewhat fragile and it hard to reason why something breaks <br>
-		significant portion of this comes from how sensitive fetch is to alignment <br>
-		<br>
-		some mechanisms are ugly and barely work and I do not trust them <br>
-		I do not want to add more tests to discover bugs caused by them and spend any more time with them <br>
-		<br>
-		there should be many more tests but the simulation time is so slow <br>
-		so tests should be split into 2 groups: all tests and often failing tests <br>
-		<br>
-		<br>
+		<p>
+			Performance extraction is somewhat fragile and it is hard to reason why something breaks.
+			Significant portion of this comes from how sensitive fetch is to alignment. <br>
+		</p>
+
+		<p>
+			Some mechanisms are ugly and barely work and I do not trust them. 
+			I do not want to add more tests to discover bugs caused by them and spend any more time with them <br>
+		</p>
+
+		<p>
+			There should be many more tests but the simulation time is so slow.
+			So tests should be split into 2 groups: all tests and often failing tests. <br>
+		</p>
+
 		<a href="../index.html">main</a>
 		<a href="./index.html">go back</a>
 	</body>

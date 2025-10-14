@@ -1,8 +1,10 @@
 html {
 	background-color:  #000000;
 	padding:           0% 10%; 
+	max-width:         800px;
 	color:             #00FF00; 
 	font-family:       monospace;
+	text-align:        justify;
 }
 a {
 	color:             #00FFFF;

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../style.css">
+	</head>
+
+	<body>
+		<a href="./../index.html">main</a>
+		<a href="./index.html">go back</a>
+		<h1> <a href="./p16b4x.html">16b4x CPU</a> </h1>
+		date: 2024-06 to 2024-10 <br>
+		desc: fourth CPU design, significantly bigger project scope ; WIP <br>
+		proj: <a href="https://github.com/sarvl/16b4x">https://github.com/sarvl/16b4x</a><br> 
+		<br>
+		<br>
+		<br>
+
+		<hr> <h2 id=table_of_contents> TABLE OF CONTENTS </h2>
+			<ul>
+				<li><a href=#overview        >overview</a></li>
+				<li><a href=#isa             >isa</a></li>
+				<ul>
+					<li><a href="#isa>overview"            >overview      </a></li>
+					<li><a href="#isa>format"              >format        </a></li>
+					<li><a href="#isa>privileges"          >privileges    </a></li>
+					<li><a href="#isa>memory"              >memory        </a></li>
+					<li><a href="#isa>io"                  >io            </a></li>
+					<li><a href="#isa>system"              >system        </a></li>
+				</ul>
+				<li><a href=#sasm            >sasm (assembler)</a></li>
+				<ul>
+					<li><a href="#sasm>overview"           >overview      </a></li>
+					<li><a href="#sasm>expressions"        >expressions   </a></li>
+					<li><a href="#sasm>directives"         >directives    </a></li>
+					<li><a href="#sasm>macros"             >macros        </a></li>
+					<li><a href="#sasm>performance"        >performance   </a></li>
+					<li><a href="#sasm>implementation"     >implementation</a></li>
+				</ul>
+				<li><a href=#dasm            >dasm (disassembler)</a></li>
+				<ul>
+					<li><a href="#dasm>overview"           >overview          </a></li>
+					<li><a href="#dasm>static_disassembly" >static_disassembly</a></li>
+					<li><a href="#dasm>implementation"     >implementation    </a></li>
+				</ul>
+				<li><a href=#cosi            >cosi (simulator)</a></li>
+				<ul>
+					<li><a href="#cosi>overview"           >overview      </a></li>
+					<li><a href="#cosi>general"            >general       </a></li>
+					<li><a href="#cosi>helium"             >helium        </a></li>
+					<li><a href="#cosi>implementation"     >implementation</a></li>
+					<li><a href="#cosi>debugger"           >debugger      </a></li>
+					<ul>
+						<li><a href="#cosi>debugger>overview"      >overview </a></li>
+						<li><a href="#cosi>debugger>timelines"     >timelines</a></li>
+						<li><a href="#cosi>debugger>reverting"     >reverting</a></li>
+						<li><a href="#cosi>debugger>virtual_memory">overview </a></li>
+					</ul>
+					<li><a href="#cosi>performance"        >performance   </a></li>
+				</ul>
+				<li><a href=#operating_system>operating_system</a></li>
+				<ul>
+					<li><a href="#operating_system>overview"       >overview      </a></li>
+					<li><a href="#operating_system>bootloader"     >bootloader    </a></li>
+					<li><a href="#operating_system>virtual_memory" >virtual_memory</a></li>
+					<li><a href="#operating_system>interrupts"     >interrupts    </a></li>
+					<li><a href="#operating_system>processes"      >processes     </a></li>
+					<li><a href="#operating_system>hw_interface"   >hw_interface  </a></li>
+					<ul>
+						<li><a href="#operating_system>hw_interface>overview">overview </a></li>
+						<li><a href="#operating_system>hw_interface>screen"  >screen   </a></li>
+						<li><a href="#operating_system>hw_interface>flash"   >flash    </a></li>
+					</ul>
+					<li><a href="#operating_system>performance"   >performance   </a></li>
+				</ul>
+				<li><a href=#fost            >fost (test framework)</a></li>
+				<ul>
+					<li><a href="#fost>overview"           >overview      </a></li>
+					<li><a href="#fost>coverage"           >coverage      </a></li>
+					<li><a href="#fost>speeding_up"        >helium        </a></li>
+					<li><a href="#fost>performance"        >implementation</a></li>
+				</ul>
+				<li><a href=#helium          >helium</a></li>
+				<ul>
+					<li><a href="#helium>overview"         >overview          </a></li>
+					<li><a href="#helium>demo"             >demo              </a></li>
+					<li><a href="#helium>microarchitecture">microarchitecture </a></li>
+					<li><a href="#helium>virtual_memory"   >virtual_memory    </a></li>
+					<li><a href="#helium>memory_controller">memory_controller </a></li>
+					<li><a href="#helium>flash_controller" >flash_controller  </a></li>
+					<li><a href="#helium>interrupts"       >interrupts        </a></li>
+					<li><a href="#helium>ports"            >ports             </a></li>
+					<li><a href="#helium>execution"        >execution         </a></li>
+					<li><a href="#helium>cache"            >cache             </a></li>
+					<li><a href="#helium>fpga"             >fpga              </a></li>
+					<li><a href="#helium>optimization"     >optimization      </a></li>
+					<li><a href="#helium>benchmarks"       >benchmarks        </a></li>
+				</ul>
+				<li><a href=#timeline        >timeline</a></li>
+			</ul>
+
+		<hr> <h2 id=overview         > OVERVIEW          </h2>
+			I am considering pulling of <a href=#operating_system>operating system</a> into its own project due to its planned scope<br>
+
+			<br>
+			roughly planned scope for first iteration:
+			<ul>
+				<li> full assembler that is pleasant to write code in (sort of like nasm) </li>
+				<li> behavioral &amp; cycle accurate simulators with perf measurement tools </li>
+				<li> simple but fully functional multitasking OS to test all necessary  features </li>
+				<li> FPGA implementation </li>
+			</ul>
+
+			<br>
+			
+			complexity increase compared to <a href="../p16b3x.html">16b3x</a> is HUGE <br>
+			Ive been working for XYZ to get what is described here <br>
+			And that is not even close to what I plan on doing <br>
+			I tried to make this document contain more detailed technical description that previous ones <br>
+			<br>
+
+			<br>
+			just how hard can it be?<br>
+			turns out, pretty fucking hard<br>
+
+		<hr> <h2 id=isa              > ISA               </h2>
+		<!-- TODO get hyperlinks !-->
+		for full ISA, see github <br> 
+		just instruction set in more complex format: <br>
+<pre>
+P E
+ARITHMETIC
+    add       d, s/imm8   # R[d] &lt;--  R[d] +  R[s]/ imm16
+    and       d, s/imm8   # R[d] &lt;--  R[d] &amp;  R[s]/ imm16
+    ann       d, s/imm8   # R[d] &lt;--  R[d] &amp; ~R[s]/~imm16
+    cmp       d, s/imm8   #           R[d] -  R[s]/ imm16
+  D dvs       d, s        # R[d] &lt;--  R[d] /  R[s]        ;   signed
+  D dvu       d, s        # R[d] &lt;--  R[d] /  R[s]        ; unsigned
+    mul       d, s/imm8   # R[d] &lt;--  R[d] *  R[s]/imm16  
+    neg       d           # R[d] &lt;-- -R[d]
+    not       d           # R[d] &lt;-- ~R[d]
+    orr       d, s/imm8   # R[d] &lt;--  R[d] |  R[s]/imm16
+    shl       d, s/imm8   # R[d] &lt;--  R[d] &lt;&lt; R[s]/imm16  ; logical
+    shr       d, s/imm8   # R[d] &lt;--  R[d] &gt;&gt; R[s]/imm16  ; logical
+    sub       d, s/imm8   # R[d] &lt;--  R[d] -  R[s]/imm16
+    tst       d, imm8     #           R[d] &amp;  R[s]/imm16
+    xor       d, s/imm8   # R[d] &lt;--  R[d] ^  R[s]/imm16
+CONTROL FLOW
+    cal       s/imm11     # SP &lt;-- SP - 1 ; M[SP] &lt;-- IP ; IP &lt;-- R[s]/(IP + imm16)
+    jcc       imm8        # IF(conditio) { IP &lt;-- IP + imm16 }
+    jmp       imm11       # IP &lt;-- IP + imm16
+    ret                   # IP &lt;-- M[SP] ; SP &lt;-- SP + 1  
+P   hlt                   # halt processor
+INTERRUPTS
+D   int       imm8        # raises interrupt imm8
+P   irt                   # return from interrupt
+IO
+P   prd       d, s/imm8   # R[d] &lt;-- P[R[s]]/P[imm16]
+P   pwr       d/imm8, s   # P[R[d]]/P[imm16] &lt;-- R[d]
+MEMORY
+    mrd       d, s/imm8   # R[d] &lt;-- M[R[s]]/M[imm16]
+    mwr       d/imm8, s   # M[R[d]]/M[imm16] &lt;-- R[s]
+    pop       d           # R[d] &lt;-- M[SP] ; SP &lt;-- SP + 1
+    psh       s           # SP &lt;-- SP - 1 ; M[SP] &lt;-- R[s]
+    srd       d, s/imm8   # R[d] &lt;-- M[R[s] + SP]/M[imm16 + SP]
+    swr       d/imm8, s   # M[R[d] + SP]/M[imm16 + SP] &lt;-- R[s]
+PERFORMANCE
+    fls       s/imm8      # flush R[s]/imm16 from cache, may be nop
+    prf       s/imm8      # prefetch R[s]/imm16, may be nop
+REGISTERS
+	scc       d           # R[d] &lt;-- condition = true
+    mcc       d, s        # IF(condition) {R[d] &lt;-- R[s]}
+    mov       d, s/imm8   # R[d] &lt;-- R[s]/imm16
+    xrd       d, s        # R[d] &lt;-- X[s]
+    xwr       d, imm8     # X[d] &lt;-- R[s]/imm16
+CONTROL REGISTERS
+P   crd       d, imm5     # R[d] &lt;-- C[imm5]
+P   cwr       imm5, s     # C[imm5] &lt;-- R[s]
+OTHER
+    nop                   # does nothing
+  R rng       d           # R[d] &lt;-- pseudorandom bit pattern
+
+Where:
+M[x]  means memory at address x
+R[x]  means value of internal register x
+X[x]  means value of external register x
+P[x]  means value of port x
+C[x]  means value of control register x
+F[x]  means value of feature register x
+
+P in the P column implies that instruction has to be executed in privileged mode
+D in the P column implies that instruction MAY need to be executed in privileged mode, depending on operands
+	see [PRIVILEGE_LEVEL]
+Letter in E column identifies necessary extensions to run instruction
+	see [EXTENSIONS]
+
+</pre>
+		<br>
+		to fit this many instructions, encoding is more complex and roughly in 3 stages <br>
+		<span class="wp,code">AAAAACCC ___BBBBB</span> <br>
+		almost all instructions with immediate use only AAAAA for opcode, this allows for most bits for immediate (usually 8) <br>
+		register register instructions use BBBBB and have AAAAA = 0, to simplify decoding, opcodes are mostly the same as for immediate instructios <br>
+		single register/no register instructions usually use all 3 fields with different values, since they dont need many bits for arguments <br>
+		some instructions use AAAAA and CCC, this is when they need some immediate but no 8 bits or just 8 bit immediate <br>
+		<br>
+		there are unfortunately exceptions to these rules and some ambiguities as to what exact format is used by instruction, and what even is instruction <br>
+		for example <span class=code>JGE</span> can be thought of as separate instruction or variant of <span class=code>JCC</span><br>
+		in any case, format to use with fields is specified in ISA in detailed instruction description <br>
+
+		<br>
+		<br>
+		immediates are sign extended for jumps and calls and zero extended for all other operations <br>
+		since jump in both direction is needed very often <br>
+		for all other cases, there is upper immediate mechanism <br>
+		if jump is preceeded by <span class=code>XWR UI</span> then zero extension is performed and upper bits (if present) are ignored <br>
+		<br>
+		as was hinted, jumps are relative, making them absolute was significant mistake in previous project<br>
+		this time, it wouldve been even worse decision, OS may put program anywhere in memory <br>
+		so literally every single jump may need additional <span class=code>XWR</span> making them effectively 32bits <br>
+		<br>
+
+		supporting OS and multitasking requires privilege and virtual memory <br>
+		<span class=comment>//well, not necessarily, see Mill or DOS</span><br>
+		privilege level is implemented as 2 bits to allow 4 level in the future <br>
+		right now, only 2 are used though<br>
+		<span class=comment>//AFAIK 4 levels are not used anywhere but it may allow for fun stuff</span><br>
+		its switched on INT, IRT and CWR to specific register<br>
+		<span class=todo>explain this in a bit more depth with some ideas and PID</span><br>
+		<br>
+		<br>
+
+		VM implementation is simple <br>
+		on boot, TLB is initialized to map virt address to physical address 1-1 with full rwx permissions <br>
+		thanks to this <br>
+		<ul>
+			<li> stupidly simple programs <span class=comment>/*tests*/</span> dont need to bother with VM </li>
+			<li> VMem is always on, making HW just a bit simpler </li>
+		</ul>
+		consequently TLB must always support 1 full address space <br>
+		for 16bits with 2kiW pages, thats just 32 pages <br>
+		this does not really matter, other than performance reasons <br>
+		<span class=comment>//TLB is partly architectural partly microarchitectural </span><br>
+		<span class=comment>//minimum requirements are listed but specific structure and what is contained is implementation detail</span><br>
+		<span class=todo>explain PT and PTE structur</span> <br>
+
+		there is no need to support cached/uncached pages as IO is done fully through port instructions  <br>
+		this is something I would love to change but with 16b addres space, there is simply no room for MMIO <br>
+
+		<br>
+		<br>
+		io and system interface are still under construction, not a lot can be written here <br>
+		I have DMA in plans :3 <br>
+
+		<span class=todo>add code samples</span>
+		<span class=todo>talk more about instructions and reasoning for them</span><br>
+		<hr> <h2 id=sasm             > SASM              </h2>
+		Synthesizing ASseMbler <Br>
+		<br>
+		SASM is not groundbreaking assembler, it must work reliably and be convienient to use <br>
+		therefore SASM provides: instruction support <span class=comment>/*no way*/</span>, labels, expression system, preprocessing directives, macro system <br>
+		<span class=todo>does it contain macros</span>
+		<br>
+		for simplicity, expressions use postfix format <br>
+		all operators necessary for metaprogramming, label and bit manipulation are supported <br>
+		there are 2 types of expressions: constant and non constant <br>
+		the names are suboptimal, constant means that no label is used <br>
+		directives that influence code generation (eg <span class=code>%ADR</span>) are required to use constant expressions<br>
+		otherwise it would not be possible to decide on binary layout <br>
+		<br>
+		since they use postfix, simple stack suffices to evaluate all expressions<br>
+		<br>
+		<br>
+		directives are mostly used for metaprogramming with few dedicated for data placement <br>
+		<span class=comment>//surpisingly, metaprogramming turned out to be actually useful, mostly for tests</span><br>
+		
+		<br>
+		turns out, macros are hard to implement nicely<br>
+		<br>
+		ugh performance tests, they are somewhere on the todo list <br>
+		<br>
+		tests cover each stage of processing, making sure that no invalid case passes through<br>
+		lexing tests randomly generated input to make sure that at all points, assembler gracefuly finishes<br>
+		unless I missed something, each possible combination of instr/directive + operands are tested and either verified to be correct or rejected <br>
+		error messages are unfortunately part of test system <br>
+		looking for solutions!<br>
+		<br>
+		lexer is mostly a standard handwritten state machine<br>
+		verification works similarly for directives and instructions <br>
+		example for directive verification: <br>
+<pre class=code>
+/* defines what each directive has to verify
+ * exp = exs ... exe
+ * 's' = string
+ * 'l' = label
+ * 'd' = define
+ * 'f' = def | ulb WITH NO DOTS
+ * 'r' = var | ulb WITH NO DOTS
+ * 'a' = assign
+ * 'x' = any
+ * 'i' = num | udf | uvr | constant exp
+ * 'v' = 'i' | ulb | exp
+ * for convenience, each entry is 2 chars
+ * but ' ' indicates that no more need to be parsed
+ */
+constexpr static char const* const pattern_table[] = {
+//	 inc, alg, adr, ddw, rps, 
+	"s ","i ","i ","v ","i ",
+//	 rpe, wst, wns, wes, wph, wpp, 
+	"  ","s ","s ","s ","  ","  ",
+//	 def, ass, isd, cif, cel, cen, 
+	"fi","ri","d ","i ","  ","  ",
+//	 cas, inf, war, err  tof, isa
+	"vs","s ","s ","s ","x ","a ",
+//	 sam  cei  tst
+	"xx","i ","x "
+	};
+</pre>
+		later in a for loop, switch case is provided for each letter that tests whats necessary<br>
+		this allows to extend and change syntax VERY easily and quickly <br>
+		unfortunatly this is slower (I think?) and harder to generate good error messages than in fully custom switch <br>
+		so id like to extend this code generation even further, such that specific switch (max performance) is generated from above table (max readability) <br>
+		for now this suffices <br>
+		<br>
+		I tried to implement similar solution for code gen but I dont think its posible because one mnemonic can map to different opcodes depending on operands <br>
+		verification <i>can</i> change under the hood type but thats ugly <br>
+		<span class=todo>^wording</span>
+		since each mnemnic has at most 2 variants, there are 2 tables <br>
+		instructions are mostly regular so they are grouped by allowed operands <br>
+		each table contains exact opcode needed by an instruction so there is no need to encode opcode, just operands which are always in the same spots<br>
+		however to warn for too big immediate, there have to be few separate cases <br>
+		<span class=comment>//here is a point where JGE (mentioned earlier) is treated as separate instruction, even though its part of JCC</span>
+		<span class=comment>//table = clean code</span><br>
+		<span class=todo>add code samples</span>
+
+
+		<hr> <h2 id=dasm             > DASM              </h2>
+		Desynshesizing ASeMbler <br>
+		<span class=comment>not quite assembler</span>
+		this is the simplest subproject <br>
+		2 modes are implemented <br>
+		<ul>
+			<li> interactive (stdin) </li>
+			<li> file </li>
+		</ul>
+		both modes call <span class=code>disassemble(uint16t)</span> which prints actual disassembly<br>
+		there is no global state that influences instruction formats so disassembly is trivial
+		first decode all possible operands (unused will be ignored)<br>
+		then switch based on opcode<br>
+		I dont think there is generally faster solution, happy to be proven wrong<br>
+
+		<hr> <h2 id=cosi             > COSI              </h2>
+		surprisingly, to me at least, simulator is very complicated <br>
+		base ISA - arithmetic and data movement instructions are almost trivial <br>
+		nonetheless, to maximize performance, all arithmetic operations are implemented in assembly, because flags <br>
+		<br>
+		implementing virtual memory is still quite straightforward but I still dont know how to do IO and interrupts <br>
+		<span class=comment>//it is also very boring</span>
+
+		regular execution, perf counters, debug are separated into 3 execution modes <br>
+		regular is base, provides fastest possible execution but output is possible only at the end<br>
+		<span class=todo>maybe????? what if specific interface provided by simulator</span>
+		it can still be made faster if some data were to be stored in registers <br>
+		another option is to implement JIT <br>
+		id love to try both, but its not a priority, complixity of both would be huge<br>
+		<span class=todo>elaborate on perf tricks</span><br>
+		<span class=todo>provide benchmarks</span><br>
+		debug and perf call regular procedures underneath which prevents code duplication <br>
+		but it costs performance :( <br>
+		<span class=comment>//I hate these perf-readability tradeoffs</span>
+
+		<br>
+		<br>
+		helium simulator is not started yet as it requires fully working helium implementation <br>
+		<br>
+		debugger is very basic WIP now<br>
+		proper one will be made after base is implemented <br>
+		<br>
+		how to do it with  IO? <br>
+
+		<hr> <h2 id=operating_system > OPERATING SYSTEM  </h2>
+		nothing done yet<br>
+		<hr> <h2 id=tests            > TESTS             </h2>
+		exhaustive tests<br>
+		<hr> <h2 id=helium           > HELIUM            </h2>
+		<hr> <h2 id=timeline         > timeline          </h2>
+		this is taken straight from my <span style=code>general_plan.txt</span> file without any formatting<br>
+		not everything was done strictly sequentially <br>
+<pre class=code>
+ 1. assembler and ISA 
+    finish instruction formats                                2024-06-28
+    convientient to use assembler 
+        proper error messages
+        output controlling
+        labels                                                2024-06-29
+ 2. disassembler to verify everything                         2024-07-01
+ 3. simulator and ISA                                         2024-07-01
+        simple step through debugger
+        memory dump
+        regs print
+ 4. test system                            
+    testing framework
+    hijack significant portion of tests from 16b3x            2024-07-01
+ 5. debugger                               
+     prints, sets, dumps
+    savestate, restorestate                                   2024-07-05
+ 6. fix things from todo                                      2024-07-05
+ 7. start writing helium                                      2024-07-07
+     implement entire ISA that does not depend on privilege and VM
+    possible ISA adjustements
+    figure out external world interface
+ 8. ISA VM specification and cosi impl                        2024-07-13
+ 9. write *simple* OS and ISA adjustements          
+     some userspace program                                   2024-07-15
+10. helium                                         
+    implement privilege level, OS, VM 
+    improve anything required from previous implementation    2024-07-17
+11. very general outline of PCB 
+    ~features, layout                                         2024-07-21
+</pre>
+	further plans are to be disclosed :)<br>
+		<hr> <h2                     > UNDER CONSTRUCTION</h2>
+	</body>
+</html>
