@@ -3,8 +3,9 @@ html {
 	padding:           0% 10%; 
 	max-width:         800px;
 	color:             #00FF00; 
-	font-family:       monospace;
 	text-align:        justify;
+	font-family:       "monospace";
+
 }
 a {
 	color:             #00FFFF;
