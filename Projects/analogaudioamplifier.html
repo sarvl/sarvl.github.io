@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+	<link rel="stylesheet" type="text/css" href="../style.css">
+	</head>
+
+
+	<body>
+		<a href="../index.html">main</a>
+		<a href="./index.html">go back</a>
+		<h1> Analog Audio Amplifier</h1>
+		date: 2025-11 to 2025-12 <br>
+		desc: first complex analog project, great success <br>
+		proj: <a href="https://github.com/sarvl/analog-audio-amplifier">https://github.com/sarvl/analog-audio-amplifier</a><br> 
+
+
+		<br>
+		<br>
+		<br>
+		<hr> <h2 id=toc> Table Of Contents </h2>
+		<ol>
+			<li> <a href="#overview" >Overview </a></li>
+			<li> <a href="#design"   >Design   </a></li>
+			<li> <a href="#schematic">Schematic</a></li>
+			<li> <a href="#pcb"      >PCB      </a></li>
+			<li> <a href="#testing"  >Testing  </a></li>
+			<li> <a href="#the_good" >The Good </a></li>
+			<li> <a href="#the_bad"  >The Bad  </a></li>
+			<li> <a href="#the_ugly" >The Ugly </a></li>
+		</ol>
+		<br>
+
+		<hr> <h2 id=overview> OVERVIEW </h2>
+		<img width=50% src="./Images/aaa_i0-board.png" alt="PCB Render"> <br>
+		<a href="./Images/aaa_i0-board.png">full image</a><br>
+		<br>
+		<br>
+
+		<p>
+			This was the first somewhat complicated analog project I have ever developed. 
+			It was created as part of Analog Electronic Circuits course at my uni. 
+		</p>
+
+		<p>
+			It is audio amplifier with separate gain (in the range 10V/V to 100V/V) control for 3 frequency ranges centered around 0.1KHz, 1KHz, and 100kHz.
+			The project uses opamps to do all the filtering and amplifying.
+		</p>
+
+		<p>
+			It was group project and it was developed with:
+			<ul>
+				<li> <a href="https://github.com/Sigurd900">https://github.com/Sigurd900</a></li>
+				<li> <a href="https://github.com/MerlinTheProgramist">https://github.com/MerlinTheProgramist</a></li>
+			</ul>
+			And another person provided highly valueable research, I will link to them if I get ahold of their github.
+		</p>
+
+		<span class=comment>//I wish I worked on my cpu more, but it is what it is; at least I have other cool projects now :D</span>
+		
+		<hr> <h2 id=design> Design </h2>
+		<img width=50% src="./Images/aaa_i1-opamps.png" alt="Opamp bandpass"> <br>
+		<a href="./Images/aaa_i1-opamps.png">full image</a><br>
+
+		A short story of how stuff is more complex than it seems. <br>
+
+		<p>
+			We had to provide audio amplification with separate gain control for 3 frequency ranges centered at 0.1kHz, 1kHz, and 10kHz. Additionally the whole filter must be able to provide flat gain-frequency response within full operational range. <br>
+			Easy enough. Just provide 3 typical opamp filters and then sum them up. <br>
+			This did not work. 
+		</p>
+
+		<p>
+			The first problem was using 1st order filters, unfortunately 20dB/dec rollof does not work with flat response. Since we have to support difference of 20dB between 1kHz and 10kHz, the poles MUST be at 1kHz and 10kHz (otherwise the filter does not decay/rise fast enough). Since we have poles at 1kHz and 10kHz, in equal setting, there is 10dB drop from each at half the decade. 10dB drop is about 0.3 of amplitude, summing 2 signals leads to at most 0.6 of amplitude at center frequencies, thus not satisfying flat response. <br>
+			This means we had to use at least 2nd order filters. <br>
+			Easy enough. Just put two of the same filters in series, achieving 2nd order filter. <br>
+			This did not work. 
+		</p>
+			
+		<p>
+			The next problem was phase mismatch, at the intersection of bands signal were shifted such that they started to subtract, thus violating flat gain-frequency response. <br>
+			Solving this took a bit of research and internet scouring, but finally someone found <a href=https://www.linkwitzlab.com/filters.htm>Linkwitz Riley Filters</a> with proper phase response. <br>
+			This was the solution. <br>
+		</p>
+
+		<hr> <h2 id=schematic> Schematic </h2>
+		<img width=50% src="./Images/aaa_i2-schematic.png" alt="Schematic Screenshot"> <br>
+		<a href="./Images/aaa_i2-schematic.png">full image</a><br>
+		<p>
+			As usual, I developed the schematic with kicad which quickly became one of my favorite tools, but this time it crashed few times while FAFOing in simulation :(
+		</p>
+
+		<p>
+			The schematic is mostly the same thing as we obtained during design phase, but it was adjusted somewhat with non ideal component due to cost constraints. It also contains few PCB only constructs and I really love how easy it is to integrate simulation into PCB design. 
+		</p>
+
+		<p>
+			One somewhat interesting thing is the additional 5V to +-5V converter, used to allow for powering with USB-A.
+		</p>
+
+		<span class=comment>//genuinely that is all</span>
+		
+		<hr> <h2 id=pcb> PCB </h2>
+
+		<p>
+			As above, not much interesting happened here, although this is a point where my knowledge gets heavily limited, we used dual pole power supply, should we still use ground plane? or should we use negative pole of power supply as the ground? 
+			I do not know and we did not have time to do the research, so we poured ground plane and ccalled it a day.
+		</p>
+
+		<p>
+			Surprisingly most routing was possible on single layer.
+		</p>
+
+		<span class=comment>//high frequency pcb is still black magic and vibes to me tbf</span>
+
+		<hr> <h2 id=testing> Testing </h2>
+		<img width=50% src="./Images/aaa_i3-board.jpg" alt="Physical Board"> <br>
+		<a href="./Images/aaa_i3-board.jpg">full image</a><br>
+
+		<img width=50% src="./Images/aaa_i4-testing.jpg" alt="Testing Setup"> <br>
+		<a href="./Images/aaa_i4-testing.jpg">full image</a><br>
+
+		<p>
+			Testing it required some signal generator, unfortunately I do not have it at home so I quickly threw up one with ESP32, it is surprisingly easy. 
+			Then I simply probed each output and checked on osciloscope what is the amplification. 
+			It worked first try!
+		</p>
+
+		<p>
+			Major downside of my testing setup is with ESP32 cosine signal generator and 5V power supply I cannot possibly go higher than 50x amplification as the output saturates, still a very good result.
+		</p>
+
+		<img width=50% src="./Images/aaa_i5-scope.jpg" alt="Scope"> <br>
+		<a href="./Images/aaa_i5-scope.jpg">full image</a><br>
+
+
+		<p>
+			During project showcase at uni we have tested full range of operations, we have also ran FFT on the output and found  no meaningful distortion. 
+		</p>
+
+		<img width=50% src="./Images/aaa_i6-badapple.jpg" alt="Playing Bad Apple"> <br>
+		<a href="./Images/aaa_i6-badapple.jpg">full image</a><br>
+
+		<p>
+			As a final test, we have connected some actual audio output from PC and amplified it, of course it had to be bad apple.
+		</p>
+
+		<hr> <h2 id=the_good> THE GOOD </h2>
+		<p>
+			The very best thing is that it works. <br>
+		</p>
+
+		<p>
+			The maximum amplification and attenuation range is actually larger than required, but due to using 40dB/dec filters, it is impossible to achieve higher <i>difference</i> in amplification of different bands than 10x.
+		</p>
+
+		<hr> <h2 id=the_bad> THE BAD </h2>
+
+		<p>
+			<img width=50% src="./Images/aaa_i7-footprint.jpg" alt="bad footprint"> <br>
+			<a href="./Images/aaa_i7-footprint.jpg">full image</a><br>
+
+			The screwed up footprint
+		</p>
+
+		<hr> <h2 id=the_ugly> THE UGLY </h2>
+
+		<p>
+			Lack of power LED, it is impossible to tell whether board works in <i>some way</i> without connecting actual signal.
+		</p>
+
+		<p>
+			Lack of series resistance for potentiometers, the gain can get too high and influence other bands. 
+		</p>
+
+		<span class=comment>//and some other minor problems with schematic</span>
+
+		<a href="../index.html">main</a>
+		<a href="./index.html">go back</a>
+	</body>
+</html>
