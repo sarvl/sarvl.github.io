@@ -18,7 +18,7 @@
 		<br>
 		<br>
 		<br>
-		<hr> <h2 id=toc> Table Of Contents </h2>
+		<hr> <h2 id=toc> Table of Contents </h2>
 		<ol>	
 			<li> <a href="#overview"                 > OVERVIEW                  </a></li>
 			<li> <a href="#isa"                      > ISA                       </a></li>
@@ -45,7 +45,7 @@
 
 		<hr> <h2 id=overview> OVERVIEW </h2>
 			<p>
-				To read about current implementation and skip historical info, the read following sections: <br>
+				To read about current implementation and skip historical info, read following sections: <br>
 				<a href=#overview                 >OVERVIEW</a>                 <br>
 				<a href=#isa                      >ISA</a>                      <br>
 				<a href=#assembler                >ASSEMBLER</a>                <br>
@@ -62,8 +62,8 @@
 			</p>
 
 			<p>
-				There are a lot more features in this one than in <a href=./p16b2x.html>previous designs</a> as indicated by length of this page.
-				There are around 11000 words.
+				There are a lot more features in this one than in <a href=./p16b2x.html>previous designs</a> as indicated by the length of this page.
+				There are around 11'000 words.
 				<br>
 			</p>
 
@@ -83,8 +83,8 @@
 					<li>Load Store Queue          </li>
 					<li>Internal Caches           </li>
 				</ul>
-				Speedup of around 1.4 is easily achievable for most programs without particular optimizations. 
-				With optimizations 1.85 speedup has been achieved, making me think that with extreme care, 2x might be possible or is just slightly out of reach. <br>
+				Around 1.4x improvement in IPC is easily achievable for most programs without particular optimizations. 
+				With optimizations 1.85x improvement has been achieved, making me think that with extreme care, 2.0 improvement IPC might be possible or is just slightly out of reach. <br>
 			</p>
 
 			<p>
@@ -101,27 +101,27 @@
 			</p>
 
 			<p>
-				The entire project went through many iterations and followed me on my path of learning how modern high performance processors work. It pwent much further than I though, it was supposed to be 1 month experimentation with caches and pipeline. <br> 
+				The entire project went through many iterations and followed me on my path of learning how modern high performance processors work. It went much further than I thought, it was supposed to be 1 month experimentation with caches and pipelines. <br> 
 			</p>
 
 			<p>
-				While there still are interesting things that could be done it is much more interesting to work on something that can be executed on real HW. 
+				While there still are interesting things that could be done, it is much more interesting to work on something that can be executed on real HW. 
 				So this is the last project that focuses exclusively on simulation and there will be nothing new added. 
-				The website still may change if bug in the description or explanation is found, if so there will be note on the main site <br>
+				The website still may change if bug in the description or explanation is found, if so there will be note on the main site. <br>
 			</p>	
 
 			<p>
-				Some sections have only high level overview without much interesting details, that is because there was nothing interesting or I do not remember enough <br>
+				Some sections have only high level overview without much interesting details, this is because there was nothing interesting or I do not remember enough. <br>
 			</p>
 
 			<p>
 				Since this text is so long it is inevitable that some mistakes crawled in. 
-				If there is anything that does not make sense or weirdly phrased, let me know. <br>
+				If there is anything that does not make sense or is weirdly phrased, let me know. <br>
 			</p>
 			<br>
 
 		<hr> <h2 id=isa> ISA </h2>
-			This time it does not make sense to write entire ISA here, this is just an overview, see <a href=https://github.com/sarvl/16bit_cpu/blob/main/instruction_set.txt>full document</a> <br>
+			This time it does not make sense to write entire ISA here, this is just an overview, see <a href=https://github.com/sarvl/16b3x/blob/main/instruction_set.txt>full document</a> <br>
 
 
 		<h3> Instructions </h3>
@@ -168,8 +168,8 @@
 
 		<h3> Instruction Format </h3>
 		<p>
-			In previous designs, opcode was always in the same place, this is convienient but wastes space for reg-reg instructions. <br> 
-			Since r-r instructions require less bits then for them first 5 bits are <span class=code>00000</span> and opcode is located at the end.
+			In previous designs, opcode was always in the same place, this is convenient but wastes space for reg-reg instructions. <br> 
+			Since r-r instructions require less bits than for them first 5 bits are <span class=code>00000</span> and opcode is located at the end.
 			If the first 5 bits are not <span class=code>00000</span> then instruction is r-immediate. 
 			This way 63 different instructions are possible, here opcode place determines only whether second operand is immediate or register.
 			Registers and immediate are still always in the same spot which makes decoding fairly straightforward. <br>
@@ -286,7 +286,7 @@ end:
 
 		<p>
 			It is important to note that this project STILL does not concern itself with reality too much. <br>
-			Even though it is more detailed than HLL behavioral implementation, there is no concern with real gate delay, synthesis and putting it to anything physical. Even Though I tried to use something that at least could synthesise, I had absolutely no expierience in it and so could not make good judgments. <br> 
+			Even though it is more detailed than HLL behavioral implementation, there is no concern with real gate delay, synthesis and putting it to anything physical. Even though I tried to use something that at least could synthesise, I had absolutely no expierience in it and so could not make good judgments. <br> 
 		</p>
 		<br>
 
@@ -353,7 +353,7 @@ end:
 		<p>
 			This description is not about old implementation but rather current state since it is only a tool used for main project part. <br>
 			Clearly I do not have a lot of expierience in compiler development and so some design choices are at least suboptimal but it does its job.
-			As a way to simplify coding, it was necessary to implement macros, it is nowhere near macro system of modern assemblers but it did help write more complicated programs. <br>
+			As a way to simplify coding, it was necessary to implement macros, it is nowhere near macro system of modern assemblers but it did help in creation of more complicated programs. <br>
 		</p>
 
 		<h3> General Operation </h3>
@@ -504,8 +504,8 @@ loop:
 
 		<p>
 			While debugging, commands can be used, unfortunately they are stubs of what should be available. 
-			I had loose plans for extending them and thus did not not document them. 
-			Fortunately most of the time what is implemented is enough simply see currently executing instruction and debug programms. <br>
+			I had loose plans for extending them and thus did not document them. 
+			Fortunately, most of the time simply seeing currently executing instruction and debuging programms is enough. <br>
 		</p>
 
 		<p>
@@ -537,9 +537,9 @@ loop:
 				<li> memory reference count                                                          </li>
 				<li> branch count                                                                    </li>
 				<li> branch taken count                                                              </li>
-				<li> cycle time particular program would take on simple and pipelined implementation </li>
+				<li> number of cycles particular program would take on simple and pipelined implementation </li>
 			</ul>
-			<span class=code>-P</span> more pecise version of <span class=code>-p</span> 
+			<span class=code>-P</span> more precise version of <span class=code>-p</span> 
 			<ul>
 				<li> how many instructions executed in total                                         </li>
 				<li> memory reference count                                                          </li>
@@ -552,7 +552,7 @@ loop:
 				<li> branch count conditional                                                        </li>
 				<li> branch count unconditional                                                      </li>
 				<li> arithtmetic operations count                                                    </li>
-				<li> cycle time particular program would take on simple and pipelined implementation </li>
+				<li> number of cycles particular program would take on simple and pipelined implementation </li>
 			</ul>
 			The code to check branch predictor is a mess because it updates a lot of data and decreases readability of code.
 			I am still looking for some solution. <br>
@@ -605,7 +605,7 @@ loop:
 		<h3> ISA Extension </h3>
 		<p>
 			Up to this point, lack of multiply instruction caused significant slowdown of EVERYTHING that required multiplication.
-			For example: with <u>SW</u> multiply <a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t01.asm>factorial</a> takes 156 instructions, but with <u>HW</u> multiply it takes 86 instructions.<br>
+			For example: with <u>SW</u> multiply <a href=https://github.com/sarvl/16b3x/blob/main/tests/code/g05t01.asm>factorial</a> takes 156 instructions, but with <u>HW</u> multiply it takes 86 instructions.<br>
 			Since no one else uses this ISA, it could have been just modified but I decided to go <i>proper</i> route and add proper extension flags. This required introducing some ISA changes but now new features can be added and simply set bit in <b>C</b>PU <b>F</b>eature Flags Register. 
 			This register is readonly external register (writing is possible to encode but has no effect). <br>
 		</p>
@@ -751,22 +751,22 @@ loop:
 			 for this restriction to have significant (if any) impact on performance
 	 	7. X modifies register and Y is WRM and writes that register
 		</pre>
-			<span class=comment>//Above snipped is slightly modified <a href=https://github.com/sarvl/16bit_cpu/blob/478d886f95d5b6322d665962de387dd238a2b11c/implementation/vhdl/computer_oooe.vhdl#L450>comment</a> from the code</span><br>
-			Comment on frequency of RDX/WRX is wrong, for example <a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t05.asm>g05t05.asm</a> executes 245 WRX compared to only 201 RDM. 
+			<span class=comment>//Above snipped is slightly modified <a href=https://github.com/sarvl/16b3x/blob/478d886f95d5b6322d665962de387dd238a2b11c/implementation/vhdl/computer_oooe.vhdl#L450>comment</a> from the code</span><br>
+			Comment on frequency of RDX/WRX is wrong, for example <a href=https://github.com/sarvl/16b3x/blob/main/tests/code/g05t05.asm>g05t05.asm</a> executes 245 WRX compared to only 201 RDM. 
 			That is, it is more likely that a given instruction will modify external register than read data from memory.
 			Of course, this highly depends on tested program, but the point is, WRX has to work fast, at least for UI. <br>
 		</p>
 
 		<p>
 			The CPU works like follows:<br>
-			Find up to 2 instructions such that nothing depends on them (check for dep_XonY).
+			Find up to 2 instructions such that they depend on nothing (check for dep_XonY).
 			<span class=comment>//Obviously always at least 1 instruction can be found, first instruction depends on nothing </span><br>
 			Fetch and decode instructions from memory.<br>
 			Move 1 or 2 instructions from buffer and simulateously insert up to 2 new instructions (decoded in previous cycle). Due to the way it works, startup (and branch misprediction) delay is 2 cycles. <br>
 		</p>
 
 		<p>
-			Lack of proper branch prediction and quite high branch misprediction penalty made performance much worse that it could have been.
+			Lack of proper branch prediction and quite high branch misprediction penalty made performance much worse than it could have been.
 			Some speedup was achieved by starting branch execution while still in buffer but that just reduced the penalty.
 			It works by checking if first instruction is branch and that branch is T (T is determined by having additional copy of separate early flag register), if so and branch target is known early (uses immediate as destination) then fetch address is changed. <br>
 			Note that there is no danger with WRX UI because that branch MUST be first in buffer, and really it could also be done without limitation on immediate destination but this way it could be done without extending datapath too much since registers could only be read by execution units. <br>
@@ -820,7 +820,7 @@ loop:
 		</p>
 
 		<p>
-			<a href=https://github.com/sarvl/16bit_cpu/blob/12e1d1bbf0435f6ca903fef89dcae9cc210678ca/implementation/vhdl/src/computer_oooe.vhdl#L1116>Code fragment</a> that is responsible for proper dependency forwarding:<br>
+			<a href=https://github.com/sarvl/16b3x/blob/12e1d1bbf0435f6ca903fef89dcae9cc210678ca/implementation/vhdl/src/computer_oooe.vhdl#L1116>Code fragment</a> that is responsible for proper dependency forwarding:<br>
 		<pre class=code>
 
 rob0_src0   := (2 DOWNTO 0 =&gt; instr0_r0, OTHERS =&gt; '0')        WHEN instr0_cf = '1'
@@ -947,7 +947,6 @@ rob0_src0   := (2 DOWNTO 0 =&gt; instr0_r0, OTHERS =&gt; '0')        WHEN instr0
 					 eviction process look like regular write from CPU with no cache, except CPU is completely stalled and request is sent from cache </li>
 				<li> conflicting entry is no longer present in cache and proper one is written to cache </li>
 			</ol>
-			Note that read can potentially cause write to memory but write cannot. <br>
 		</p>
 
 		<h3> Inner Workings </h3>
@@ -977,7 +976,7 @@ rob0_src0   := (2 DOWNTO 0 =&gt; instr0_r0, OTHERS =&gt; '0')        WHEN instr0
 			Writes work exactly like reads except after a miss and potential write to memory data is satisfied from CPU.
 			Note that read causes at most 2 memory accesses while write causes at most 1. <br>
 
-			Obvious and commont optimization is to include dirty bit to evict entry only when necessary, this is indeed implemented. <br>
+			Obvious and common optimization is to include dirty bit to evict entry only when necessary, this is indeed implemented. <br>
 		</p>
 
 		<p>
@@ -1053,7 +1052,7 @@ rob0_src0   := (2 DOWNTO 0 =&gt; instr0_r0, OTHERS =&gt; '0')        WHEN instr0
 		</p>
 
 		<p>
-			PRF is however much less convienient to debug, after all the entire point is that at one point values from 1 AR can be in many PRs. 
+			PRF is however much less convenient to debug, after all the entire point is that at one point values from 1 AR can be in many PRs. 
 			Since now there is no ARF and it is really useful to check actual values, CPU contains simulation only signals that read current mapping. 
 			These mappings are then shown in waveform in addition to PRF so it is straightforward to see current mapping and check whether something goes wrong.  <br>
 		</p>
@@ -1110,7 +1109,7 @@ rob0_src0   := (2 DOWNTO 0 =&gt; instr0_r0, OTHERS =&gt; '0')        WHEN instr0
 		</p>
 		<p>
 			There is no need to consider only alligned instructions but fetch buffer is only 2 instruction wide.
-			Even then, in <a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t05.asm>simulator</a> there are 492 cases of <span class=code>mov R, R</span>, around 150 of which can use this optimization.
+			Even then, in <a href=https://github.com/sarvl/16b3x/blob/main/tests/code/g05t05.asm>simulator</a> there are 492 cases of <span class=code>mov R, R</span>, around 150 of which can use this optimization.
 			<span class=comment>//Quite significant drawback of 2 address ISA </span>.
 		</p>
 
@@ -1158,7 +1157,7 @@ rob0_src0   := (2 DOWNTO 0 =&gt; instr0_r0, OTHERS =&gt; '0')        WHEN instr0
 
 		<p>
 			Overall the speedup is not as major as I thought it will be. <br>
-			<a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t05.asm>Simulator</a> despite having 492 <span class=code>mov R, R</span>, gets only 12 cycle speedup (1935 =&gt; 1923). 
+			<a href=https://github.com/sarvl/16b3x/blob/main/tests/code/g05t05.asm>Simulator</a> despite having 492 <span class=code>mov R, R</span>, gets only 12 cycle speedup (1935 =&gt; 1923). 
 			On the other hand, execution ports' utilization dropped significantly: <br> 
 			port0 from 1418 downto 1238 (cycles active),<br>
 			port1 from 974  downto  874. <br>
@@ -1234,7 +1233,7 @@ rob0_src0   := (2 DOWNTO 0 =&gt; instr0_r0, OTHERS =&gt; '0')        WHEN instr0
 			Another solution is to have 2 separate bit vectors, each with 256b. 
 			First stores whether high part of address appeared somewhere and second stores whether low part of address appeared somewhere.
 			This way false positive requires write to high and low part that appeared somewhere but not at once, this is less likely. 
-			Especially because code is usually at <span class=code>x00XX</span> and data is usually stored at higher addresses (either because of stack or simply convienience). <br>
+			Especially because code is usually at <span class=code>x00XX</span> and data is usually stored at higher addresses (either because of stack or simply convenience). <br>
 			<span class=comment>//I have not tested precisely how well it works but it seems to be better.</span><br>
 		</p>
 
@@ -1260,7 +1259,7 @@ rob0_src0   := (2 DOWNTO 0 =&gt; instr0_r0, OTHERS =&gt; '0')        WHEN instr0
 
 		<h4> Performance </h4>
 		<p>
-			<a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t02.asm>Matrix multiply</a> without i-cache takes 321 cycles, with i-cache it takes 313 cycles. <br>
+			<a href=https://github.com/sarvl/16b3x/blob/main/tests/code/g05t02.asm>Matrix multiply</a> without i-cache takes 321 cycles, with i-cache it takes 313 cycles. <br>
 			<span class=comment>//truly incredible!</span> <br>
 			<img src="./Images/p16b3x_i4-ic-wf_c.png" alt="i$ waveform"><br>
 			<a href="./Images/p16b3x_i4-ic-wf.png">Full Image</a><br>
@@ -1348,13 +1347,13 @@ rob0_src0   := (2 DOWNTO 0 =&gt; instr0_r0, OTHERS =&gt; '0')        WHEN instr0
 		<h4 id="out_of_order_execution_v2>memory_operations>performance"> Performance </h4>
 
 		<p>
-			<a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t05.asm>simulator (in asm)</a>: <br>
+			<a href=https://github.com/sarvl/16b3x/blob/main/tests/code/g05t05.asm>simulator (in asm)</a>: <br>
 			<span class=wsp>  baseline   : 2009 cycles </span><br>
 			<span class=wsp>  speculation: 1903 cycles </span><br>
 			<span class=wsp>  lsq        : 1947 cycles </span><br>
 		</p>
 		<p>
-			<a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t02.asm>matrix multiply</a>:<br>
+			<a href=https://github.com/sarvl/16b3x/blob/main/tests/code/g05t02.asm>matrix multiply</a>:<br>
 			<span class=wsp>  baseline   :  313 cycles </span><br>
 			<span class=wsp>  speculation:  272 cycles </span><br>
 			<span class=wsp>  lsq        :  271 cycles </span><br> 
@@ -1409,7 +1408,7 @@ rob0_src0   := (2 DOWNTO 0 =&gt; instr0_r0, OTHERS =&gt; '0')        WHEN instr0
 		</p>
 
 		<p>
-			This one was particularly annoying because there was no obvious mistake, and indeed there was no direct mistake at all. Particular program tested was <a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t05.asm>g05t05</a> and exec time rised from 1947 to 1962. Other programs showed similar results on different scales (sometimes none). <br>
+			This one was particularly annoying because there was no obvious mistake, and indeed there was no direct mistake at all. Particular program tested was <a href=https://github.com/sarvl/16b3x/blob/main/tests/code/g05t05.asm>g05t05</a> and exec time rised from 1947 to 1962. Other programs showed similar results on different scales (sometimes none). <br>
 		</p>
 		
 		<p>
@@ -1474,7 +1473,7 @@ rob0_src0   := (2 DOWNTO 0 =&gt; instr0_r0, OTHERS =&gt; '0')        WHEN instr0
 		
 		<p>
 			Indirect branches require knowing the address early enough, the CPU just waits until that address is available and when it is, it <i>knowns</i> where to jump.
-			This introduced massive speedup for <a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t05.asm>g05t05.asm</a> which improved by almost 200c, with improved code it is possible to reduce that even further, in total reducing execution time from 1923 to 1441 cycles.  
+			This introduced massive speedup for <a href=https://github.com/sarvl/16b3x/blob/main/tests/code/g05t05.asm>g05t05.asm</a> which improved by almost 200c, with improved code it is possible to reduce that even further, in total reducing execution time from 1923 to 1441 cycles.  
 			Improved code means more time between when destination is availabe and actual jump. <br>
 			<span class=comment>//I am genuinely shocked by how much it gains, maybe it unlocked full potential of earlier optimizations? </span> <br>
 			<span class=comment>//in real processors need for BTB comes mostly from the fact that branch target is not known early enough </span> <br>
@@ -1499,7 +1498,7 @@ rob0_src0   := (2 DOWNTO 0 =&gt; instr0_r0, OTHERS =&gt; '0')        WHEN instr0
 		</p>
 		<h3> Performance Counters </h3>
 		<p>
-			Despite what simulator provides, it is inconvienient to try to replicate implementations, especially complex ones, in another simulator.  
+			Despite what simulator provides, it is inconvenient to try to replicate implementations, especially complex ones, in another simulator.  
 			<span class=comment>//That said, simulator in c++ runs significantly faster than implementation in vhdl so replication is not a bad idea</span> <br>
 			Therefore CPU has some counters to check how many cycles there were with specific event.
 			This is very useful to identify bottlenecks and find what potentially could be optimized.<br>
@@ -1540,7 +1539,7 @@ rob0_src0   := (2 DOWNTO 0 =&gt; instr0_r0, OTHERS =&gt; '0')        WHEN instr0
 
 		<h3 id="performance_evaluation>benchmarks"> Benchmarks </h3>
 		<p>
-			<a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t07.asm>quicksort</a>: <br>
+			<a href=https://github.com/sarvl/16b3x/blob/main/tests/code/g05t07.asm>quicksort</a>: <br>
 			<span class=wsp>  instructions: 1437        </span><br>
 			<span class=wsp>  simple      : 1809 cycles </span><br>
 			<span class=wsp>  OOE         : 1272 cycles </span><br>
@@ -1549,7 +1548,7 @@ rob0_src0   := (2 DOWNTO 0 =&gt; instr0_r0, OTHERS =&gt; '0')        WHEN instr0
 			<span class=wsp>  OOE/simple  :  0.70       </span><br>
 		</p>
 
-		<a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t02.asm>matrix multiply</a>: <br>
+		<a href=https://github.com/sarvl/16b3x/blob/main/tests/code/g05t02.asm>matrix multiply</a>: <br>
 		<p>
 			<span class=wsp>  instructions:  322        </span><br>
 			<span class=wsp>  simple      :  437 cycles </span><br>
@@ -1559,7 +1558,7 @@ rob0_src0   := (2 DOWNTO 0 =&gt; instr0_r0, OTHERS =&gt; '0')        WHEN instr0
 			<span class=wsp>  OOE/simple  :  0.57       </span><br>
 		</p>
 
-		<a href=https://github.com/sarvl/16bit_cpu/blob/main/tests/code/g05t05.asm>simulator</a>: <br>
+		<a href=https://github.com/sarvl/16b3x/blob/main/tests/code/g05t05.asm>simulator</a>: <br>
 		<p>
 			<span class=wsp>  instructions: 2332        </span><br>
 			<span class=wsp>  simple      : 2662 cycles </span><br>
@@ -1570,7 +1569,7 @@ rob0_src0   := (2 DOWNTO 0 =&gt; instr0_r0, OTHERS =&gt; '0')        WHEN instr0
 		</p>
 
 		<p>
-			After slight source code modifications, simulator can be run at 1441 cycles making at run at ~0.54 time of simple one with IPC ~ 1.62. <br>
+			After slight source code modifications, simulator can be run at 1441 cycles making it run at ~0.54 time of simple one with IPC ~ 1.62. <br>
 		</p>
 
 		<p>
