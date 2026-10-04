@@ -9,9 +9,12 @@
 		<a href="./../index.html">main</a>
 		<a href="./index.html">go back</a>
 		<h1> <a href="./p16b4x.html">16b4x CPU</a> </h1>
+		<s-td>fix date</s-td>
 		date: 2024-06 to 2024-10 <br>
 		desc: fourth CPU design, significantly bigger project scope ; WIP <br>
 		proj: <a href="https://github.com/sarvl/16b4x">https://github.com/sarvl/16b4x</a><br> 
+		This post is sponsored by PCBWay! More about them in PCB section <s-td>URL</s-td> <br>
+		<s-td> ADD A SECTION ON HOW TO SEE THE PROJECT IN ACTION </s-td>
 		<br>
 		<br>
 		<br>
@@ -122,171 +125,201 @@
 			<br>
 			just how hard can it be?<br>
 			turns out, pretty fucking hard<br>
+		<hr> <h2                     > RUNNING IT        </h2>
+			I have taken some care this time to make all the work here easily replicable.
+			<s-td>FINISH</s-td>
 
 		<hr> <h2 id=isa              > ISA               </h2>
-		<!-- TODO get hyperlinks !-->
+		<s-td>get hyperlinks</s-td>
 		for full ISA, see github <br> 
-		just instruction set in more complex format: <br>
+		just instruction: <br>
 <pre>
-P E
+PP EE
 ARITHMETIC
-    add       d, s/imm8   # R[d] &lt;--  R[d] +  R[s]/ imm16
-    and       d, s/imm8   # R[d] &lt;--  R[d] &amp;  R[s]/ imm16
-    ann       d, s/imm8   # R[d] &lt;--  R[d] &amp; ~R[s]/~imm16
-    cmp       d, s/imm8   #           R[d] -  R[s]/ imm16
-  D dvs       d, s        # R[d] &lt;--  R[d] /  R[s]        ;   signed
-  D dvu       d, s        # R[d] &lt;--  R[d] /  R[s]        ; unsigned
-    mul       d, s/imm8   # R[d] &lt;--  R[d] *  R[s]/imm16  
-    neg       d           # R[d] &lt;-- -R[d]
-    not       d           # R[d] &lt;-- ~R[d]
-    orr       d, s/imm8   # R[d] &lt;--  R[d] |  R[s]/imm16
-    shl       d, s/imm8   # R[d] &lt;--  R[d] &lt;&lt; R[s]/imm16  ; logical
-    shr       d, s/imm8   # R[d] &lt;--  R[d] &gt;&gt; R[s]/imm16  ; logical
-    sub       d, s/imm8   # R[d] &lt;--  R[d] -  R[s]/imm16
-    tst       d, imm8     #           R[d] &amp;  R[s]/imm16
-    xor       d, s/imm8   # R[d] &lt;--  R[d] ^  R[s]/imm16
+      add       d, s/imm8   # R[d] &lt;--  R[d] +  R[s]/ imm16
+      and       d, s/imm8   # R[d] &lt;--  R[d] &amp;  R[s]/ imm16
+      ann       d, s        # R[d] &lt;--  R[d] &amp; ~R[s]
+      cmp       d, s/imm8   #           R[d] -  R[s]/ imm16
+   A  dvs       d, s        # R[d] &lt;--  R[d] /  R[s]        ;   signed
+   A  dvu       d, s        # R[d] &lt;--  R[d] /  R[s]        ; unsigned
+   A  mls       d, s/imm8   # R[d] &lt;--  R[d] *  R[s]/imm16  ;   signed
+   A? mlu       d, s/imm8   # R[d] &lt;--  R[d] *  R[s]/imm16  ; unsigned
+      neg       d           # R[d] &lt;-- -R[d]
+      not       d           # R[d] &lt;-- ~R[d]
+      orr       d, s/imm8   # R[d] &lt;--  R[d] |  R[s]/imm16
+      shl       d, s/imm8   # R[d] &lt;--  R[d] &lt;&lt; R[s]/imm16  ; logical
+      shr       d, s/imm8   # R[d] &lt;--  R[d] &gt;&gt; R[s]/imm16  ; logical
+      sub       d, s/imm8   # R[d] &lt;--  R[d] -  R[s]/imm16
+      tst       d, s/imm8   #           R[d] &amp;  R[s]/imm16
+      xor       d, s/imm8   # R[d] &lt;--  R[d] ^  R[s]/imm16
 CONTROL FLOW
-    cal       s/imm11     # SP &lt;-- SP - 1 ; M[SP] &lt;-- IP ; IP &lt;-- R[s]/(IP + imm16)
-    jcc       imm8        # IF(conditio) { IP &lt;-- IP + imm16 }
-    jmp       imm11       # IP &lt;-- IP + imm16
-    ret                   # IP &lt;-- M[SP] ; SP &lt;-- SP + 1  
-P   hlt                   # halt processor
+      cal       s/imm11     # SP &lt;-- SP - 1 ; M[SP] &lt;-- IP ; IP &lt;-- R[s]/(IP + imm16)
+      jcc       imm8        # IF(condition) { IP &lt;-- IP + imm16 }
+      jmp       imm11       # IP &lt;-- IP + imm16
+      ret                   # IP &lt;-- M[SP] ; SP &lt;-- SP + 1  
+	  lop       imm8        # LC &lt;-- LC - 1 ; if(LC &gt;= 0) {IP &lt;-- IP + imm16}
+R     hlt                   # halt processor
 INTERRUPTS
-D   int       imm8        # raises interrupt imm8
-P   irt                   # return from interrupt
-IO
-P   prd       d, s/imm8   # R[d] &lt;-- P[R[s]]/P[imm16]
-P   pwr       d/imm8, s   # P[R[d]]/P[imm16] &lt;-- R[d]
+I?    int       imm8        # raises interrupt imm8
+I     irt                   # return from interrupt
+INPUT-OUTPUT
+O     prd       d, s/imm8   # R[d] &lt;-- P[R[s]]/P[imm16]
+O     pwr       d/imm8, s   # P[R[d]]/P[imm16] &lt;-- R[d]
 MEMORY
-    mrd       d, s/imm8   # R[d] &lt;-- M[R[s]]/M[imm16]
-    mwr       d/imm8, s   # M[R[d]]/M[imm16] &lt;-- R[s]
-    pop       d           # R[d] &lt;-- M[SP] ; SP &lt;-- SP + 1
-    psh       s           # SP &lt;-- SP - 1 ; M[SP] &lt;-- R[s]
-    srd       d, s/imm8   # R[d] &lt;-- M[R[s] + SP]/M[imm16 + SP]
-    swr       d/imm8, s   # M[R[d] + SP]/M[imm16 + SP] &lt;-- R[s]
+      mrd       d, s/imm8   # R[d] &lt;-- M[R[s]]/M[imm16]
+      mwr       d/imm8, s   # M[R[d]]/M[imm16] &lt;-- R[s]
+      pop       d           # R[d] &lt;-- M[SP] ; SP &lt;-- SP + 1
+      psh       s           # SP &lt;-- SP - 1 ; M[SP] &lt;-- R[s]
+      srd       d, imm8     # R[d] &lt;-- M[SP + imm16]
+      swr       imm8, s     # M[SP + imm16] &lt;-- R[s]
 PERFORMANCE
-    fls       s/imm8      # flush R[s]/imm16 from cache, may be nop
-    prf       s/imm8      # prefetch R[s]/imm16, may be nop
+      prf       s           # prefetch R[s], may be nop
 REGISTERS
-	scc       d           # R[d] &lt;-- condition = true
-    mcc       d, s        # IF(condition) {R[d] &lt;-- R[s]}
-    mov       d, s/imm8   # R[d] &lt;-- R[s]/imm16
-    xrd       d, s        # R[d] &lt;-- X[s]
-    xwr       d, imm8     # X[d] &lt;-- R[s]/imm16
+      scc       d           # IF(condition) {R[d] &lt;-- 1} ELSE {R[d] &lt;-- 0}
+      mcc       d, s        # IF(condition) {R[d] &lt;-- R[s]}
+      mov       d, s/imm8   # R[d] &lt;-- R[s]/imm16
+      xrd       d, s        # R[d] &lt;-- X[s]
+      xwr       d, s/imm8   # X[d] &lt;-- R[s]/imm16
 CONTROL REGISTERS
-P   crd       d, imm5     # R[d] &lt;-- C[imm5]
-P   cwr       imm5, s     # C[imm5] &lt;-- R[s]
+C?    crd       d, s/imm5   # R[d] &lt;-- C[R[s]/imm5]
+C     cwr       d/imm5, s   # C[R[d]/imm5] &lt;-- R[s]
 OTHER
-    nop                   # does nothing
-  R rng       d           # R[d] &lt;-- pseudorandom bit pattern
+      nop                   # does nothing
+   R  rng       d           # R[d] &lt;-- pseudorandom bit pattern
 
-Where:
-M[x]  means memory at address x
-R[x]  means value of internal register x
-X[x]  means value of external register x
-P[x]  means value of port x
-C[x]  means value of control register x
-F[x]  means value of feature register x
-
-P in the P column implies that instruction has to be executed in privileged mode
-D in the P column implies that instruction MAY need to be executed in privileged mode, depending on operands
+a letter in the P column implies that instruction requires a specific privilege 
+ a letter followed by '?' implies that instruction MAY require specific privilege, depending on operands
 	see [PRIVILEGE_LEVEL]
-Letter in E column identifies necessary extensions to run instruction
+Letter in E column identifies extension necessary to run the instruction
+ a letter followed by '?' implies that instruction has extended functionality if an extension is present
 	see [EXTENSIONS]
 
 </pre>
-		<br>
-		to fit this many instructions, encoding is more complex and roughly in 3 stages <br>
-		<span class="wp,code">AAAAACCC ___BBBBB</span> <br>
-		almost all instructions with immediate use only AAAAA for opcode, this allows for most bits for immediate (usually 8) <br>
-		register register instructions use BBBBB and have AAAAA = 0, to simplify decoding, opcodes are mostly the same as for immediate instructios <br>
-		single register/no register instructions usually use all 3 fields with different values, since they dont need many bits for arguments <br>
-		some instructions use AAAAA and CCC, this is when they need some immediate but no 8 bits or just 8 bit immediate <br>
-		<br>
-		there are unfortunately exceptions to these rules and some ambiguities as to what exact format is used by instruction, and what even is instruction <br>
-		for example <span class=code>JGE</span> can be thought of as separate instruction or variant of <span class=code>JCC</span><br>
-		in any case, format to use with fields is specified in ISA in detailed instruction description <br>
+		<p>
+			To fit this many instructions, encoding is more complex and done in up to 3 stages. <br>
+			<s-cd>AAAAACCC ___BBBBB</s-cd> <br>
+			AAAAA is decoded first, most instructions it specifies have 8 or 111 bit immediate, exception to that being conditional moves. 
+			AAAAA = b00001 is reserved for software defined instructions, AAAAA = b00010 contains some privileged instrution, AAAAA = b00010 is reserved for miscelaneous.  These instructions are chosen based on CCC.
+			When AAAAA = b00000 then the decoding can get quite complex, first BBBBB is  checked, then CCC.
+			If BBBBB is 00000 then the instruction is invalid. 
+			This is to prevent uninitialized memory from being executable. 
+			If BBBBB is 00001 to 00011 or above 01000 then instruction is decoded.
+			Otherwise, one more stage with CCC has to be decoded.
+		<p>
+			Most instructions have zero extended immediates.
+			An exception to that are jumps and calls, since jumps back and forward are both often needed, jumps and calls have sign extended immediates. 
+			Also, to reduce the instruction count needed, <s-cd>jmp</s-cd> and <s-cd>cal</s-cd> have 11-bit immediate. 
+		<p>
+			For all other cases, there is upper immediate mechanism.
+			If an instruction is preceeded by <s-cd>XWR UI</s-cd> then 8 lower bits of <s-cd>UI</s-cd> replace upper 8 bits of immediate decoded from instruction.
+		<p>
+			As was hinted, jumps are relative, making them absolute was significant mistake in previous project.
+			This time it would have been even worse decision, as OS may put a program anywhere in memory.
+			So, literally <s-cm>/*in literal defintion of the word*/</s-cm>, every single jump might need additional <s-cd>XWR</s-cd> making them effectively 32bits.
+			Even though most jumps are really close!.
+		<p>
+			Supporting OS and multitasking requires privilege and virtual memory.
+			<s-cm>/*well, not necessarily, see DOS, but it's safer this way*/</s-cm>.
+		<p>
+			Privilege level is implemented with higher than typical granularity. 
+			Instead of 2 modes, each dangerous feature requires specific privilege. 
+			Notable example is IO access.
+			Instead of letting all drivers access everything about processor, they can only use <s-cd>PWR</s-cd> and <s-cd>PRD</s-cd>. 
+			They are switched on <s-cd>INT</s-cd>, <s-cd>IRT</s-cd>, and <s-cd>CWR</s-cd> to specific register (<s-cd>x0002</s-cd> or <s-cd>x0003</s-cd>, depends on privilege).
+			<br>
+				<s-cm>
+					/*
+					tbf, it still could be better, I'm somewhat limited by 16-bit address space here.
+					Best option would be to have per IO range limit, which would be much simpler to implement with memory mapped IO.
+					Now that I think of it, I might just implement per ID association, will see in later ISA version.
+					*/
+				</s-cm>
+		<p>
+			Virtual Memory implementation is simple. <br>
+			There is a single layer of translation that turns upper virtual 5 bits into upper physical 10 bits - turning address into 21-bits.
+			It is always on, on boot it is set up to map 1:1 (zero padded) to physical addresses with full rwx permissions. 
+			Thanks to this:
+			<ul>
+				<li> stupidly simple programs <s-cm>/*tests*/</s-cm> do not need to bother with VMem or require OS
+				<li> VMem is always on, making HW just a bit simpler with less critical paths
+			</ul>
 
-		<br>
-		<br>
-		immediates are sign extended for jumps and calls and zero extended for all other operations <br>
-		since jump in both direction is needed very often <br>
-		for all other cases, there is upper immediate mechanism <br>
-		if jump is preceeded by <span class=code>XWR UI</span> then zero extension is performed and upper bits (if present) are ignored <br>
-		<br>
-		as was hinted, jumps are relative, making them absolute was significant mistake in previous project<br>
-		this time, it wouldve been even worse decision, OS may put program anywhere in memory <br>
-		so literally every single jump may need additional <span class=code>XWR</span> making them effectively 32bits <br>
-		<br>
-
-		supporting OS and multitasking requires privilege and virtual memory <br>
-		<span class=comment>//well, not necessarily, see Mill or DOS</span><br>
-		privilege level is implemented as 2 bits to allow 4 level in the future <br>
-		right now, only 2 are used though<br>
-		<span class=comment>//AFAIK 4 levels are not used anywhere but it may allow for fun stuff</span><br>
-		its switched on INT, IRT and CWR to specific register<br>
-		<span class=todo>explain this in a bit more depth with some ideas and PID</span><br>
-		<br>
-		<br>
-
-		VM implementation is simple <br>
-		on boot, TLB is initialized to map virt address to physical address 1-1 with full rwx permissions <br>
-		thanks to this <br>
-		<ul>
-			<li> stupidly simple programs <span class=comment>/*tests*/</span> dont need to bother with VM </li>
-			<li> VMem is always on, making HW just a bit simpler </li>
-		</ul>
-		consequently TLB must always support 1 full address space <br>
-		for 16bits with 2kiW pages, thats just 32 pages <br>
-		this does not really matter, other than performance reasons <br>
-		<span class=comment>//TLB is partly architectural partly microarchitectural </span><br>
-		<span class=comment>//minimum requirements are listed but specific structure and what is contained is implementation detail</span><br>
-		<span class=todo>explain PT and PTE structur</span> <br>
-
-		there is no need to support cached/uncached pages as IO is done fully through port instructions  <br>
-		this is something I would love to change but with 16b addres space, there is simply no room for MMIO <br>
-
-		<br>
-		<br>
-		io and system interface are still under construction, not a lot can be written here <br>
-		I have DMA in plans :3 <br>
-
-		<span class=todo>add code samples</span>
-		<span class=todo>talk more about instructions and reasoning for them</span><br>
+		<p>
+			Consequently, TLB must always support at least 1 full address space.
+			For 16bits with 2kiW pages, that is just 32 pages, with 16-bits per translation, that is 512 bits, not nothing but not outrageous.<br>
+			<s-cm>//TLB is partly architectural partly microarchitectural </s-cm><br>
+			<s-cm>//minimum requirements are listed but specific structure and what is contained is implementation detail</s-cm><br>
+		<p>
+			Page Table is organized as 16 16-bit entries, it can be stored anywhere in 16-bit physical address space. 
+			Each entry has: present bit, protected bit, dirty bit, rwx bits, frame id. 
+			Note the lack of PID, hardware assumes that page table is for currently running process. 
+			Though it might cache different mappings for performance reasons.
+		<p>
+			There is no need to support cached/uncached pages as IO is done fully through port instructions.<br>
+			<s-cm>//This is something I would love to change but with 16b addres space, there is simply no room for MMIO</s-cm>
+		<p>
+			IO is divided into two mechanisms: interrupts and ports.
+			<s-cm>//I have DMA in plans, but not even a is ready sketch yet</s-cm>
+		<p>
+			Interrupts may occur at different times but they are always presented before the new instruction starts. 
+			Sometimes they may stop the execution of current instruction when it causes fault, most notable example: page fault.
+			OS has to set up interrupt handler table, which is 256 entry table of where the hardware must jump to on corresponding interrupt. 
+			This mapping is then loaded to internal buffer by the hardware and can be freely removed from memory.<br>
+			<s-cm>
+				/*
+				I considered two other options: 
+				1. keeping the table in memory
+				2. predefined addresses.
+				Both of these options were quite bad from memory footprint or performance cost.
+				*/
+			</s-cm>
+		<p>
+			<s-td>add code samples</s-td><br>
+			<s-td>talk more about instructions and reasoning for them</s-td><br>
 		<hr> <h2 id=sasm             > SASM              </h2>
-		Synthesizing ASseMbler <Br>
-		<br>
-		SASM is not groundbreaking assembler, it must work reliably and be convienient to use <br>
-		therefore SASM provides: instruction support <span class=comment>/*no way*/</span>, labels, expression system, preprocessing directives, macro system <br>
-		<span class=todo>does it contain macros</span>
-		<br>
-		for simplicity, expressions use postfix format <br>
-		all operators necessary for metaprogramming, label and bit manipulation are supported <br>
-		there are 2 types of expressions: constant and non constant <br>
-		the names are suboptimal, constant means that no label is used <br>
-		directives that influence code generation (eg <span class=code>%ADR</span>) are required to use constant expressions<br>
-		otherwise it would not be possible to decide on binary layout <br>
-		<br>
-		since they use postfix, simple stack suffices to evaluate all expressions<br>
-		<br>
-		<br>
-		directives are mostly used for metaprogramming with few dedicated for data placement <br>
-		<span class=comment>//surpisingly, metaprogramming turned out to be actually useful, mostly for tests</span><br>
-		
-		<br>
-		turns out, macros are hard to implement nicely<br>
-		<br>
-		ugh performance tests, they are somewhere on the todo list <br>
-		<br>
-		tests cover each stage of processing, making sure that no invalid case passes through<br>
-		lexing tests randomly generated input to make sure that at all points, assembler gracefuly finishes<br>
-		unless I missed something, each possible combination of instr/directive + operands are tested and either verified to be correct or rejected <br>
-		error messages are unfortunately part of test system <br>
-		looking for solutions!<br>
-		<br>
-		lexer is mostly a standard handwritten state machine<br>
-		verification works similarly for directives and instructions <br>
-		example for directive verification: <br>
+		Synthesizing ASseMbler <br>
+		<p>
+			SASM is not a groundbreaking assembler.
+			It must work reliably and be convienient to use. 
+			It also must work fast enough to never cause slowdown.
+			Therefore SASM provides: instruction support <s-cm>/*no way*/</s-cm>, labels, expression system, preprocessing directives, macro system.
+			<s-cm>//well, macro system is in the works... It is harder than I thought.</s-cm> 
+		<p>
+			For simplicity, expressions use postfix format. 
+			All operators necessary for metaprogramming, label and bit manipulation are supported.
+			There are 2 types of expressions: constant and non constant. 
+			The names are suboptimal, constant means that no label is used.
+			Directives that influence code generation (eg <s-cd>%ADR</s-cd>) are required to use constant expressions.
+			Otherwise it might not be possible to decide on binary layout.
+			Since they use postfix, simple stack suffices to evaluate all expressions, which saves a ton of work.
+			<br>
+			For example <s-cd>{1 2 4 + -}</s-cd> evaluates to <s-cd>2 + 4 - 1 = 5</s-cd>.
+		<p>
+			Directives are mostly used for metaprogramming with few dedicated for data placement. 
+			They turned out to be very useful for verification of correct instruction behavior.
+			<s-td>EXAMPLE</s-td>
+		<p>	
+			Internally, SASM performs few passes on the input. 
+			<ol>
+				<li> 
+					Input on the whole is converted into a bunch of tokens. 
+					Each token identifies basic construct (like string or number). 
+					There are three modes of parsing - regular, string, comment. 
+					String converts everything between <s-cd>"</s-cd> into singular string. 
+					Comment ignores everything from its start until end of the line.
+				<li> 
+					Syntax is verified, all structures are checked. 
+					I quite like the solution to verification and codegen, see below. 
+				<li> 
+					Most directives are evaluated and all labels are collected. 
+					This step could be merged with previous one but is much simpler when they are separate. 
+				<li> 
+					All remaining directives are evaluated here and everything is turned into actual code.
+				<li>
+					There are few output modes possible depending on the need - e.g. VHDL output so output can be pasted directly into memory code.
+			</ol>
+		<p>
+			The solution I mentioned above is:
 <pre class=code>
 /* defines what each directive has to verify
  * exp = exs ... exe
@@ -315,74 +348,151 @@ constexpr static char const* const pattern_table[] = {
 	"xx","i ","x "
 	};
 </pre>
-		later in a for loop, switch case is provided for each letter that tests whats necessary<br>
-		this allows to extend and change syntax VERY easily and quickly <br>
-		unfortunatly this is slower (I think?) and harder to generate good error messages than in fully custom switch <br>
-		so id like to extend this code generation even further, such that specific switch (max performance) is generated from above table (max readability) <br>
-		for now this suffices <br>
-		<br>
-		I tried to implement similar solution for code gen but I dont think its posible because one mnemonic can map to different opcodes depending on operands <br>
-		verification <i>can</i> change under the hood type but thats ugly <br>
-		<span class=todo>^wording</span>
-		since each mnemnic has at most 2 variants, there are 2 tables <br>
-		instructions are mostly regular so they are grouped by allowed operands <br>
-		each table contains exact opcode needed by an instruction so there is no need to encode opcode, just operands which are always in the same spots<br>
-		however to warn for too big immediate, there have to be few separate cases <br>
-		<span class=comment>//here is a point where JGE (mentioned earlier) is treated as separate instruction, even though its part of JCC</span>
-		<span class=comment>//table = clean code</span><br>
-		<span class=todo>add code samples</span>
-
-
+		<s-td> make the table up to date</s-td>
+			Later in a for loop, switch case is provided for each letter that tests what is necessary. 
+			This allows to extend and change syntax VERY easily and quickly.
+			I suspect this is slower than specialized solution but it is definitely harder to generate good error messages.
+			So for now, I am stuck with <s-cd>expected token STR/LBL/DEF</s-cd> instead of good message. 
+			This shall be fixed but it does work good enough for now.<br>
+			<s-cm>
+				//This for now thing is like 2 years<br>
+				//but I didnt have time to work on the project much<br>
+				//so still counts I think?
+			</s-cm>
+		<p>
+			I would like to extend this code generation even further, such that specific switch (max performance) is generated from above table (max readability). 
+			But this requires ensuring that, indeed, current code is not slow.
+		<p>
+			Turns out, macros are hard to implement nicely.
+			I will work on them in the future unknown.
+		<p>
+			Tests cover each stage of processing, making sure that no invalid case passes through.
+		<p>
+			First, each proper construct is tested to check whether they get turned into accurate lexems. 
+			Bunch of invalid tokens are checked whether they are properly reported. 
+			One test group includes randomly generated <s-cm>/*some time ago, not each time*/<s-cm> input to see whether SASM reports proper errors.
+		<p>
+			Then, All structures are verified.
+			Each instruction and directive is checked, not exhaustively but enough to be quite sure of correct behavior.
+			That means each <i>variant</i> is checked, but <i>values</i> are picked arbitrarily. 
+			<s-cm>/*Quite often I picked <s-cd>0</s-cd> as the value, oh well, not the brighest one around*/</s-cm>.
+		<p>
+			Then all preprocessing possibilities are verified, including few invalid kinds.
+		<p>
+			Finally, all codegen options are verified.
+		<p>
+			Performance tests are also in the works, though SASM works good enough so it is not a priority.
+		<p>
+			Error messages are unfortunately part of test system.
+			looking for solutions!
+		<p>
 		<hr> <h2 id=dasm             > DASM              </h2>
 		Desynshesizing ASeMbler <br>
 		<span class=comment>not quite assembler</span>
-		this is the simplest subproject <br>
-		2 modes are implemented <br>
-		<ul>
-			<li> interactive (stdin) </li>
-			<li> file </li>
-		</ul>
-		both modes call <span class=code>disassemble(uint16t)</span> which prints actual disassembly<br>
-		there is no global state that influences instruction formats so disassembly is trivial
-		first decode all possible operands (unused will be ignored)<br>
-		then switch based on opcode<br>
-		I dont think there is generally faster solution, happy to be proven wrong<br>
+		<p>
+			This is the simplest subproject.
+		<p>
+			2 modes are implemented 
+			<ul>
+				<li> interactive (stdin)
+				<li> file 
+			</ul>
+			Both call <s-cd>disassemble(uint16t)</s-cd> which prints actual disassembly. 
+		<p>
+			There is no global state that influences instruction formats so disassembly is trivial. 
+			First, decode all possible operands (unused will be ignored).
+			Then switch based on opcode.
+		<p>
+			I do not think there is generally faster solution, happy to be proven wrong.
+		<p>
 
 		<hr> <h2 id=cosi             > COSI              </h2>
-		surprisingly, to me at least, simulator is very complicated <br>
-		base ISA - arithmetic and data movement instructions are almost trivial <br>
-		nonetheless, to maximize performance, all arithmetic operations are implemented in assembly, because flags <br>
-		<br>
-		implementing virtual memory is still quite straightforward but I still dont know how to do IO and interrupts <br>
-		<span class=comment>//it is also very boring</span>
-
-		regular execution, perf counters, debug are separated into 3 execution modes <br>
-		regular is base, provides fastest possible execution but output is possible only at the end<br>
-		<span class=todo>maybe????? what if specific interface provided by simulator</span>
-		it can still be made faster if some data were to be stored in registers <br>
-		another option is to implement JIT <br>
-		id love to try both, but its not a priority, complixity of both would be huge<br>
-		<span class=todo>elaborate on perf tricks</span><br>
-		<span class=todo>provide benchmarks</span><br>
-		debug and perf call regular procedures underneath which prevents code duplication <br>
-		but it costs performance :( <br>
-		<span class=comment>//I hate these perf-readability tradeoffs</span>
-
-		<br>
-		<br>
-		helium simulator is not started yet as it requires fully working helium implementation <br>
-		<br>
-		debugger is very basic WIP now<br>
-		proper one will be made after base is implemented <br>
-		<br>
-		how to do it with  IO? <br>
-
+		<p>
+			Currently, simulator is quite barebones but is mostly complete.
+			Old iteration was more interesting but required change to properly integrate IO and specialization for microarchitectures.  <br>
+			<s-cm>//Most of the stuff will be reimplemented here once the basic FPGA implementation is done</s-cm><br>
+		<p>
+			Simulator operates in a loop
+			<ol>
+				<li> 
+					Print basic debug info 
+				<li>
+					Execute instruction
+				<li>
+					Check instruction side effects
+				<li>
+					Check interrupts
+				<li>
+					Check breakpoints and debug commands
+			</ol>
+			At the end, it might print some more debug info.
+		<p>
+			Instruction is chosen almost exactly in the same fashion as in DASM <s-td>URL</s-td>. 
+			And the path diverges into more files.
+			This also provides quite convenient way to switch implementation that is used. 
+			To change microarchitecture, replace <s-cd>instruction.*</s-cd> files.
+			Other than microarchitectures, this can <s-cm>/*and will*/</s-cm> be used to implement ultra fast simulator with minimal error checking and very careful simulator with extensive error checking.
+			This implementation is inbetween, not too fast, not too safe.
+		<p>
+			All instructions are simple so each case is simple too.
+			Often there are checks for interrupts.
+		<p>
+			<s-cd>memory.*</s-cd> has quite long check for various translation errors.
+			This I suspect to be bottleneck in the future so it would be good to somehow skip most of it.
+		<p>
+			Interrupts are global state that is rised by various events. 
+			As they are presented as synchronous, it does not actually matter whether they are checked or generated asynchronously. 
+			Though it does mean that some interrupts like timer need to be implemented with special care.
+			Not implemented here, but simulator is generally fast enough and timer slow enough to make ocasional check with <s-cd>std::chrono</s-cd> good enough.
+		<p>
+			IO is somewhat synchronous, in that it communicates via synchronous instructions. 
+			<s-cm>/*DMA would make that not true*/</s-cm>
+			So it is implemented as deep switch for each <s-cd>io::read</s-cd> and <s-cd>io::write</s-cd> possibility. 
+			So also, to change the system the CPU is integrated into, changing <s-cd>io.*</s-cd> is sufficient.
+		<p>
+			To be impplemented is various performance measurement systems, some TUI debugger, and ultra fast implementation.
+		<p>
+			Attentious reader might notice lack of tests, they are shared with the CPU and thus covered in tests section <s-td> URL </s-td>.<br>
+			<s-cm>//Extra interesting fast option is JIT or even full transpiler, will take a while though.</s-cm>
 		<hr> <h2 id=operating_system > OPERATING SYSTEM  </h2>
-		nothing done yet<br>
+		<p>
+			Not much done yet, I do have basic OS working for testing but it is not yet interesting.
 		<hr> <h2 id=tests            > TESTS             </h2>
-		exhaustive tests<br>
+		<p>
+			Tests have custom made program.
+		<p>
+			One problem with how they are implemented right now is they require memory to be operational. 
+			This could be mitigated but as basic memory is verified as one of the first things and would complicate things quite a bit, it is not.
+		<p>
+			I want to do some functional verification one day.
+
+			<s-td> WRITE SMTH </s-td>
 		<hr> <h2 id=helium           > HELIUM            </h2>
+			This is WIP, I got very early iteration workin years ago, but it did need significant rework. <br>
+		<p>
+			I will yap about one feature from old helium as it had huge consequences. 
+			The PSRAM on Tang Nano 9k is borked.
+			It took me so long to debug it, I am still not entirely certain of that, but all stars point to it being broken.
+			First <s-cm>/*that one is partly on me, but docs did not help much*/</s-cm>, I spent good few days figuring out what to use, this board has PSRAM but Tang Nano website said it had SDRAM. 
+			Also, gowin ide did allow me to generate IP for SDRAM, which made matters way more confusing.
+		<p>
+			I spent some time reading docs and existing implemenations, planning on what to do, deciding that I should write my own controller because 
+			<ol>
+				<li> more fun
+				<li> theirs forced burst mode
+			</ol>
+			So I wrote one, debugging what came, realizing that proper implementation would be quite complex.
+			Basic tests did indeed pass. 
+			However, 
+			
+			<s-td> START AT 2024-07-23</s-td>
+		<p>
+			Around this time, I also stared working on PCB.
+		<hr> <h2 id=substrate        > SUBSTRATE         </h2>
+
+		<p>
 		<hr> <h2 id=timeline         > timeline          </h2>
+		<s-td>UPDATE</s-td>
 		this is taken straight from my <span style=code>general_plan.txt</span> file without any formatting<br>
 		not everything was done strictly sequentially <br>
 <pre class=code>

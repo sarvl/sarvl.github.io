@@ -11,26 +11,27 @@ a {
 	color:             #00FFFF;
 }
 
-.code {
-	color:             #FFFFFF; 
-	background-color:  #383838;
-}
-
-.wsp {
-	white-space:       pre;
-}
-
-.todo {
+s-td{
 	color:             #FFFFFF; 
 	background-color:  #FF0000;
 }
 
-.comment {
+s-cd {
+	color:             #FFFFFF; 
+	background-color:  #383838;
+	white-space:       pre;
+}
+
+s-ws {
+}
+
+
+s-cm {
 	color:             #44AA44; 
 	background-color:  #000000;
 }
 
-.aside {
+s-as {
 	color:             #77FF00; 
 	background-color:  #000000;
 }
