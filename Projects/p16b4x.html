@@ -386,6 +386,10 @@ constexpr static char const* const pattern_table[] = {
 			Error messages are unfortunately part of test system.
 			looking for solutions!
 		<p>
+			<s-td>FIZZBUZZ EXAMPLE in directives</s-td>
+		<p>
+			<s-td>syntax error correction</s-td>
+		<p>
 		<hr> <h2 id=dasm             > DASM              </h2>
 		Desynshesizing ASeMbler <br>
 		<span class=comment>not quite assembler</span>
@@ -483,12 +487,101 @@ constexpr static char const* const pattern_table[] = {
 			</ol>
 			So I wrote one, debugging what came, realizing that proper implementation would be quite complex.
 			Basic tests did indeed pass. 
-			However, 
-			
-			<s-td> START AT 2024-07-23</s-td>
+			I did not think much about it for some time.
+			However, I did start experiencing weird problems. 
+			Synthesis and PnR started breaking randomly, decoders were not placed despite being right there. 
+		<p>
+			I decided that it must be an issue with Gowin IDE, so I switched to Yosys (temporarily). 
+			And then, flash started failing.
+			<s-td> add flash fail image </s-td>
+		<p>
+			No idea why it started working again, but it did. 
+			I did discover quite a few mistakes in PSRAM controller implementation but it did not solve the issue.
+			For instance I once wrote a line: <br>
+			<s-cd>psram_data_out &lt;= IO_psram_dq(7)</s-cd>
+			which should not affect PSRAM at all, but changing 7 to 6 sometimes had an effect on result.
+			<br>
+			<s-cm>
+				//Honestly, I still sometimes stumble on problems like this<br>
+				//I suppose it has something to do with how synthesis works... weird stuff<br>
+			</s-cm>
+		<p>
+			Here is first of two things that finally convinced me that something is borked with PSRAM. <br>
+			<s-td>waveform got </s-td><br>
+			<s-td>waveform expected </s-td><br>
+
+			This is a photo of my oscilloscope, with signals: 
+			<ul>
+				<li> pink - chip enable 
+				<li> yellow - rwds
+				<li> cyan - clock
+				<li> blue -  dq(7)
+			</ul>
+			RWDS goes low way too early.
+
+		<p>
+			The second reason was finding github repo with PSRAM controller that had issue mentioning unstability.
+			<s-td> https://github.com/zf3/psram-tang-nano-9k/issues/5 </s-td>
+			<s-cm>//Looks like the issue might have been fixed? I might revisit it eventually</s-cm>
+		<p>
+			This led to 4 possible options:
+			<ol>
+				<li> figure out what is happening with PSRAM
+				<li> get RAM ICs 
+				<li> use flash as RAM
+				<li> use ESP32 as external memory
+			</ol>
+			I went with 4.
+			The details of implementation were boring, one notable thing is that it limited my effective frequency to several kilohertz.
+			Probably due to speed of ESP32 pins.
+		<p>
+			<s-td>setup pic</s-td>
+			<s-td>setup vm pic</s-td>
+
+			All this, led to finally getting proper output with two programs running in virtual memory!
+		<p>
+			<s-td>2024 08 17</s-td>
+		<p>	
+			I have found perfect chip - IDT 71V016, but it is was only SMD.
+			I could have made or buy SMD to THT breakout board, but decided that, while I am at it, might as well make PCB for everything.
+			For more about that, see <s-td>PCB </s-td>
 		<p>
 			Around this time, I also stared working on PCB.
 		<hr> <h2 id=substrate        > SUBSTRATE         </h2>
+		<p>
+			Since I have found perfect chip - IDT 71V016, but it is was only SMD.
+			I could have made or buy SMD to THT breakout board, but decided that, while I am at it, might as well make PCB for everything.
+		<p>
+			RAM BOARD <br>
+			RAM board uses the aforementioned chip and two latches for address.
+			this lets reduce number of pins on the bus almost in half.
+
+			the control is:
+			<ul>
+				<li> nCE
+				<li> addr load (latch)
+				<li> nWE
+				<li> nOE
+			</ul>
+
+
+			the routing is... subpar.
+
+			But the worst was to come...
+
+			As much as I love this solution, the connector has problems - it scratches. 
+			thankfully the fix iss easy, the fingers to be resoldered once in a while.
+
+		<p>
+			substrate board <br>
+			This board is mostly empty, it serves as a convenience board for a bunch of stuff.
+			Primary use of it is PCIe connector with custom interface for RAM board.
+		<p>
+			full product <br>
+		<p>
+			And the worst to come? I flipped the connector.
+
+
 
 		<p>
 		<hr> <h2 id=timeline         > timeline          </h2>
