@@ -303,29 +303,82 @@ Letter in E column identifies extension necessary to run the instruction
 		<hr> <h2 id=system           > SYSTEM            </h2>
 			<s-td>DESCRIBE</s-td>
 
-		<hr> <h2 id=sasm             > SASM              </h2>
+		<hr> <h2 id=sasm> SASM </h2>
 		Synthesizing ASseMbler <br>
 		<p>
+		<h3 id="sasm>overview"> OVERVIEW </h3>
 			SASM is not a groundbreaking assembler.
 			It must work reliably and be convienient to use. 
 			It also must work fast enough to never cause slowdown.
 			Therefore SASM provides: instruction support <s-cm>/*no way*/</s-cm>, labels, expression system, preprocessing directives, macro system.
 			<s-cm>//well, macro system is in the works... It is harder than I thought.</s-cm> 
 		<p>
+			First two features are obvious so I will mostly skip them.
+		<h3 id="sasm>expressions"> EXPRESSIONS </h3>
 			For simplicity, expressions use postfix format. 
 			All operators necessary for metaprogramming, label and bit manipulation are supported.
 			There are 2 types of expressions: constant and non constant. 
 			The names are suboptimal, constant means that no label is used.
 			Directives that influence code generation (eg <s-cd>%ADR</s-cd>) are required to use constant expressions.
-			Otherwise it might not be possible to decide on binary layout.
-			Since they use postfix, simple stack suffices to evaluate all expressions, which saves a ton of work.
+			Otherwise it would not be possible to always decide on binary layout.
+		<p>
+			Postfix makes it much easier to implement them.
+			Simple stack suffices to evaluate all expressions, which saves a ton of work.
 			<br>
 			For example <s-cd>{1 2 4 + -}</s-cd> evaluates to <s-cd>2 + 4 - 1 = 5</s-cd>.
-		<p>
+		<h3 id="sasm>directives"> DIRECTIVES </h3>
 			Directives are mostly used for metaprogramming with few dedicated for data placement. 
 			They turned out to be very useful for verification of correct instruction behavior.
-			<s-td>EXAMPLE</s-td>
-		<p>	
+		<p>
+			For example, the code I use to check <s-cd>XOR</s-cd> is:
+<pre class=code>
+;test xor
+
+%assign $addr {0x1000 1 -}
+
+%assign $iter 0
+%rps 2 
+	%assign $iter {$iter 1 +}
+
+	%assign $a 0 
+
+	%rps 5
+		%assign $a {$a 1 + 13 *}
+
+		%assign $b 0 
+		%rps 7
+			%assign $b {$b 1 + 7 *}
+
+			%assign $addr {$addr 1 +}
+
+			xwr 	UI, {$a 8 &gt; 0xFF &amp;}
+			mov 	R0, {$a 0xFF &amp;}
+
+			%if {$iter 1 =} 
+				xwr 	UI, {$b 8 &gt; 0xFF &amp;}
+				xor 	R0, {$b 0xFF &amp;}
+			%else
+				xwr 	UI, {$b 8 &gt; 0xFF &amp;}
+				mov 	R1, {$b 0xFF &amp;}
+				xor 	R0, R1
+			%end
+		
+			xwr 	UI, {$addr 8 &gt; 0xFF &amp;} 
+			mwr 	{$addr 0xFF &amp;}, R0	
+		%rpe 
+	%rpe 
+%rpe 
+
+	hlt
+</pre>
+			The code generates 35 pairs of numbers to check, computes their result, and stores it memory.
+			This then was compared with golden standard in C and saved as golden standard in tests.
+			Almost the exact same code executes for other arithmetic operations.
+			One way to improve it further is to use macros, which are not yet possible.
+			And the other, which I probably should do, is to add edge case values.
+
+			<h3 id="sasm>internal"> INTERNAL OPERATION </h3>
+
 			Internally, SASM performs few passes on the input. 
 			<ol>
 				<li> 
