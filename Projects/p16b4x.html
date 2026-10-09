@@ -23,13 +23,11 @@
 				<li><a href=#overview        >overview</a></li>
 				<li><a href=#isa             >isa</a></li>
 				<ul>
-					<li><a href="#isa>overview"            >overview      </a></li>
 					<li><a href="#isa>format"              >format        </a></li>
-					<li><a href="#isa>privileges"          >privileges    </a></li>
-					<li><a href="#isa>memory"              >memory        </a></li>
+					<li><a href="#isa>ossupport"           >OS suppost    </a></li>
 					<li><a href="#isa>io"                  >io            </a></li>
-					<li><a href="#isa>system"              >system        </a></li>
 				</ul>
+				<li><a href=#system          >system          </a></li>
 				<li><a href=#sasm            >sasm (assembler)</a></li>
 				<ul>
 					<li><a href="#sasm>overview"           >overview      </a></li>
@@ -141,8 +139,10 @@ make initfull
 		<p>
 			I still have to set up some running example but it now is possible to follow my blogs at home.
 		<hr> <h2 id=isa              > ISA               </h2>
-		for full ISA, see github <br> 
-		just instruction: <br>
+<p>
+		This is general overview and explanation of some design decisions.
+		For full ISA, see <a href=https://github.com/sarvl/16b4x>github</a>.
+		<h3 id="isa>format"          > FORMAT            </h3>
 <pre>
 PP EE
 ARITHMETIC
@@ -206,71 +206,80 @@ Letter in E column identifies extension necessary to run the instruction
 
 </pre>
 		<p>
-			To fit this many instructions, encoding is more complex and done in up to 3 stages. <br>
+			To fit this many instructions, encoding is more complex than in previous iterations and done in up to 3 stages. <br>
 			<s-cd>AAAAACCC ___BBBBB</s-cd> <br>
-			AAAAA is decoded first, most instructions it specifies have 8 or 111 bit immediate, exception to that being conditional moves. 
-			AAAAA = b00001 is reserved for software defined instructions, AAAAA = b00010 contains some privileged instrution, AAAAA = b00010 is reserved for miscelaneous.  These instructions are chosen based on CCC.
-			When AAAAA = b00000 then the decoding can get quite complex, first BBBBB is  checked, then CCC.
+			AAAAA is decoded first, most instructions it specifies have 8- or 11-bit immediate, exception to that being conditional moves. 
+			AAAAA = b00001 is reserved for software defined instructions, AAAAA = b00010 contains some privileged instrution, AAAAA = b00010 is reserved for miscelaneous.  These instructions are chosen by CCC.
+			When AAAAA = b00000 then first BBBBB is checked and then CCC.
 			If BBBBB is 00000 then the instruction is invalid. 
 			This is to prevent uninitialized memory from being executable. 
 			If BBBBB is 00001 to 00011 or above 01000 then instruction is decoded.
 			Otherwise, one more stage with CCC has to be decoded.
 		<p>
 			Most instructions have zero extended immediates.
-			An exception to that are jumps and calls, since jumps back and forward are both often needed, jumps and calls have sign extended immediates. 
+			An exception to that are jumps and calls.
+			Since jumps backward and forward are both often needed, jumps and calls have sign extended immediates. 
 			Also, to reduce the instruction count needed, <s-cd>jmp</s-cd> and <s-cd>cal</s-cd> have 11-bit immediate. 
 		<p>
 			For all other cases, there is upper immediate mechanism.
 			If an instruction is preceeded by <s-cd>XWR UI</s-cd> then 8 lower bits of <s-cd>UI</s-cd> replace upper 8 bits of immediate decoded from instruction.
+			In particular, when jumps are preceeded by upper immediate write then upper 8 bits are replaced, even if original instruction had 11-bit immediate.
 		<p>
 			As was hinted, jumps are relative, making them absolute was significant mistake in previous project.
 			This time it would have been even worse decision, as OS may put a program anywhere in memory.
 			So, literally <s-cm>/*in literal defintion of the word*/</s-cm>, every single jump might need additional <s-cd>XWR</s-cd> making them effectively 32bits.
-			Even though most jumps are really close!.
-		<p>
+			Even though most jumps are really close!
+		<h3 id="isa>ossupport"> OS SUPPORT </h3>
 			Supporting OS and multitasking requires privilege and virtual memory.
 			<s-cm>/*well, not necessarily, see DOS, but it's safer this way*/</s-cm>.
-		<p>
+		<h4 id="isa>ossupport>privilege"> PRIVILEGES </h4>
 			Privilege level is implemented with higher than typical granularity. 
 			Instead of 2 modes, each dangerous feature requires specific privilege. 
 			Notable example is IO access.
 			Instead of letting all drivers access everything about processor, they can only use <s-cd>PWR</s-cd> and <s-cd>PRD</s-cd>. 
 			They are switched on <s-cd>INT</s-cd>, <s-cd>IRT</s-cd>, and <s-cd>CWR</s-cd> to specific register (<s-cd>x0002</s-cd> or <s-cd>x0003</s-cd>, depends on privilege).
-			<br>
-				<s-cm>
-					/*
-					tbf, it still could be better, I'm somewhat limited by 16-bit address space here.
-					Best option would be to have per IO range limit, which would be much simpler to implement with memory mapped IO.
-					Now that I think of it, I might just implement per ID association, will see in later ISA version.
-					*/
-				</s-cm>
 		<p>
-			Virtual Memory implementation is simple. <br>
-			There is a single layer of translation that turns upper virtual 5 bits into upper physical 10 bits - turning address into 21-bits.
-			It is always on, on boot it is set up to map 1:1 (zero padded) to physical addresses with full rwx permissions. 
+			<s-cm>
+				/*
+				tbf, it still could be better, I'm somewhat limited by 16-bit address space here.
+				Best option would be to have per IO range limit, which would be much simpler to implement with memory mapped IO.
+				Now that I think of it, I might just implement per ID association, will see in later ISA version.
+				*/
+			</s-cm>
+
+		<h4 id="isa>ossupport>privilege"> VIRTUAL MEMORY </h4>
+		<p>
+			Virtual memory is needed for process isolation without getting into the whole segmentation mess. 
+			Implementations can get quite complex with many levels of indirection, especially with larger address spaces.
+			It is one of the things that gets much easier with 16-bit address width.
+		<p>
+			Here, there is a single layer of translation that turns upper virtual 5 bits into upper physical 10 bits - turning address into 21-bits.
+			It is always on, on boot it is set up to map virtual addresses 1:1 (zero padded) to physical with full rwx permissions. 
 			Thanks to this:
 			<ul>
-				<li> stupidly simple programs <s-cm>/*tests*/</s-cm> do not need to bother with VMem or require OS
-				<li> VMem is always on, making HW just a bit simpler with less critical paths
+				<li> stupidly simple programs <s-cm>/*tests*/</s-cm> do not need to bother with VMem and do not require OS
+				<li> VMem is always on, making HW just a bit simpler with less possible critical paths
 			</ul>
 
 		<p>
 			Consequently, TLB must always support at least 1 full address space.
 			For 16bits with 2kiW pages, that is just 32 pages, with 16-bits per translation, that is 512 bits, not nothing but not outrageous.<br>
 			<s-cm>//TLB is partly architectural partly microarchitectural </s-cm><br>
-			<s-cm>//minimum requirements are listed but specific structure and what is contained is implementation detail</s-cm><br>
+			<s-cm>//minimum requirements and interface are listed but specific structure and what is contained is implementation detail</s-cm><br>
 		<p>
 			Page Table is organized as 16 16-bit entries, it can be stored anywhere in 16-bit physical address space. 
 			Each entry has: present bit, protected bit, dirty bit, rwx bits, frame id. 
 			Note the lack of PID, hardware assumes that page table is for currently running process. 
 			Though it might cache different mappings for performance reasons.
+			Therefore any change to page table always requires flush, other than new page addition, even if the process is not currently in use.
 		<p>
 			There is no need to support cached/uncached pages as IO is done fully through port instructions.<br>
-			<s-cm>//This is something I would love to change but with 16b addres space, there is simply no room for MMIO</s-cm>
-		<p>
+			<s-cm>//This is something I would love to change but with 16b addres space, there is no room for MMIO</s-cm>
+		<h3 id="isa>io"> IO </h3>
 			IO is divided into two mechanisms: interrupts and ports.
 			<s-cm>//I have DMA in plans, but not even a is ready sketch yet</s-cm>
-		<p>
+
+		<h4 id="isa>io>interrupts"> INTERRUPTS </h4>
 			Interrupts may occur at different times but they are always presented before the new instruction starts. 
 			Sometimes they may stop the execution of current instruction when it causes fault, most notable example: page fault.
 			OS has to set up interrupt handler table, which is 256 entry table of where the hardware must jump to on corresponding interrupt. 
@@ -278,14 +287,22 @@ Letter in E column identifies extension necessary to run the instruction
 			<s-cm>
 				/*
 				I considered two other options: 
-				1. keeping the table in memory
-				2. predefined addresses.
+				<ol>
+					<li> keeping the table in memory
+					<li> predefined addresses.
+				</ol>
 				Both of these options were quite bad from memory footprint or performance cost.
 				*/
 			</s-cm>
-		<p>
-			<s-td>add code samples</s-td><br>
-			<s-td>talk more about instructions and reasoning for them</s-td><br>
+
+		<h4 id="isa>io>port"> PORT </h4>
+			From software point of view, port based IO behaves EXACTLY like memory.
+			Data is read from or written to specific address. 
+			Behind the scenes, much more can happen, see <a href="#system">system</a>
+
+		<hr> <h2 id=system           > SYSTEM            </h2>
+			<s-td>DESCRIBE</s-td>
+
 		<hr> <h2 id=sasm             > SASM              </h2>
 		Synthesizing ASseMbler <br>
 		<p>
