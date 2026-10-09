@@ -14,7 +14,6 @@
 		desc: fourth CPU design, significantly bigger project scope ; WIP <br>
 		proj: <a href="https://github.com/sarvl/16b4x">https://github.com/sarvl/16b4x</a><br> 
 		This post is sponsored by PCBWay! More about them in PCB section <s-td>URL</s-td> <br>
-		<s-td> ADD A SECTION ON HOW TO SEE THE PROJECT IN ACTION </s-td>
 		<br>
 		<br>
 		<br>
@@ -103,34 +102,45 @@
 			</ul>
 
 		<hr> <h2 id=overview         > OVERVIEW          </h2>
-			I am considering pulling of <a href=#operating_system>operating system</a> into its own project due to its planned scope<br>
-
-			<br>
-			roughly planned scope for first iteration:
+		<p>
+			A fourth iteration of my 16b CPU family series!
+		<p>
+			This time with new and exciting features such as:
 			<ul>
-				<li> full assembler that is pleasant to write code in (sort of like nasm) </li>
-				<li> behavioral &amp; cycle accurate simulators with perf measurement tools </li>
-				<li> simple but fully functional multitasking OS to test all necessary  features </li>
-				<li> FPGA implementation </li>
+				<li> IO
+				<li> virtual memory
+				<li> privileges
+				<li> full suite of software
+				<li> physical realization
+				<li> process protection
+				<li> and more!
 			</ul>
-
-			<br>
 			
-			complexity increase compared to <a href="../p16b3x.html">16b3x</a> is HUGE <br>
-			Ive been working for XYZ to get what is described here <br>
-			And that is not even close to what I plan on doing <br>
-			I tried to make this document contain more detailed technical description that previous ones <br>
-			<br>
-
-			<br>
+		<p>
+			The project grew out of scope so many times I lost count, world looks much different than it used to back when I started it, and yet the project continues!
+		<p>
+			This overview is still WIP and will be improved incrementally.
+			For now, the whole article is rather short so I encourage you, dear reader, to read it in full.
+		<p>
 			just how hard can it be?<br>
-			turns out, pretty fucking hard<br>
+			Turns out, pretty fucking hard<br>
 		<hr> <h2                     > RUNNING IT        </h2>
-			I have taken some care this time to make all the work here easily replicable.
-			<s-td>FINISH</s-td>
-
+		<p>
+			This time, I have taken care to make the processor easily runnable form different machines.
+			<s-cm>/*Somewhat due to my nomadic lifestyle*/</s-cm>
+			This has been done with proper makefiles for each subproject, one proper makefile for the entire project, and overall better thought-out organization.
+		<p>
+			All steps necessary to get all code and all tooling on your machine are:
+<pre class=code>
+git clone https://github.com/sarvl/16b4x
+cd 16b4x
+make initfull
+</pre>
+			And that is it! 
+			You should see compilation and running tests.
+		<p>
+			I still have to set up some running example but it now is possible to follow my blogs at home.
 		<hr> <h2 id=isa              > ISA               </h2>
-		<s-td>get hyperlinks</s-td>
 		for full ISA, see github <br> 
 		just instruction: <br>
 <pre>

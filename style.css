@@ -16,7 +16,7 @@ s-td{
 	background-color:  #FF0000;
 }
 
-s-cd {
+s-cd, .code {
 	color:             #FFFFFF; 
 	background-color:  #383838;
 	white-space:       pre;
