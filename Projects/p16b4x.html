@@ -33,16 +33,11 @@
 					<li><a href="#sasm>overview"           >overview      </a></li>
 					<li><a href="#sasm>expressions"        >expressions   </a></li>
 					<li><a href="#sasm>directives"         >directives    </a></li>
+					<li><a href="#sasm>internal"           >implementation</a></li>
 					<li><a href="#sasm>macros"             >macros        </a></li>
-					<li><a href="#sasm>performance"        >performance   </a></li>
-					<li><a href="#sasm>implementation"     >implementation</a></li>
+					<li><a href="#sasm>tests"              >tests         </a></li>
 				</ul>
 				<li><a href=#dasm            >dasm (disassembler)</a></li>
-				<ul>
-					<li><a href="#dasm>overview"           >overview          </a></li>
-					<li><a href="#dasm>static_disassembly" >static_disassembly</a></li>
-					<li><a href="#dasm>implementation"     >implementation    </a></li>
-				</ul>
 				<li><a href=#cosi            >cosi (simulator)</a></li>
 				<ul>
 					<li><a href="#cosi>overview"           >overview      </a></li>
@@ -125,7 +120,7 @@
 		<hr> <h2                     > RUNNING IT        </h2>
 		<p>
 			This time, I have taken care to make the processor easily runnable form different machines.
-			<s-cm>/*Somewhat due to my nomadic lifestyle*/</s-cm>
+			<s-cm>/*Somewhat due to my nomadic lifestyle.*/</s-cm>
 			This has been done with proper makefiles for each subproject, one proper makefile for the entire project, and overall better thought-out organization.
 		<p>
 			All steps necessary to get all code and all tooling on your machine are:
@@ -137,7 +132,7 @@ make initfull
 			And that is it! 
 			You should see compilation and running tests.
 		<p>
-			I still have to set up some running example but it now is possible to follow my blogs at home.
+			I still have to set up some flashy example but it now is possible to follow my blogs at home.
 		<hr> <h2 id=isa              > ISA               </h2>
 <p>
 		This is general overview and explanation of some design decisions.
@@ -374,8 +369,9 @@ Letter in E column identifies extension necessary to run the instruction
 			The code generates 35 pairs of numbers to check, computes their result, and stores it memory.
 			This then was compared with golden standard in C and saved as golden standard in tests.
 			Almost the exact same code executes for other arithmetic operations.
-			One way to improve it further is to use macros, which are not yet possible.
+			One way to improve it further is to use macros, which are not yet supported.
 			And the other, which I probably should do, is to add edge case values.
+			<s-cm>//but it seems that the code works, so who cares about tests? amirihgt?</s-cm>
 
 			<h3 id="sasm>internal"> INTERNAL OPERATION </h3>
 
@@ -414,43 +410,72 @@ Letter in E column identifies extension necessary to run the instruction
  * 'v' = 'i' | ulb | exp
  * for convenience, each entry is 2 chars
  * but ' ' indicates that no more need to be parsed
+ * at any point, mus followed by arg list is a valid token too
  */
 constexpr static char const* const pattern_table[] = {
-//	 inc, alg, adr, ddw, rps, 
+//	 inc, alg, adr, ddw, rps,
 	"s ","i ","i ","v ","i ",
-//	 rpe, wst, wns, wes, wph, wpp, 
+//	 rpe, wst, wns, wes, wph, wpp,
 	"  ","s ","s ","s ","  ","  ",
-//	 def, ass, isd, cif, cel, cen, 
+//	 def, ass, isd, cif, cel, cen,
 	"fi","ri","d ","i ","  ","  ",
 //	 cas, inf, war, err  tof, isa
 	"vs","s ","s ","s ","x ","a ",
-//	 sam  cei  tst
-	"xx","i ","x "
+//	 sam  cei  tst, org
+	"xx","i ","x ", "i "
 	};
+
+const char* pattern = pattern_table[tokens[tid].val];
+
+int const first_line = tokens[tid].line_num;
+
+std::string const pattern_err = [&amp;](){
+	std::string ret = "";
+
+	for(int i = 0; i &lt; 3; i++) switch(pattern[i])
+	{
+	case ' ': return ret;
+ 	case 's': ret += "STR ";                     continue;
+ 	case 'f': ret += "ULB/DEF ";                 continue;
+ 	case 'r': ret += "ULB/VAR ";                 continue;
+ 	case 'd': ret += "UDF ";                     continue;
+ 	case 'a': ret += "UVR ";                     continue;
+ 	case 'x': ret += "ANY ";                     continue;
+ 	case 'i': ret += "IMM/UDF/UVR/CEX ";         continue;
+ 	case 'v': ret += "IMM/UDF/UVR/ULB/EXP ";     continue;
+	default:  ret += "invalid pattern supplied ";continue;
+	}
+
+	return ret;
+}();
 </pre>
-		<s-td> make the table up to date</s-td>
 			Later in a for loop, switch case is provided for each letter that tests what is necessary. 
 			This allows to extend and change syntax VERY easily and quickly.
-			I suspect this is slower than specialized solution but it is definitely harder to generate good error messages.
+			I suspect this is slower than specialized solution and it is definitely harder to generate good error messages.
 			So for now, I am stuck with <s-cd>expected token STR/LBL/DEF</s-cd> instead of good message. 
 			This shall be fixed but it does work good enough for now.<br>
 			<s-cm>
 				//This for now thing is like 2 years<br>
 				//but I didnt have time to work on the project much<br>
-				//so still counts I think?
+				//so still counts, I think?
 			</s-cm>
 		<p>
 			I would like to extend this code generation even further, such that specific switch (max performance) is generated from above table (max readability). 
 			But this requires ensuring that, indeed, current code is not slow.
-		<p>
+
+		<h3 id="sasm>macros"> MACROS </h3>
+
 			Turns out, macros are hard to implement nicely.
 			I will work on them in the future unknown.
+
+		<h3 id="sasm>tests"> TESTS </h3>
+
 		<p>
 			Tests cover each stage of processing, making sure that no invalid case passes through.
 		<p>
 			First, each proper construct is tested to check whether they get turned into accurate lexems. 
 			Bunch of invalid tokens are checked whether they are properly reported. 
-			One test group includes randomly generated <s-cm>/*some time ago, not each time*/<s-cm> input to see whether SASM reports proper errors.
+			One test group includes randomly generated <s-cm>/*some time ago, not each time*/</s-cm> input to see whether SASM reports proper errors.
 		<p>
 			Then, All structures are verified.
 			Each instruction and directive is checked, not exhaustively but enough to be quite sure of correct behavior.
@@ -466,11 +491,9 @@ constexpr static char const* const pattern_table[] = {
 			Error messages are unfortunately part of test system.
 			looking for solutions!
 		<p>
-			<s-td>FIZZBUZZ EXAMPLE in directives</s-td>
+			<s-td>syntax error correction pic</s-td>
 		<p>
-			<s-td>syntax error correction</s-td>
-		<p>
-		<hr> <h2 id=dasm             > DASM              </h2>
+		<hr> <h2 id=dasm> DASM </h2>
 		Desynshesizing ASeMbler <br>
 		<span class=comment>not quite assembler</span>
 		<p>
