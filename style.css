@@ -11,7 +11,7 @@ a {
 	color:             #00FFFF;
 }
 
-s-td{
+s-td, .todo{
 	color:             #FFFFFF; 
 	background-color:  #FF0000;
 }
@@ -22,16 +22,16 @@ s-cd, .code {
 	white-space:       pre;
 }
 
-s-ws {
+s-ws, .wsp{
 }
 
 
-s-cm {
+s-cm, .comment{
 	color:             #44AA44; 
 	background-color:  #000000;
 }
 
-s-as {
+s-as, .aside {
 	color:             #77FF00; 
 	background-color:  #000000;
 }
