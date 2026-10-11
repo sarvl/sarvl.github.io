@@ -39,58 +39,15 @@
 				</ul>
 				<li><a href=#dasm            >dasm (disassembler)</a></li>
 				<li><a href=#cosi            >cosi (simulator)</a></li>
-				<ul>
-					<li><a href="#cosi>overview"           >overview      </a></li>
-					<li><a href="#cosi>general"            >general       </a></li>
-					<li><a href="#cosi>helium"             >helium        </a></li>
-					<li><a href="#cosi>implementation"     >implementation</a></li>
-					<li><a href="#cosi>debugger"           >debugger      </a></li>
-					<ul>
-						<li><a href="#cosi>debugger>overview"      >overview </a></li>
-						<li><a href="#cosi>debugger>timelines"     >timelines</a></li>
-						<li><a href="#cosi>debugger>reverting"     >reverting</a></li>
-						<li><a href="#cosi>debugger>virtual_memory">overview </a></li>
-					</ul>
-					<li><a href="#cosi>performance"        >performance   </a></li>
-				</ul>
 				<li><a href=#operating_system>operating_system</a></li>
+				<li><a href=#tests           >tests           </a></li>
 				<ul>
-					<li><a href="#operating_system>overview"       >overview      </a></li>
-					<li><a href="#operating_system>bootloader"     >bootloader    </a></li>
-					<li><a href="#operating_system>virtual_memory" >virtual_memory</a></li>
-					<li><a href="#operating_system>interrupts"     >interrupts    </a></li>
-					<li><a href="#operating_system>processes"      >processes     </a></li>
-					<li><a href="#operating_system>hw_interface"   >hw_interface  </a></li>
-					<ul>
-						<li><a href="#operating_system>hw_interface>overview">overview </a></li>
-						<li><a href="#operating_system>hw_interface>screen"  >screen   </a></li>
-						<li><a href="#operating_system>hw_interface>flash"   >flash    </a></li>
-					</ul>
-					<li><a href="#operating_system>performance"   >performance   </a></li>
+					<li><a href="#tests>framework"          >framework     </a></li>
+					<li><a href="#tests>programs"           >programs      </a></li>
 				</ul>
-				<li><a href=#fost            >fost (test framework)</a></li>
-				<ul>
-					<li><a href="#fost>overview"           >overview      </a></li>
-					<li><a href="#fost>coverage"           >coverage      </a></li>
-					<li><a href="#fost>speeding_up"        >helium        </a></li>
-					<li><a href="#fost>performance"        >implementation</a></li>
-				</ul>
-				<li><a href=#helium          >helium</a></li>
-				<ul>
-					<li><a href="#helium>overview"         >overview          </a></li>
-					<li><a href="#helium>demo"             >demo              </a></li>
-					<li><a href="#helium>microarchitecture">microarchitecture </a></li>
-					<li><a href="#helium>virtual_memory"   >virtual_memory    </a></li>
-					<li><a href="#helium>memory_controller">memory_controller </a></li>
-					<li><a href="#helium>flash_controller" >flash_controller  </a></li>
-					<li><a href="#helium>interrupts"       >interrupts        </a></li>
-					<li><a href="#helium>ports"            >ports             </a></li>
-					<li><a href="#helium>execution"        >execution         </a></li>
-					<li><a href="#helium>cache"            >cache             </a></li>
-					<li><a href="#helium>fpga"             >fpga              </a></li>
-					<li><a href="#helium>optimization"     >optimization      </a></li>
-					<li><a href="#helium>benchmarks"       >benchmarks        </a></li>
-				</ul>
+				<li><a href=#fpga            >fpga  </a></li>
+				<li><a href=#pcb             >pcb</a></li>
+				<li><a href=#heliumv0        >helium version 0</a></li>
 				<li><a href=#timeline        >timeline</a></li>
 			</ul>
 
@@ -469,6 +426,7 @@ std::string const pattern_err = [&amp;](){
 			I will work on them in the future unknown.
 
 		<h3 id="sasm>tests"> TESTS </h3>
+			SASM tests use the same program for tests as <a href=#tests>CPU tests</a>.
 
 		<p>
 			Tests cover each stage of processing, making sure that no invalid case passes through.
@@ -511,13 +469,11 @@ std::string const pattern_err = [&amp;](){
 			Then switch based on opcode.
 		<p>
 			I do not think there is generally faster solution, happy to be proven wrong.
-		<p>
 
 		<hr> <h2 id=cosi             > COSI              </h2>
-		<p>
 			Currently, simulator is quite barebones but is mostly complete.
 			Old iteration was more interesting but required change to properly integrate IO and specialization for microarchitectures.  <br>
-			<s-cm>//Most of the stuff will be reimplemented here once the basic FPGA implementation is done</s-cm><br>
+			<s-cm>//Most of the stuff will be reimplemented and described here once the basic FPGA implementation is done</s-cm><br>
 		<p>
 			Simulator operates in a loop
 			<ol>
@@ -534,7 +490,7 @@ std::string const pattern_err = [&amp;](){
 			</ol>
 			At the end, it might print some more debug info.
 		<p>
-			Instruction is chosen almost exactly in the same fashion as in DASM <s-td>URL</s-td>. 
+			Instruction is chosen almost exactly in the same fashion as in <a href=#dasm>DASM</a>.
 			And the path diverges into more files.
 			This also provides quite convenient way to switch implementation that is used. 
 			To change microarchitecture, replace <s-cd>instruction.*</s-cd> files.
@@ -559,21 +515,75 @@ std::string const pattern_err = [&amp;](){
 		<p>
 			To be impplemented is various performance measurement systems, some TUI debugger, and ultra fast implementation.
 		<p>
-			Attentious reader might notice lack of tests, they are shared with the CPU and thus covered in tests section <s-td> URL </s-td>.<br>
+			Attentious reader might notice lack of tests, they are shared with the CPU and thus covered in <a href=#tests>tests section</a><br>
 			<s-cm>//Extra interesting fast option is JIT or even full transpiler, will take a while though.</s-cm>
 		<hr> <h2 id=operating_system > OPERATING SYSTEM  </h2>
 		<p>
 			Not much done yet, I do have basic OS working for testing but it is not yet interesting.
-		<hr> <h2 id=tests            > TESTS             </h2>
+		<hr> <h2 id=tests> TESTS </h2>
+		<h3 id="tests>framework"> FRAMEWORK </h3>
+			All tests use custom made program to both generate proper set of outputs and to compare them. 
+			The general assumption is that the tests only compare obtained output and golden standard.  <br>
+			<s-cm>//I want to tinker with functional verification one day.</s-cm>
 		<p>
-			Tests have custom made program.
-		<p>
-			One problem with how they are implemented right now is they require memory to be operational. 
-			This could be mitigated but as basic memory is verified as one of the first things and would complicate things quite a bit, it is not.
-		<p>
-			I want to do some functional verification one day.
+			The same underlying utility is used for tests but is presented as two separate ones, differentiated by program name.
+<pre class=code>
+fost - forensic tester
+usage: fost target [args]
+	 target is one of {sim, sasm}
 
-			<s-td> WRITE SMTH </s-td>
+by default, nothing is printed, only return code is set
+
+	-h - print this help
+	-a - equivalent to -fS
+	-A - print everything
+	-s - print summary
+	-S - print summary pretty, overwrites -s
+	-g - print group under test
+	-f - print failing tests
+	-p - print passing tests
+</pre>
+			Though, generally all you need to run is <s-cd>make testsim</s-cd> or <s-cd>./fost sim -a</s-cd> (they are near equivalent).
+<pre class=code>
+ === RUNNING TESTS - SIMULATOR ===
+test sim complete
+total  tests : 141
+failed tests : 0
+time taken   : 776ms
+</pre>
+			
+		<p>
+			Fost is organized such that it is quite easy to add new test target.
+			It provides easy to use interface for <s-cd>gen_x</s-cd> or <s-cd>test_x</s-cd>.
+			Each of this procedures defines their own way of creating tests. 
+			Though I use quite similar ways of file determining what is where and what options to use.
+			<s-cm>//I plan on unifying it even further but I do not see it as any meaningful priority</s-cm>
+		<p>
+			<s-cm>//In a way, think of it like pytest but not in python (so better)</s-cm>
+		<h3 id="tests>programs"> PROGRAMS </h3>
+			One problem with how they are implemented right now is they require memory to be operational. 
+			This could be mitigated but as basic memory is verified as one of the first things and working around it would complicate things quite a bit, I will not change it.
+		<p>
+			As said, first writing to memory address is verified, then reading from one. This start requires three instructions to work
+			<ul>
+				<li> mov R imm
+				<li> mwr I R
+				<li> hlt
+			</ul>
+			Then, each instruction is added one by one.
+		<p>
+			Arithmetic instructions are tested with heavy use of metaprogramming to reduce code count.
+			Control flow changes are tested to see whether they do not break. 
+			More memory stuff is verified and then the calls.
+			Note that the instruction testing is going back and forth quite a lot, checking X requires knowing that Y works which then requires Z, but logically X and Z are quite similar while Y is completely different.
+			Then a lot of conditional operations are checked.
+		<p>
+			Then, once we know instructions work, some more elaborate tests are added for the future.
+			Complex and long dependecy chains, jumps interrupting <s-cd>XWR UI</s-cd>, memory operations, speculative execution side effects. 
+		<p>
+			Then, few programs are tested just in case.
+		<p>
+			Finally, IO is tested, as much as it can be in fixed framework anyway.
 		<hr> <h2 id=helium           > HELIUM            </h2>
 			This is WIP, I got very early iteration workin years ago, but it did need significant rework. <br>
 		<p>
