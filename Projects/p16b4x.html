@@ -45,7 +45,11 @@
 					<li><a href="#tests>framework"          >framework     </a></li>
 					<li><a href="#tests>programs"           >programs      </a></li>
 				</ul>
-				<li><a href=#fpga            >fpga  </a></li>
+				<li><a href=#fpga            >fpga            </a></li>
+				<ul>
+					<li><a href="#fpga>screen"              >screen        </a></li>
+					<li><a href="#fpga>memory"              >memory        </a></li>
+				</ul>
 				<li><a href=#pcb             >pcb</a></li>
 				<li><a href=#heliumv0        >helium version 0</a></li>
 				<li><a href=#timeline        >timeline</a></li>
@@ -584,6 +588,34 @@ time taken   : 776ms
 			Then, few programs are tested just in case.
 		<p>
 			Finally, IO is tested, as much as it can be in fixed framework anyway.
+		<hr> <h2 id=fpga> FPGA </h2>
+			This section describes currently made FPGA components.
+		<h3 id="fpga>screen"> SCREEN </h3>
+			I use SSD1306 SPI-like based screen. It has singular color and reasonably simple initialization interface.
+		<p>
+			The low level drives is implemented as FSM wich 
+			<ol>
+				<li> asserts reset and waits certain time
+				<li> goes throug initialization commands 
+				<li> waits for data to become valid and transfers it
+			</ol>
+		<p>
+			Then, on top of that, high level driver works like video card.
+			It holds VRAM and accepts writes to it <b>when low level driver does not read from ram</b>.
+			This is crucial to not require two port RAM.
+			It adds little delay because LL driver most often does not read data, and even if it does it is for one cycle only.
+		<h3 id="fpga>memory"> MEMORY </h3>
+			Not strictly tied to this FPGA because RAM is external, see <a href=#pcb>PCB</a>.
+		<p>
+			Low level drives implements basic memory interface with no additional fluff.
+			High level one also integrates cache, which for simplicity is always direct mapped write through. 
+		<p>
+			It has been tested by extracting memory operations from few programs <s-cm>/*I dont even remember which*/</s-cm> and compared whether all reads agree. 
+			Both in simulation and on real board.
+		<p>
+			Performance tests are WIP but the results are promising.
+		<p>
+			I think it could be somewhat improved by clocking it in different domain than the rest of CPU, will have to check.
 		<hr> <h2 id=helium           > HELIUM            </h2>
 			This is WIP, I got very early iteration workin years ago, but it did need significant rework. <br>
 		<p>
