@@ -51,6 +51,10 @@
 					<li><a href="#fpga>memory"              >memory        </a></li>
 				</ul>
 				<li><a href=#pcb             >pcb</a></li>
+				<ul>
+					<li><a href="#pcb>ram"                  >ram           </a></li>
+					<li><a href="#pcb>substrate"            >substrate     </a></li>
+				</ul>
 				<li><a href=#heliumv0        >helium version 0</a></li>
 				<li><a href=#timeline        >timeline</a></li>
 			</ul>
@@ -684,54 +688,54 @@ time taken   : 776ms
 			<s-td>setup vm pic</s-td>
 
 			All this, led to finally getting proper output with two programs running in virtual memory!
-		<p>
-			<s-td>2024 08 17</s-td>
 		<p>	
 			I have found perfect chip - IDT 71V016, but it is was only SMD.
 			I could have made or buy SMD to THT breakout board, but decided that, while I am at it, might as well make PCB for everything.
 			For more about that, see <s-td>PCB </s-td>
 		<p>
 			Around this time, I also stared working on PCB.
-		<hr> <h2 id=substrate        > SUBSTRATE         </h2>
+		<hr> <h2 id=pcb> PCB </h2>
+			Due to <i>problems</i> mentioned in <a href=#helium>Helium</a> and finding perfect chip (IDT 71V016) which was only SMD, I decided to implement PCB for my CPU.
 		<p>
-			Since I have found perfect chip - IDT 71V016, but it is was only SMD.
-			I could have made or buy SMD to THT breakout board, but decided that, while I am at it, might as well make PCB for everything.
+			Instead of making it fully on one board, I decided to move memory modules to their own boards.
+			This way in the future I can attach few of the same modules onto single motheboard.
 		<p>
-			RAM BOARD <br>
+		<h3 id="pcb>ram"> RAM </h3>
 			RAM board uses the aforementioned chip and two latches for address.
-			this lets reduce number of pins on the bus almost in half.
-
-			the control is:
+			This reduces pin count needed significantly, which unfortunately is biggest bottleneck around FPGA.
+		<p>
+			The ram is controlled by by:
 			<ul>
 				<li> nCE
 				<li> addr load (latch)
 				<li> nWE
 				<li> nOE
 			</ul>
-
-
+			With 16bit bus which is used either for data (RW) or address (W).
+		<p>
 			the routing is... subpar.
-
+			<s-td>Routing pick</s-td>
+		<p>
+			After using it a bit I realized that the connector has slight problem - it scratches and loses connectivity.
+			It is not a big deal, it can be fixed by resoldering fingers. 
+			Though it did lead to few weird errors.
+		<p>
 			But the worst was to come...
 
-			As much as I love this solution, the connector has problems - it scratches. 
-			thankfully the fix iss easy, the fingers to be resoldered once in a while.
-
-		<p>
-			substrate board <br>
+		<h3 id="pcb>substrate"> SUBSTRATE </h3>
+			<s-td>original pic</s-td>
 			This board is mostly empty, it serves as a convenience board for a bunch of stuff.
 			Primary use of it is PCIe connector with custom interface for RAM board.
 		<p>
-			full product <br>
-		<p>
 			And the worst to come? I flipped the connector.
-
-
-
+			<s-td> Flipped connector schematic and fix pics </s-td>
 		<p>
+			full product <br>
+		<p>	
+			<s-td>PCBWAY sponsorship</s-td>
 		<hr> <h2 id=timeline         > timeline          </h2>
 		<s-td>UPDATE</s-td>
-		this is taken straight from my <span style=code>general_plan.txt</span> file without any formatting<br>
+		this is taken straight from my <s-cd>general_plan.txt</s-cd> file without any formatting<br>
 		not everything was done strictly sequentially <br>
 <pre class=code>
  1. assembler and ISA 
