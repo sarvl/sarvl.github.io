@@ -620,10 +620,10 @@ time taken   : 776ms
 			Performance tests are WIP but the results are promising.
 		<p>
 			I think it could be somewhat improved by clocking it in different domain than the rest of CPU, will have to check.
-		<hr> <h2 id=helium           > HELIUM            </h2>
-			This is WIP, I got very early iteration workin years ago, but it did need significant rework. <br>
+		<hr> <h2 id=helium> HELIUM </h2>
+			This is WIP, I got very early iteration workin years ago, but it did need significant rework.
+			This section describes one particular problem that I faced and found incredibly annoying.
 		<p>
-			I will yap about one feature from old helium as it had huge consequences. 
 			The PSRAM on Tang Nano 9k is borked.
 			It took me so long to debug it, I am still not entirely certain of that, but all stars point to it being broken.
 			First <s-cm>/*that one is partly on me, but docs did not help much*/</s-cm>, I spent good few days figuring out what to use, this board has PSRAM but Tang Nano website said it had SDRAM. 
@@ -651,11 +651,11 @@ time taken   : 776ms
 			which should not affect PSRAM at all, but changing 7 to 6 sometimes had an effect on result.
 			<br>
 			<s-cm>
-				//Honestly, I still sometimes stumble on problems like this<br>
+				//I still sometimes stumble on problems like this<br>
 				//I suppose it has something to do with how synthesis works... weird stuff<br>
 			</s-cm>
 		<p>
-			Here is first of two things that finally convinced me that something is borked with PSRAM. <br>
+			Here is the first of two things that finally convinced me that something is borked with PSRAM. <br>
 			<s-td>waveform got </s-td><br>
 			<s-td>waveform expected </s-td><br>
 
@@ -670,7 +670,7 @@ time taken   : 776ms
 
 		<p>
 			The second reason was finding github repo with PSRAM controller that had issue mentioning unstability.
-			<s-td> https://github.com/zf3/psram-tang-nano-9k/issues/5 </s-td>
+			<a href=https://github.com/zf3/psram-tang-nano-9k/issues/5>https://github.com/zf3/psram-tang-nano-9k/issues/5</a>
 			<s-cm>//Looks like the issue might have been fixed? I might revisit it eventually</s-cm>
 		<p>
 			This led to 4 possible options:
@@ -691,7 +691,7 @@ time taken   : 776ms
 		<p>	
 			I have found perfect chip - IDT 71V016, but it is was only SMD.
 			I could have made or buy SMD to THT breakout board, but decided that, while I am at it, might as well make PCB for everything.
-			For more about that, see <s-td>PCB </s-td>
+			For more about that, see <a href=#pcb>PCB</a>.
 		<p>
 			Around this time, I also stared working on PCB.
 		<hr> <h2 id=pcb> PCB </h2>
@@ -733,43 +733,80 @@ time taken   : 776ms
 			full product <br>
 		<p>	
 			<s-td>PCBWAY sponsorship</s-td>
-		<hr> <h2 id=timeline         > timeline          </h2>
-		<s-td>UPDATE</s-td>
+		<hr> <h2 id=timeline> TIMELINE </h2>
 		this is taken straight from my <s-cd>general_plan.txt</s-cd> file without any formatting<br>
 		not everything was done strictly sequentially <br>
 <pre class=code>
  1. assembler and ISA 
-    finish instruction formats                                2024-06-28
-    convientient to use assembler 
-        proper error messages
-        output controlling
-        labels                                                2024-06-29
+	finish instruction formats                                2024-06-28
+	convientient to use assembler 
+		proper error messages
+		output controlling
+		labels                                                2024-06-29
  2. disassembler to verify everything                         2024-07-01
  3. simulator and ISA                                         2024-07-01
-        simple step through debugger
-        memory dump
-        regs print
+ 		simple step through debugger
+		memory dump
+		regs print
  4. test system                            
-    testing framework
-    hijack significant portion of tests from 16b3x            2024-07-01
+	testing framework
+	hijack significant portion of tests from 16b3x            2024-07-01
  5. debugger                               
-     prints, sets, dumps
-    savestate, restorestate                                   2024-07-05
+ 	prints, sets, dumps
+	savestate, restorestate                                   2024-07-05
  6. fix things from todo                                      2024-07-05
  7. start writing helium                                      2024-07-07
-     implement entire ISA that does not depend on privilege and VM
-    possible ISA adjustements
-    figure out external world interface
+ 	implement entire ISA that does not depend on privilege and VM
+	possible ISA adjustements
+	figure out external world interface
  8. ISA VM specification and cosi impl                        2024-07-13
  9. write *simple* OS and ISA adjustements          
-     some userspace program                                   2024-07-15
+ 	some userspace program                                    2024-07-15
 10. helium                                         
-    implement privilege level, OS, VM 
-    improve anything required from previous implementation    2024-07-17
+	implement privilege level, OS, VM 
+	improve anything required from previous implementation    2024-07-17
 11. very general outline of PCB 
-    ~features, layout                                         2024-07-21
+	~features, layout                                         2024-07-21
+12. helium rework
+	memory IF
+	flash IF 
+		move OS there
+		create bootloader
+	make sure design is synthesisable                         2024-08-04
+13. assembler improvements
+	interface, warning system, format, directives, nested labels
+	MANY tests
+	docs
+	todo fixes                                                2024-08-16
+14. PCB
+	RAM, MB                                                   2024-08-25
+15. ISA updates
+	corresponding tool update
+	finish instructions, perf counters, system IF             2024-08-28
+*********************************************************
+***** ~1 year break for various reasons, mostly uni *****
+*********************************************************
+16. Docs updates
+	massive IO and system interface revisions
+	put currently unfinilized stuff to freezer                2025-11-05
+*********************************************************
+*****   on and off working for reasons, mostly uni  *****
+*********************************************************
+17. Final ISA changes
+	update simulator to allow proper supervisor exec          2026-07-25
+	better file organization, make init and such, plans       2026-07-31
+18. Test system improvements                                  
+	unified assembler and simulator test frameworks           2026-08-23
+	expanded test framework with test gen                     2026-08-23
+	set up VHDL tests for each FPGA component                 2026-08-  
+	set up FPGA test  for each FPGA component                 2026-08-  
+19. FPGA peripherals
+	lcd screen                                                2026-08-08
+	RAM                                                       2026-08-29
+	repo cleanup, common types extraction                     2026-09-30
+	flash
+	leds &amp; switches
 </pre>
 	further plans are to be disclosed :)<br>
-		<hr> <h2                     > UNDER CONSTRUCTION</h2>
 	</body>
 </html>
