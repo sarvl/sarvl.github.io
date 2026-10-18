@@ -12,7 +12,7 @@
 		date: 2024-06 to 2024-10; on and off throughought 2025; 2026-06 and still WIP <br>
 		desc: fourth CPU design, significantly bigger project scope ; WIP <br>
 		proj: <a href="https://github.com/sarvl/16b4x">https://github.com/sarvl/16b4x</a><br> 
-		This post is sponsored by <a href=https://www.pcbway.com>PCBWay</a>! More about them in the <a href=#pcb>PCB</a> section<br>
+		<s-qt>This post is sponsored by <a href=https://www.pcbway.com>PCBWay</a>! More about them in the <a href=#pcb>PCB</a> section. </s-qt><br>
 		<br>
 		<br>
 		<br>
@@ -35,6 +35,7 @@
 					<li><a href="#sasm>internal"           >implementation</a></li>
 					<li><a href="#sasm>macros"             >macros        </a></li>
 					<li><a href="#sasm>tests"              >tests         </a></li>
+					<li><a href="#sasm>syntax"             >syntax        </a></li>
 				</ul>
 				<li><a href=#dasm            >dasm (disassembler)</a></li>
 				<li><a href=#cosi            >cosi (simulator)</a></li>
@@ -53,6 +54,7 @@
 				<ul>
 					<li><a href="#pcb>ram"                  >ram           </a></li>
 					<li><a href="#pcb>substrate"            >substrate     </a></li>
+					<li><a href="#pcb>pcbway"               >pcbway        </a></li>
 				</ul>
 				<li><a href=#heliumv0        >helium version 0</a></li>
 				<li><a href=#timeline        >timeline</a></li>
@@ -78,10 +80,10 @@
 		<p>
 			This overview is still WIP and will be improved incrementally.
 			For now, the whole article is rather short so I encourage you, dear reader, to read it in full.
-		<p>
-			just how hard can it be?<br>
-			Turns out, pretty fucking hard<br>
-		<hr> <h2                     > RUNNING IT        </h2>
+		<p class=quote>
+			Just how hard can it be?<br>
+			Turns out pretty fucking hard.<br>
+		<hr> <h2> RUNNING IT </h2>
 		<p>
 			This time, I have taken care to make the processor easily runnable form different machines.
 			<s-cm>/*Somewhat due to my nomadic lifestyle.*/</s-cm>
@@ -96,7 +98,7 @@ make initfull
 			And that is it! 
 			You should see compilation and running tests.
 		<p>
-			I still have to set up some flashy example but it now is possible to follow my blogs at home.
+			I still have to set up some flashy example but it is possible to follow my blogs at home.
 		<hr> <h2 id=isa              > ISA               </h2>
 <p>
 		This is general overview and explanation of some design decisions.
@@ -126,7 +128,7 @@ CONTROL FLOW
       jcc       imm8        # IF(condition) { IP &lt;-- IP + imm16 }
       jmp       imm11       # IP &lt;-- IP + imm16
       ret                   # IP &lt;-- M[SP] ; SP &lt;-- SP + 1  
-	  lop       imm8        # LC &lt;-- LC - 1 ; if(LC &gt;= 0) {IP &lt;-- IP + imm16}
+      lop       imm8        # LC &lt;-- LC - 1 ; if(LC &gt;= 0) {IP &lt;-- IP + imm16}
 R     hlt                   # halt processor
 INTERRUPTS
 I?    int       imm8        # raises interrupt imm8
@@ -167,7 +169,7 @@ Letter in E column identifies extension necessary to run the instruction
 		<p>
 			To fit this many instructions, encoding is more complex than in previous iterations and done in up to 3 stages. <br>
 			<s-cd>AAAAACCC ___BBBBB</s-cd> <br>
-			AAAAA is decoded first, most instructions it specifies have 8- or 11-bit immediate, exception to that being conditional moves. 
+			AAAAA is decoded first, most instructions specified by it have 8- or 11-bit immediate, exception to that being conditional moves. 
 			AAAAA = b00001 is reserved for software defined instructions, AAAAA = b00010 contains some privileged instrution, AAAAA = b00010 is reserved for miscelaneous.  These instructions are chosen by CCC.
 			When AAAAA = b00000 then first BBBBB is checked and then CCC.
 			If BBBBB is 00000 then the instruction is invalid. 
@@ -193,7 +195,7 @@ Letter in E column identifies extension necessary to run the instruction
 			<s-cm>/*well, not necessarily, see DOS, but it's safer this way*/</s-cm>.
 		<h4 id="isa>ossupport>privilege"> PRIVILEGES </h4>
 			Privilege level is implemented with higher than typical granularity. 
-			Instead of 2 modes, each dangerous feature requires specific privilege. 
+			Instead of 2 or 4 modes, each dangerous feature requires specific privilege. 
 			Notable example is IO access.
 			Instead of letting all drivers access everything about processor, they can only use <s-cd>PWR</s-cd> and <s-cd>PRD</s-cd>. 
 			They are switched on <s-cd>INT</s-cd>, <s-cd>IRT</s-cd>, and <s-cd>CWR</s-cd> to specific register (<s-cd>x0002</s-cd> or <s-cd>x0003</s-cd>, depends on privilege).
@@ -250,7 +252,7 @@ Letter in E column identifies extension necessary to run the instruction
 					<li> keeping the table in memory
 					<li> predefined addresses.
 				</ol>
-				Both of these options were quite bad from memory footprint or performance cost.
+				Both of these options were quite bad from memory footprint or performance cost standpoint.
 				*/
 			</s-cm>
 
@@ -260,7 +262,7 @@ Letter in E column identifies extension necessary to run the instruction
 			Behind the scenes, much more can happen, see <a href="#system">system</a>
 
 		<hr> <h2 id=system           > SYSTEM            </h2>
-			<s-td>DESCRIBE</s-td>
+			Will be described soon:tm:..
 
 		<hr> <h2 id=sasm> SASM </h2>
 		Synthesizing ASseMbler <br>
@@ -330,7 +332,7 @@ Letter in E column identifies extension necessary to run the instruction
 
 	hlt
 </pre>
-			The code generates 35 pairs of numbers to check, computes their result, and stores it memory.
+			The code generates 35 pairs of numbers to check, computes their result, and stores it in memory.
 			This then was compared with golden standard in C and saved as golden standard in tests.
 			Almost the exact same code executes for other arithmetic operations.
 			One way to improve it further is to use macros, which are not yet supported.
@@ -416,7 +418,7 @@ std::string const pattern_err = [&amp;](){
 			Later in a for loop, switch case is provided for each letter that tests what is necessary. 
 			This allows to extend and change syntax VERY easily and quickly.
 			I suspect this is slower than specialized solution and it is definitely harder to generate good error messages.
-			So for now, I am stuck with <s-cd>expected token STR/LBL/DEF</s-cd> instead of good message. 
+			So for now, I am stuck with <s-cd>expected token STR/LBL/DEF</s-cd>. 
 			This shall be fixed but it does work good enough for now.<br>
 			<s-cm>
 				//This for now thing is like 2 years<br>
@@ -433,7 +435,7 @@ std::string const pattern_err = [&amp;](){
 			I will work on them in the future unknown.
 
 		<h3 id="sasm>tests"> TESTS </h3>
-			SASM tests use the same program for tests as <a href=#tests>CPU tests</a>.
+			SASM tests use the same framework for tests as <a href=#tests>CPU tests</a>.
 
 		<p>
 			Tests cover each stage of processing, making sure that no invalid case passes through.
@@ -455,9 +457,10 @@ std::string const pattern_err = [&amp;](){
 		<p>
 			Error messages are unfortunately part of test system.
 			looking for solutions!
+		<h3 id="sasm>syntax"> SYNTAX </h3>
+			<img src="./Images/p16b4x_i0-syntax-err-detect.png">
 		<p>
-			<s-td>syntax error correction pic</s-td>
-		<p>
+			I also added syntax highlight to vim which detects most errors.
 		<hr> <h2 id=dasm> DASM </h2>
 		Desynshesizing ASeMbler <br>
 		<span class=comment>not quite assembler</span>
@@ -520,10 +523,10 @@ std::string const pattern_err = [&amp;](){
 			So it is implemented as deep switch for each <s-cd>io::read</s-cd> and <s-cd>io::write</s-cd> possibility. 
 			So also, to change the system the CPU is integrated into, changing <s-cd>io.*</s-cd> is sufficient.
 		<p>
-			To be impplemented is various performance measurement systems, some TUI debugger, and ultra fast implementation.
+			To be implemented is various performance measurement systems, some TUI debugger, and ultra fast implementation.
+			<s-cm>//Extra interesting fast option is JIT or even full transpiler, will take a while though.</s-cm>
 		<p>
 			Attentious reader might notice lack of tests, they are shared with the CPU and thus covered in <a href=#tests>tests section</a><br>
-			<s-cm>//Extra interesting fast option is JIT or even full transpiler, will take a while though.</s-cm>
 		<hr> <h2 id=operating_system > OPERATING SYSTEM  </h2>
 		<p>
 			Not much done yet, I do have basic OS working for testing but it is not yet interesting.
@@ -640,11 +643,12 @@ time taken   : 776ms
 			Synthesis and PnR started breaking randomly, decoders were not placed despite being right there. 
 		<p>
 			I decided that it must be an issue with Gowin IDE, so I switched to Yosys (temporarily). 
-			And then, flash started failing.
-			<s-td> add flash fail image </s-td>
+			And then, flash started failing.<br>
+			<img src="./Images/p16b4x_i1-failing-flash.png">
 		<p>
 			No idea why it started working again, but it did. 
 			I did discover quite a few mistakes in PSRAM controller implementation but it did not solve the issue.
+		<p>
 			For instance I once wrote a line: <br>
 			<s-cd>psram_data_out &lt;= IO_psram_dq(7)</s-cd>
 			which should not affect PSRAM at all, but changing 7 to 6 sometimes had an effect on result.
@@ -652,11 +656,14 @@ time taken   : 776ms
 			<s-cm>
 				//I still sometimes stumble on problems like this<br>
 				//I suppose it has something to do with how synthesis works... weird stuff<br>
+				//seven to six? more like six seven<br>
 			</s-cm>
 		<p>
+			<s-cm>//I left the section below but I'm not sure it is actually correct...</s-cm><br>
+			<s-cm>//For sure my reasoning was deefer and seemed correct but uhhh maybe I'm just dumb</s-cm><br>
 			Here is the first of two things that finally convinced me that something is borked with PSRAM. <br>
-			<s-td>waveform got </s-td><br>
-			<s-td>waveform expected </s-td><br>
+			<img src="./Images/p16b4x_i2-waveform-expected.png">
+			<img src="./Images/p16b4x_i3-waveform-got.png"><br>
 
 			This is a photo of my oscilloscope, with signals: 
 			<ul>
@@ -683,16 +690,13 @@ time taken   : 776ms
 			The details of implementation were boring, one notable thing is that it limited my effective frequency to several kilohertz.
 			Probably due to speed of ESP32 pins.
 		<p>
-			<s-td>setup pic</s-td>
-			<s-td>setup vm pic</s-td>
+			<img src="./Images/p16b4x_i4-setup.png"><br>
 
 			All this, led to finally getting proper output with two programs running in virtual memory!
 		<p>	
 			I have found perfect chip - IDT 71V016, but it is was only SMD.
 			I could have made or buy SMD to THT breakout board, but decided that, while I am at it, might as well make PCB for everything.
 			For more about that, see <a href=#pcb>PCB</a>.
-		<p>
-			Around this time, I also stared working on PCB.
 		<hr> <h2 id=pcb> PCB </h2>
 			Due to <i>problems</i> mentioned in <a href=#helium>Helium</a> and finding perfect chip (IDT 71V016) which was only SMD, I decided to implement PCB for my CPU.
 		<p>
@@ -701,7 +705,7 @@ time taken   : 776ms
 		<p>
 		<h3 id="pcb>ram"> RAM </h3>
 			RAM board uses the aforementioned chip and two latches for address.
-			This reduces pin count needed significantly, which unfortunately is biggest bottleneck around FPGA.
+			This reduces pin count needed significantly, which unfortunately is the biggest bottleneck around FPGA.
 		<p>
 			The ram is controlled by by:
 			<ul>
@@ -712,8 +716,8 @@ time taken   : 776ms
 			</ul>
 			With 16bit bus which is used either for data (RW) or address (W).
 		<p>
-			the routing is... subpar.
-			<s-td>Routing pick</s-td>
+			The routing is not perfect but I am quite satisfied with it.<br>
+			<img src="./Images/p16b4x_i5-ram-pcb.jpg"><br>
 		<p>
 			After using it a bit I realized that the connector has slight problem - it scratches and loses connectivity.
 			It is not a big deal, it can be fixed by resoldering fingers. 
@@ -722,16 +726,40 @@ time taken   : 776ms
 			But the worst was to come...
 
 		<h3 id="pcb>substrate"> SUBSTRATE </h3>
-			<s-td>original pic</s-td>
+			<img src="./Images/p16b4x_i6-substrate-pcb.png"> <br>
 			This board is mostly empty, it serves as a convenience board for a bunch of stuff.
 			Primary use of it is PCIe connector with custom interface for RAM board.
 		<p>
 			And the worst to come? I flipped the connector.
-			<s-td> Flipped connector schematic and fix pics </s-td>
+			This had to be fixed with wire cutting and some jump wires which were ugly and bad and not nice.
+		<h3 id="pcb>pcbway"> PCBWAY </h3>
+			Thankfully, this <s-cm>/*with very loose definition of the word*/</s-cm> summer <a href=https://www.pcbway.com>PCBWay</a> reached out to me and offered a free prototype. 
+			Needless to say I was very much into this!
 		<p>
-			full product <br>
+			Initially, I planned to improve RAM, but while trying to find its max frequency I realized that my motherboard has no testpoints to properly measure anything, so I fixed that and whatever else was wrong with it instead. 
+		<p>
+			<img src="./Images/p16b4x_i7-substrate-new.png"><br>
+			<s-cm>//I immediattely borked power LED resistors, but since the FPG board has LEDs too then it is fine.</s-cm><br>
+			<s-cm>//Also switches were not soldered, I have no use for them for now.</s-cm><br>
 		<p>	
-			<s-td>PCBWAY sponsorship</s-td>
+			The process was very easy and smooth, boards arrived much earlier than I could receive them so I had to delay the shipment a bit.
+		<p>
+			I made a small mistake - the PCIe holes were marked as PTH instead of NPTH but still had no copper.
+			This was caught and even fixed by PCBWay.
+		<p>
+			Once the board arrived, I quickly assembled and soldered everything. 
+			All worked - screen screened, ram rammed, and testpoints testpointed.
+		<p>
+			I did immediattely test the FPGA-RAM communication with testpoints and it works soo well. 
+		<p>
+			The silkscreen is perfect even with small features of apu art. 
+			Though, speaking of silkscreen, some time after the fact I found website <a href=https://mikecoats.com/pcbway-experience/>mikecoats.com</a> where the author showed neon PCB art supported by PCBWay which looks <s-qt>INSANE</s-qt>.
+		<p>
+			One thing that surprised me is it seems that solder sticks to small traces? 
+			But they are not conductive on the outside so it is fine.
+		<p>
+			All in all, I am definitely going to use their services again.
+			<s-cm>//I must try this neon silkscreen...</s-cm>.
 		<hr> <h2 id=timeline> TIMELINE </h2>
 		this is taken straight from my <s-cd>general_plan.txt</s-cd> file without any formatting<br>
 		not everything was done strictly sequentially <br>

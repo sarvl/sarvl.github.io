@@ -23,6 +23,12 @@ s-cd, .code {
 }
 
 s-ws, .wsp{
+	white-space:       pre;
+}
+
+s-qt, .quote{
+	text-align:        center;
+	color:             magenta;
 }
 
 
